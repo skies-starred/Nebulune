@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "id": "${id}",
+  "version": "${version}",
+  "name": "${name}",
+  "description": "A very awesome addon for a very awesome Hypixel SkyBlock mod.",
+  "authors": [
+    "Starred"
+  ],
+  "license": "BSD 3-Clause",
+  "icon": "assets/nebulune/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "client": [
+      {
+        "value": "starred.skies.nebulune.Nebulune",
+        "adapter": "kotlin"
+      }
+    ]
+  },
+  "mixins": [
+    "nebulune.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.17",
+    "fabric-api": "*",
+    "fabric-language-kotlin": "*",
+    "minecraft": "${minecraft}"
+  }
+}
