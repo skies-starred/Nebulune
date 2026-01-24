@@ -1,8 +1,8 @@
-package starred.skies.nebulune
+package xyz.aerii.nebulune
 
 import net.fabricmc.api.ClientModInitializer
-import starred.skies.athen.Athen
-import starred.skies.athen.handlers.Chronos
+import xyz.aerii.athen.Athen
+import xyz.aerii.athen.handlers.Chronos
 import kotlin.time.Duration.Companion.milliseconds
 
 object Nebulune : ClientModInitializer {

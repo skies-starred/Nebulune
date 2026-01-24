@@ -1,4 +1,4 @@
-package starred.skies.nebulune.mixin.mixins;
+package xyz.aerii.nebulune.mixin.mixins;
 
 import kotlin.Unit;
 import net.minecraft.world.inventory.ClickType;
@@ -11,13 +11,13 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import starred.skies.athen.api.dungeon.terminals.TerminalAPI;
-import starred.skies.athen.api.dungeon.terminals.TerminalType;
-import starred.skies.athen.handlers.Smoothie;
-import starred.skies.athen.modules.impl.dungeon.terminals.solver.base.Click;
-import starred.skies.athen.modules.impl.dungeon.terminals.solver.base.ITerminal;
-import starred.skies.nebulune.Nebulune;
-import starred.skies.nebulune.modules.TerminalSolver;
+import xyz.aerii.athen.api.dungeon.terminals.TerminalAPI;
+import xyz.aerii.athen.api.dungeon.terminals.TerminalType;
+import xyz.aerii.athen.handlers.Smoothie;
+import xyz.aerii.athen.modules.impl.dungeon.terminals.solver.base.Click;
+import xyz.aerii.athen.modules.impl.dungeon.terminals.solver.base.ITerminal;
+import xyz.aerii.nebulune.Nebulune;
+import xyz.aerii.nebulune.modules.TerminalSolver;
 
 import java.util.List;
 
@@ -41,17 +41,17 @@ public abstract class ITerminalMixin {
 
     @Inject(method = "onOpen", at = @At("HEAD"))
     private void nebulune$onOpen(CallbackInfo ci) {
-        TerminalSolver.yearning = false;
+        TerminalSolver.INSTANCE.setYearning(false);
     }
 
     @Inject(method = "onClose", at = @At("HEAD"))
     private void nebulune$onClose(CallbackInfo ci) {
-        TerminalSolver.clicks.clear();
+        TerminalSolver.INSTANCE.getClicks().clear();
     }
 
-    @Inject(method = "click*", at = @At(value = "INVOKE", target = "Lstarred/skies/athen/modules/impl/dungeon/terminals/solver/base/ITerminal;forSlot(I)Lstarred/skies/athen/modules/impl/dungeon/terminals/solver/base/Click;", shift = At.Shift.AFTER), cancellable = true)
+    @Inject(method = "click*", at = @At(value = "INVOKE", target = "Lxyz/aerii/athen/modules/impl/dungeon/terminals/solver/base/ITerminal;forSlot(I)Lxyz/aerii/athen/modules/impl/dungeon/terminals/solver/base/Click;", shift = At.Shift.AFTER), cancellable = true)
     private void nebulune$click(float mx, float my, float width, float height, int mouseButton, CallbackInfo ci) {
-        int mode = TerminalSolver.getMode();
+        int mode = TerminalSolver.INSTANCE.getMode();
         if (mode == 0) return;
 
         int slots = getTerminalType().getSlots();
@@ -74,39 +74,39 @@ public abstract class ITerminalMixin {
 
         nebulune$adjust(c);
 
-        if (TerminalSolver.yearning) TerminalSolver.clicks.add(c);
+        if (TerminalSolver.INSTANCE.getYearning()) TerminalSolver.INSTANCE.getClicks().add(c);
         else nebulune$clickClick(c);
         ci.cancel();
     }
 
     @ModifyVariable(method = "renderHeader", at = @At(value = "STORE", ordinal = 0), ordinal = 0)
     private String nebulune$modifyHeaderText(String titleText) {
-        if (TerminalSolver.getMode() != 1) return titleText;
+        if (TerminalSolver.INSTANCE.getMode() != 1) return titleText;
 
-        String queueText = " | " + TerminalSolver.clicks.size();
+        String queueText = " | " + TerminalSolver.INSTANCE.getClicks().size();
         return titleText + queueText;
     }
 
-    @Inject(method = "update", at = @At(value = "INVOKE", target = "Lstarred/skies/athen/modules/impl/dungeon/terminals/solver/base/ITerminal;compute(ILnet/minecraft/world/item/ItemStack;)V", shift = At.Shift.AFTER))
+    @Inject(method = "update", at = @At(value = "INVOKE", target = "Lxyz/aerii/athen/modules/impl/dungeon/terminals/solver/base/ITerminal;compute(ILnet/minecraft/world/item/ItemStack;)V", shift = At.Shift.AFTER))
     private void nebulune$update(int slot, ItemStack item, CallbackInfo ci) {
-        TerminalSolver.yearning = false;
+        TerminalSolver.INSTANCE.setYearning(false);
 
-        if (TerminalSolver.getMode() != 1 || TerminalSolver.clicks.isEmpty()) return;
+        if (TerminalSolver.INSTANCE.getMode() != 1 || TerminalSolver.INSTANCE.getClicks().isEmpty()) return;
 
-        Click next = TerminalSolver.clicks.getFirst();
+        Click next = TerminalSolver.INSTANCE.getClicks().getFirst();
         if (!valid(next)) {
-            TerminalSolver.clicks.clear();
+            TerminalSolver.INSTANCE.getClicks().clear();
             return;
         }
 
-        for (Click c : TerminalSolver.clicks) nebulune$adjust(c);
-        TerminalSolver.clicks.removeFirst();
+        for (Click c : TerminalSolver.INSTANCE.getClicks()) nebulune$adjust(c);
+        TerminalSolver.INSTANCE.getClicks().removeFirst();
         nebulune$clickClick(next);
     }
 
     @Unique
     private void nebulune$clickClick(Click click) {
-        TerminalSolver.yearning = false;
+        TerminalSolver.INSTANCE.setYearning(true);
 
         var client = Smoothie.getClient();
         var gameMode = client.gameMode;
@@ -114,22 +114,22 @@ public abstract class ITerminalMixin {
         if (gameMode == null || player == null) return;
 
         gameMode.handleInventoryMouseClick(
-            TerminalAPI.INSTANCE.getLastId(),
-            click.getSlot(),
-            click.getButton() == 0 ? 2 : click.getButton(),
-            click.getButton() == 0 ? ClickType.CLONE : ClickType.PICKUP,
-            player
+                TerminalAPI.INSTANCE.getLastId(),
+                click.getSlot(),
+                click.getButton() == 0 ? 2 : click.getButton(),
+                click.getButton() == 0 ? ClickType.CLONE : ClickType.PICKUP,
+                player
         );
 
         int id = TerminalAPI.INSTANCE.getLastId();
-        int timeout = TerminalSolver.getTimeout();
+        int timeout = TerminalSolver.INSTANCE.getTimeout();
 
         Nebulune.after(timeout, () -> {
             if (!TerminalAPI.INSTANCE.getTerminalOpen().getValue() || id != TerminalAPI.INSTANCE.getLastId()) return Unit.INSTANCE;
 
-            TerminalSolver.clicks.clear();
+            TerminalSolver.INSTANCE.getClicks().clear();
             compute(0, ItemStack.EMPTY);
-            TerminalSolver.yearning = false;
+            TerminalSolver.INSTANCE.setYearning(false);
             return Unit.INSTANCE;
         });
     }
@@ -137,9 +137,8 @@ public abstract class ITerminalMixin {
     @Unique
     private void nebulune$adjust(Click click) {
         TerminalType type = getTerminalType();
-        
-        if (type == TerminalType.NUMBERS || type == TerminalType.PANES || 
-            type == TerminalType.NAME || type == TerminalType.COLORS) {
+
+        if (type == TerminalType.NUMBERS || type == TerminalType.PANES || type == TerminalType.NAME || type == TerminalType.COLORS) {
             list.remove(click);
         } else if (type == TerminalType.RUBIX) {
             int index = -1;
@@ -152,7 +151,8 @@ public abstract class ITerminalMixin {
             if (index == -1) return;
 
             int next = list.get(index).getButton() + (click.getButton() == 0 ? -1 : 1);
-            if (next == 0) list.remove(index);else list.set(index, new Click(click.getSlot(), next));
+            if (next == 0) list.remove(index);
+            else list.set(index, new Click(click.getSlot(), next));
         }
     }
 }

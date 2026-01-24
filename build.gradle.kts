@@ -43,7 +43,11 @@ dependencies {
     modRuntimeOnly(libs.devauth)
     modCompileOnly("entityculling".mc(mc))
 
-    modImplementation("athen".mc(mc))
+    val r = when {
+        stonecutter.current.parsed >= "1.21.11" -> "libs/athen-0.0.3+1.21.11.jar"
+        else -> "libs/athen-0.0.3+1.21.10.jar"
+    }
+    modImplementation(files(rootProject.file(r)))
     modImplementation("modmenu".mc(mc))
     modImplementation("fabric-api".mc(mc))
     modImplementation(libs.fabric.loader)
