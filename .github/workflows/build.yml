@@ -50,7 +50,7 @@ jobs:
         env:
           TOKEN: ${{ secrets.TOKEN }}
         run: |
-          curl -X POST https://api.aerii.xyz/notify \
+          curl -X POST https://api.aerii.xyz/builds/notify \
             -H "Content-Type: application/json" \
             -H "Authorization: $TOKEN" \
             -d "{
