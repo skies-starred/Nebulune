@@ -18,7 +18,7 @@ jobs:
             --arg token "$GH_TOKEN" \
             --argjson commits "$COMMITS" \
             '{repo: $repo, commits: $commits, github_token: $token}' \
-          | curl -X POST https://athen.skies-starred.workers.dev/ping/commit \
+          | curl -X POST https://api.aerii.xyz/ping/commit \
             -H "Content-Type: application/json" \
             -H "Authorization: $TOKEN" \
             -d @-
