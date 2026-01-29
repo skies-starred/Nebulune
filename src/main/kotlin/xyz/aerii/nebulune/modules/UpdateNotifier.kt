@@ -27,13 +27,13 @@ object UpdateNotifier {
         val major: Int,
         val minor: Int,
         val patch: Int,
-        val revision: Int = 0,
+        val revision: Int = -1,
         val tag: String
     ) : Comparable<Version> {
         override fun compareTo(other: Version): Int =
             compareValuesBy(this, other, { it.major }, { it.minor }, { it.patch }, { it.revision })
 
-        fun display() = if (revision > 0) "$major.$minor.$patch-r$revision" else "$major.$minor.$patch"
+        fun display() = if (revision >= 0) "$major.$minor.$patch-r$revision" else "$major.$minor.$patch"
     }
 
     init {
@@ -64,7 +64,7 @@ object UpdateNotifier {
             match.groupValues[1].toInt(),
             match.groupValues[2].toInt(),
             match.groupValues[3].toInt(),
-            match.groupValues[4].toIntOrNull() ?: 0,
+            match.groupValues[4].toIntOrNull() ?: -1,
             this
         )
     }
