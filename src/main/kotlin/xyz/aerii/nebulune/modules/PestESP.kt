@@ -5,7 +5,6 @@ import net.minecraft.world.entity.Entity
 import net.minecraft.world.entity.EquipmentSlot
 import net.minecraft.world.entity.decoration.ArmorStand
 import net.minecraft.world.phys.AABB
-import net.minecraft.world.phys.Vec3
 import tech.thatgravyboat.skyblockapi.utils.extentions.getTexture
 import xyz.aerii.athen.annotations.Load
 import xyz.aerii.athen.annotations.OnlyIn
@@ -14,7 +13,6 @@ import xyz.aerii.athen.config.Category
 import xyz.aerii.athen.events.LocationEvent
 import xyz.aerii.athen.events.WorldRenderEvent
 import xyz.aerii.athen.handlers.Chronos
-import xyz.aerii.athen.handlers.Smoothie.client
 import xyz.aerii.athen.handlers.Smoothie.level
 import xyz.aerii.athen.modules.Module
 import xyz.aerii.athen.ui.Theme
@@ -50,7 +48,7 @@ object PestESP : Module(
             }
         }
 
-        on<WorldRenderEvent.AfterEntities> {
+        on<WorldRenderEvent.Extract> {
             val it = entities.iterator()
             while (it.hasNext()) {
                 val e = it.next()
