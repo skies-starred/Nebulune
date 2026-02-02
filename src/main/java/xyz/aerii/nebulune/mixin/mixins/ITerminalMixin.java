@@ -14,6 +14,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import xyz.aerii.athen.api.dungeon.terminals.TerminalAPI;
 import xyz.aerii.athen.api.dungeon.terminals.TerminalType;
 import xyz.aerii.athen.handlers.Smoothie;
+import xyz.aerii.athen.modules.impl.dungeon.terminals.simulator.TerminalSimulator;
+import xyz.aerii.athen.modules.impl.dungeon.terminals.simulator.base.ITerminalSim;
 import xyz.aerii.athen.modules.impl.dungeon.terminals.solver.base.Click;
 import xyz.aerii.athen.modules.impl.dungeon.terminals.solver.base.ITerminal;
 import xyz.aerii.nebulune.Nebulune;
@@ -107,6 +109,19 @@ public abstract class ITerminalMixin {
     @Unique
     private void nebulune$clickClick(Click click) {
         TerminalSolver.INSTANCE.setYearning(true);
+
+        if (TerminalSimulator.INSTANCE.getS().getValue()) {
+            var client = Smoothie.getClient();
+            var screen = client.screen;
+            if (!(screen instanceof ITerminalSim sim)) return;
+
+            var slots = sim.getMenu().slots;
+            if (click.getSlot() >= slots.size()) return;
+
+            var slot = slots.get(click.getSlot());
+            sim.slotClicked(slot, click.getSlot(), click.getButton(), click.getButton() == 0 ? ClickType.CLONE : ClickType.PICKUP);
+            return;
+        }
 
         var client = Smoothie.getClient();
         var gameMode = client.gameMode;
