@@ -15,7 +15,7 @@ import xyz.aerii.athen.events.WorldRenderEvent
 import xyz.aerii.athen.handlers.Chronos
 import xyz.aerii.athen.handlers.Smoothie.level
 import xyz.aerii.athen.modules.Module
-import xyz.aerii.athen.ui.Theme
+import xyz.aerii.athen.ui.themes.Catppuccin
 import xyz.aerii.athen.utils.render.Render3D
 import xyz.aerii.athen.utils.render.renderPos
 import xyz.aerii.nebulune.utils.drawTracer
@@ -30,7 +30,7 @@ object PestESP : Module(
 ) {
     private val tracer by config.switch("Tracer")
     private val thickness by config.slider("Thickness", 2, 1, 10)
-    private val color by config.colorPicker("ESP color", Color(Theme.Primary.rgba))
+    private val color by config.colorPicker("ESP color", Color(Catppuccin.Mocha.Peach.rgba))
     private val depthTest by config.switch("Depth test")
     private val entities = mutableSetOf<Entity>()
 
