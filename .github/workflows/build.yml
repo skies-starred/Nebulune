@@ -55,7 +55,8 @@ jobs:
             -H "Authorization: $TOKEN" \
             -d "{
               \"repo\": \"${{ github.repository }}\",
-              \"commit\": \"${{ github.event.head_commit.message }}\",
               \"branch\": \"${{ github.ref_name }}\",
-              \"run_id\": \"${{ github.run_id }}\"
+              \"run_id\": \"${{ github.run_id }}\",
+              \"before\": \"${{ github.event.before }}\",
+              \"after\": \"${{ github.event.after }}\"
             }"
