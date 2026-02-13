@@ -1,5 +1,6 @@
 package xyz.aerii.nebulune.modules
 
+import net.minecraft.world.entity.Entity
 import xyz.aerii.athen.annotations.Load
 import xyz.aerii.athen.annotations.OnlyIn
 import xyz.aerii.athen.config.Category
@@ -24,8 +25,9 @@ object FishingHelper : Module(
 
     init {
         on<EntityEvent.NameChange> {
+            val entity = client.player?.fishing as? Entity ?: return@on
             if (component.stripped() != "!!!") return@on
-            if (infoLineEntity.distanceTo(client.player?.fishing) > 2f) return@on
+            if (infoLineEntity.distanceTo(entity) > 2f) return@on
 
             val t0 =
                 if (delayVariance > 0) (0..delayVariance).random()
