@@ -53,7 +53,7 @@ public abstract class ITerminalMixin {
     }
 
     @Inject(method = "click*", at = @At(value = "INVOKE", target = "Lxyz/aerii/athen/modules/impl/dungeon/terminals/solver/base/ITerminal;forSlot(I)Lxyz/aerii/athen/modules/impl/dungeon/terminals/solver/base/Click;", shift = At.Shift.AFTER), cancellable = true)
-    private void nebulune$click(float mx, float my, float width, float height, int mouseButton, boolean q, CallbackInfo ci) {
+    private void nebulune$click(float mx, float my, float width, float height, int mouseButton, CallbackInfo ci) {
         int mode = QueueTerms.INSTANCE.getMode();
         if (mode == 0) return;
 
@@ -78,7 +78,7 @@ public abstract class ITerminalMixin {
         nebulune$adjust(c);
 
         if (QueueTerms.INSTANCE.getYearning()) QueueTerms.INSTANCE.getClicks().add(c);
-        else nebulune$clickClick(c, q);
+        else nebulune$clickClick(c);
         ci.cancel();
     }
 
@@ -103,11 +103,11 @@ public abstract class ITerminalMixin {
 
         for (Click c : QueueTerms.INSTANCE.getClicks()) nebulune$adjust(c);
         QueueTerms.INSTANCE.getClicks().removeFirst();
-        nebulune$clickClick(next, false);
+        nebulune$clickClick(next);
     }
 
     @Unique
-    private void nebulune$clickClick(Click click, boolean q) {
+    private void nebulune$clickClick(Click click) {
         QueueTerms.INSTANCE.setYearning(true);
 
         if (TerminalSimulator.INSTANCE.getS().getValue()) {
@@ -144,7 +144,7 @@ public abstract class ITerminalMixin {
                 TerminalAPI.INSTANCE.getLastId(),
                 click.getSlot(),
                 click.getButton() == 0 ? 2 : click.getButton(),
-                q ? ClickType.THROW : (click.getButton() == 0 ? ClickType.CLONE : ClickType.PICKUP),
+                click.getButton() == 0 ? ClickType.CLONE : ClickType.PICKUP,
                 player
         );
 

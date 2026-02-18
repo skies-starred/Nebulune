@@ -3,7 +3,7 @@ package xyz.aerii.nebulune.modules
 import com.google.gson.JsonArray
 import xyz.aerii.athen.annotations.Priority
 import xyz.aerii.athen.events.LocationEvent
-import xyz.aerii.athen.events.core.EventBus.on
+import xyz.aerii.athen.events.core.on
 import xyz.aerii.athen.handlers.Beacon
 import xyz.aerii.athen.handlers.Chronos
 import xyz.aerii.athen.handlers.Smoothie.client
@@ -39,7 +39,10 @@ object UpdateNotifier {
     init {
         on<LocationEvent.ServerConnect> {
             if (times++ >= 3) return@on
-            if (times == 1) return@on Chronos.Time after 5.seconds then { latest() }
+            if (times == 1) {
+                Chronos.Time after 5.seconds then { latest() }
+                return@on
+            }
 
             run()
         }

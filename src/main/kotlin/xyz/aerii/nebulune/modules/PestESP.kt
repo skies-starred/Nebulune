@@ -11,6 +11,7 @@ import xyz.aerii.athen.annotations.OnlyIn
 import xyz.aerii.athen.api.location.SkyBlockIsland
 import xyz.aerii.athen.config.Category
 import xyz.aerii.athen.events.LocationEvent
+import xyz.aerii.athen.events.PacketEvent
 import xyz.aerii.athen.events.WorldRenderEvent
 import xyz.aerii.athen.handlers.Chronos
 import xyz.aerii.athen.handlers.Smoothie.level
@@ -35,7 +36,7 @@ object PestESP : Module(
     private val entities = mutableSetOf<Entity>()
 
     init {
-        onReceive<ClientboundSetEntityDataPacket> {
+        on<PacketEvent.Receive, ClientboundSetEntityDataPacket> {
             Chronos.Tick after 2 then {
                 val entity = level?.getEntity(id) as? ArmorStand ?: return@then
                 if (!entity.hasItemInSlot(EquipmentSlot.HEAD)) return@then

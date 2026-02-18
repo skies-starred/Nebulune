@@ -24,7 +24,7 @@ object FishingHelper : Module(
     private var ticks = -1
 
     init {
-        on<EntityEvent.NameChange> {
+        on<EntityEvent.Update.Named> {
             val entity = client.player?.fishing as? Entity ?: return@on
             if (component.stripped() != "!!!") return@on
             if (infoLineEntity.distanceTo(entity) > 2f) return@on
