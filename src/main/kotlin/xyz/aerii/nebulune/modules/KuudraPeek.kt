@@ -41,7 +41,7 @@ object KuudraPeek : Module(
         on<TickEvent.Client> {
             if (!KuudraAPI.inRun) return@on
             if (KuudraAPI.tier != KuudraTier.INFERNAL) return@on
-            if (KuudraAPI.phase != KuudraPhase.LAIR) return@on
+            if (KuudraAPI.phase != KuudraPhase.Kill) return@on
             if (ticks % 2 != 0) return@on
 
             val player = client.player ?: return@on
