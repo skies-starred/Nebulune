@@ -23,6 +23,7 @@ repositories {
     strictMaven("https://maven.deftu.dev/snapshots", "dev.deftu")
     strictMaven("https://maven.deftu.dev/releases", "dev.deftu")
     strictMaven("https://repo.nea.moe/releases", "moe.nea")
+    strictMaven("https://jitpack.io", "com.github.skies-starred.Athen")
 }
 
 fletchingTable {
@@ -43,7 +44,8 @@ dependencies {
     modRuntimeOnly(libs.devauth)
     modCompileOnly("entityculling".mc(mc))
 
-    modImplementation("athen".mc(mc))
+    //modImplementation("athen-prod".mc(mc))
+    modImplementation("athen-act".mc(mc)) { exclude(group = "tech.thatgravyboat", module = "skyblock-api") }
     modImplementation("modmenu".mc(mc))
     modImplementation("fabric-api".mc(mc))
     modImplementation(libs.fabric.loader)

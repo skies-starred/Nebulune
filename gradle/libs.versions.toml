@@ -27,8 +27,11 @@ parchment-1-21-11 = "2025.12.20"
 entityculling-1-21-10 = "zwBaFdjH"
 entityculling-1-21-11 = "Dx3xsUER"
 
-athen-1-21-10 = "9BEQM0n1"
-athen-1-21-11 = "QFtnlYMd"
+athen-act-1-21-10 = "97e9bb80cb"
+athen-act-1-21-11 = "97e9bb80cb"
+
+athen-prod-1-21-10 = "9BEQM0n1"
+athen-prod-1-21-11 = "QFtnlYMd"
 
 skyblock-api = "4.0.7"
 classgraph = "4.8.184"
@@ -54,8 +57,11 @@ modmenu-1-21-11 = { module = "com.terraformersmc:modmenu", version.ref = "modmen
 omnicore-1-21-10 = { module = "dev.deftu:omnicore-1.21.10-fabric", version.ref = "omnicore" }
 omnicore-1-21-11 = { module = "dev.deftu:omnicore-1.21.11-fabric", version.ref = "omnicore" }
 
-athen-1-21-10 = { module = "maven.modrinth:athen", version.ref = "athen-1-21-10" }
-athen-1-21-11 = { module = "maven.modrinth:athen", version.ref = "athen-1-21-11" }
+athen-act-1-21-10 = { module = "com.github.skies-starred.Athen:Athen-1.21.10", version.ref = "athen-act-1-21-10" }
+athen-act-1-21-11 = { module = "com.github.skies-starred.Athen:Athen-1.21.11", version.ref = "athen-act-1-21-11" }
+
+athen-prod-1-21-10 = { module = "maven.modrinth:athen", version.ref = "athen-prod-1-21-10" }
+athen-prod-1-21-11 = { module = "maven.modrinth:athen", version.ref = "athen-prod-1-21-11" }
 
 olympus-1-21-10 = { module = "earth.terrarium.olympus:olympus-fabric-1.21.9", version.ref = "olympus-1-21-10" }
 olympus-1-21-11 = { module = "earth.terrarium.olympus:olympus-fabric-1.21.11", version.ref = "olympus-1-21-11" }

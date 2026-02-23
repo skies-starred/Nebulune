@@ -20,7 +20,7 @@ import xyz.aerii.athen.modules.impl.dungeon.terminals.solver.TerminalSolver;
 import xyz.aerii.athen.modules.impl.dungeon.terminals.solver.base.Click;
 import xyz.aerii.athen.modules.impl.dungeon.terminals.solver.base.ITerminal;
 import xyz.aerii.nebulune.Nebulune;
-import xyz.aerii.nebulune.modules.QueueTerms;
+import xyz.aerii.nebulune.modules.TerminalHelper;
 
 import java.util.List;
 
@@ -44,18 +44,17 @@ public abstract class ITerminalMixin {
 
     @Inject(method = "onOpen", at = @At("HEAD"))
     private void nebulune$onOpen(CallbackInfo ci) {
-        QueueTerms.INSTANCE.setYearning(false);
+        TerminalHelper.INSTANCE.setYearning(false);
     }
 
     @Inject(method = "onClose", at = @At("HEAD"))
     private void nebulune$onClose(CallbackInfo ci) {
-        QueueTerms.INSTANCE.getClicks().clear();
+        TerminalHelper.INSTANCE.getClicks().clear();
     }
 
     @Inject(method = "click*", at = @At(value = "INVOKE", target = "Lxyz/aerii/athen/modules/impl/dungeon/terminals/solver/base/ITerminal;forSlot(I)Lxyz/aerii/athen/modules/impl/dungeon/terminals/solver/base/Click;", shift = At.Shift.AFTER), cancellable = true)
     private void nebulune$click(float mx, float my, float width, float height, int mouseButton, CallbackInfo ci) {
-        int mode = QueueTerms.INSTANCE.getMode();
-        if (mode == 0) return;
+        if (TerminalHelper.INSTANCE.getMode() != 1) return;
 
         int slots = getTerminalType().getSlots();
         float gridW = 9 * 18f;
@@ -77,38 +76,66 @@ public abstract class ITerminalMixin {
 
         nebulune$adjust(c);
 
-        if (QueueTerms.INSTANCE.getYearning()) QueueTerms.INSTANCE.getClicks().add(c);
+        if (TerminalHelper.INSTANCE.getYearning()) TerminalHelper.INSTANCE.getClicks().add(c);
         else nebulune$clickClick(c);
         ci.cancel();
     }
 
+    @Inject(method = "main(FFFFF)V", at = @At("TAIL"))
+    private void nebulune$hover(float ox, float oy, float gridW, float headerH, float uiScale, CallbackInfo ci) {
+        if (TerminalHelper.INSTANCE.getMode() != 1) return;
+        if (!TerminalHelper.INSTANCE.getHoverTerms()) return;
+        if (System.currentTimeMillis() - TerminalAPI.INSTANCE.getOpenTime() < TerminalSolver.INSTANCE.getFcDelay()) return;
+
+        var client = Smoothie.getClient();
+        float mx = (float) (client.mouseHandler.xpos() / uiScale);
+        float my = (float) (client.mouseHandler.ypos() / uiScale);
+
+        int xSlot = (int) ((mx - ox) / 18);
+        int ySlot = (int) ((my - (oy + headerH + 6f)) / 18);
+        if (xSlot < 0 || xSlot > 8 || ySlot < 0) return;
+
+        int slot = xSlot + ySlot * 9;
+        if (slot >= getTerminalType().getSlots()) return;
+
+        Click c = forSlot(slot);
+        if (c == null) return;
+
+        var clicks = TerminalHelper.INSTANCE.getClicks();
+        if (clicks.stream().anyMatch(it -> it.getSlot() == c.getSlot())) return;
+
+        nebulune$adjust(c);
+        if (TerminalHelper.INSTANCE.getYearning()) clicks.add(c);
+        else nebulune$clickClick(c);
+    }
+
     @ModifyVariable(method = "main(FFFFF)V", at = @At(value = "STORE", ordinal = 0), ordinal = 0)
     private String nebulune$modifyTitleText(String titleText) {
-        if (QueueTerms.INSTANCE.getMode() != 1) return titleText;
-        return titleText + " | " + QueueTerms.INSTANCE.getClicks().size();
+        if (TerminalHelper.INSTANCE.getMode() != 1) return titleText;
+        return titleText + " | " + TerminalHelper.INSTANCE.getClicks().size();
     }
 
     @Inject(method = "update", at = @At(value = "INVOKE", target = "Lxyz/aerii/athen/modules/impl/dungeon/terminals/solver/base/ITerminal;compute(ILnet/minecraft/world/item/ItemStack;)V", shift = At.Shift.AFTER))
     private void nebulune$update(int slot, ItemStack item, CallbackInfo ci) {
-        QueueTerms.INSTANCE.setYearning(false);
+        TerminalHelper.INSTANCE.setYearning(false);
 
-        if (QueueTerms.INSTANCE.getMode() != 1) return;
-        if (QueueTerms.INSTANCE.getClicks().isEmpty()) return;
+        if (TerminalHelper.INSTANCE.getMode() != 1) return;
+        if (TerminalHelper.INSTANCE.getClicks().isEmpty()) return;
 
-        Click next = QueueTerms.INSTANCE.getClicks().getFirst();
+        Click next = TerminalHelper.INSTANCE.getClicks().getFirst();
         if (!valid(next)) {
-            QueueTerms.INSTANCE.getClicks().clear();
+            TerminalHelper.INSTANCE.getClicks().clear();
             return;
         }
 
-        for (Click c : QueueTerms.INSTANCE.getClicks()) nebulune$adjust(c);
-        QueueTerms.INSTANCE.getClicks().removeFirst();
+        for (Click c : TerminalHelper.INSTANCE.getClicks()) nebulune$adjust(c);
+        TerminalHelper.INSTANCE.getClicks().removeFirst();
         nebulune$clickClick(next);
     }
 
     @Unique
     private void nebulune$clickClick(Click click) {
-        QueueTerms.INSTANCE.setYearning(true);
+        TerminalHelper.INSTANCE.setYearning(true);
 
         if (TerminalSimulator.INSTANCE.getS().getValue()) {
             var client = Smoothie.getClient();
@@ -149,15 +176,15 @@ public abstract class ITerminalMixin {
         );
 
         int id = TerminalAPI.INSTANCE.getLastId();
-        int timeout = QueueTerms.INSTANCE.getTimeout();
+        int timeout = TerminalHelper.INSTANCE.getTimeout();
 
         Nebulune.after(timeout, () -> {
             if (!TerminalAPI.INSTANCE.getTerminalOpen().getValue()) return Unit.INSTANCE;
             if (id != TerminalAPI.INSTANCE.getLastId()) return Unit.INSTANCE;
 
-            QueueTerms.INSTANCE.getClicks().clear();
+            TerminalHelper.INSTANCE.getClicks().clear();
             compute(0, ItemStack.EMPTY);
-            QueueTerms.INSTANCE.setYearning(false);
+            TerminalHelper.INSTANCE.setYearning(false);
             return Unit.INSTANCE;
         });
     }
