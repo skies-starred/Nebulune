@@ -1,6 +1,5 @@
 package xyz.aerii.nebulune.utils
 
-import net.minecraft.client.renderer.blockentity.state.BeaconRenderState
 import net.minecraft.world.phys.Vec3
 import xyz.aerii.athen.handlers.Smoothie.client
 import xyz.aerii.athen.utils.render.Render3D
