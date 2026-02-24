@@ -42,14 +42,24 @@ public abstract class ITerminalMixin {
     @Shadow
     protected abstract void compute(int slot, ItemStack item);
 
+    @Unique
+    private long nebulune$hover$click = 0L;
+
+    @Unique
+    private int nebulune$hover$slot = -1;
+
     @Inject(method = "onOpen", at = @At("HEAD"))
     private void nebulune$onOpen(CallbackInfo ci) {
         TerminalHelper.INSTANCE.setYearning(false);
+        nebulune$hover$click = 0L;
+        nebulune$hover$slot = -1;
     }
 
     @Inject(method = "onClose", at = @At("HEAD"))
     private void nebulune$onClose(CallbackInfo ci) {
         TerminalHelper.INSTANCE.getClicks().clear();
+        nebulune$hover$click = 0L;
+        nebulune$hover$slot = -1;
     }
 
     @Inject(method = "click*", at = @At(value = "INVOKE", target = "Lxyz/aerii/athen/modules/impl/dungeon/terminals/solver/base/ITerminal;forSlot(I)Lxyz/aerii/athen/modules/impl/dungeon/terminals/solver/base/Click;", shift = At.Shift.AFTER), cancellable = true)
@@ -85,7 +95,12 @@ public abstract class ITerminalMixin {
     private void nebulune$hover(float ox, float oy, float gridW, float headerH, float uiScale, CallbackInfo ci) {
         if (TerminalHelper.INSTANCE.getMode() != 1) return;
         if (!TerminalHelper.INSTANCE.getHoverTerms()) return;
+        if (getTerminalType() == TerminalType.MELODY) return;
         if (System.currentTimeMillis() - TerminalAPI.INSTANCE.getOpenTime() < TerminalSolver.INSTANCE.getFcDelay()) return;
+
+        long now = System.currentTimeMillis();
+        long delay = TerminalHelper.INSTANCE.delay();
+        if (now - nebulune$hover$click < delay) return;
 
         var client = Smoothie.getClient();
         float mx = (float) (client.mouseHandler.xpos() / uiScale);
@@ -100,6 +115,10 @@ public abstract class ITerminalMixin {
 
         Click c = forSlot(slot);
         if (c == null) return;
+        if (slot == nebulune$hover$slot) return;
+
+        nebulune$hover$click = now;
+        nebulune$hover$slot = slot;
 
         var clicks = TerminalHelper.INSTANCE.getClicks();
         if (clicks.stream().anyMatch(it -> it.getSlot() == c.getSlot())) return;
