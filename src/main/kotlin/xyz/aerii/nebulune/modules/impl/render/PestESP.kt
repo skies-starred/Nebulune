@@ -1,4 +1,4 @@
-package xyz.aerii.nebulune.modules
+package xyz.aerii.nebulune.modules.impl.render
 
 import net.minecraft.network.protocol.game.ClientboundSetEntityDataPacket
 import net.minecraft.world.entity.Entity
@@ -14,7 +14,7 @@ import xyz.aerii.athen.events.LocationEvent
 import xyz.aerii.athen.events.PacketEvent
 import xyz.aerii.athen.events.WorldRenderEvent
 import xyz.aerii.athen.handlers.Chronos
-import xyz.aerii.athen.handlers.Smoothie.level
+import xyz.aerii.athen.handlers.Smoothie
 import xyz.aerii.athen.modules.Module
 import xyz.aerii.athen.ui.themes.Catppuccin
 import xyz.aerii.athen.utils.render.Render3D
@@ -38,7 +38,7 @@ object PestESP : Module(
     init {
         on<PacketEvent.Receive, ClientboundSetEntityDataPacket> {
             Chronos.Tick after 2 then {
-                val entity = level?.getEntity(id) as? ArmorStand ?: return@then
+                val entity = Smoothie.level?.getEntity(id) as? ArmorStand ?: return@then
                 if (!entity.hasItemInSlot(EquipmentSlot.HEAD)) return@then
                 if (entity in entities) return@then
 

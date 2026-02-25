@@ -1,6 +1,6 @@
 @file:Suppress("Unused")
 
-package xyz.aerii.nebulune.modules
+package xyz.aerii.nebulune.modules.impl.general
 
 import net.minecraft.network.protocol.game.ClientboundOpenScreenPacket
 import net.minecraft.world.inventory.ClickType
@@ -12,8 +12,7 @@ import xyz.aerii.athen.events.PacketEvent
 import xyz.aerii.athen.events.core.on
 import xyz.aerii.athen.events.core.runWhen
 import xyz.aerii.athen.handlers.React.Companion.and
-import xyz.aerii.athen.handlers.Smoothie.client
-import xyz.aerii.athen.handlers.Smoothie.mainThread
+import xyz.aerii.athen.handlers.Smoothie
 import xyz.aerii.athen.handlers.Typo.command
 import xyz.aerii.athen.handlers.Typo.stripped
 import xyz.aerii.athen.modules.impl.general.WardrobeKeybinds
@@ -25,8 +24,6 @@ object WardrobeHelper {
     val autoEquip = WardrobeKeybinds.config.switch("Auto equip").custom("autoEquip")
     private val _unused by WardrobeKeybinds.config.textParagraph("Automatically equips the wardrobe slot without opening the gui. Use at your own risk.")
 
-    private val pressed = BooleanArray(9)
-
     private var slot0: WardrobeKeybinds.WardrobeSlot? = null
     private var swapping = false
     private var id = -1
@@ -34,7 +31,8 @@ object WardrobeHelper {
     init {
         on<InputEvent.Keyboard.Press> {
             if (swapping) return@on
-            val slot = WardrobeKeybinds.wardrobeSlots.find { it.value == keyEvent.key }?.takeIf { it.slot?.item?.isEmpty == false } ?: return@on
+            val slot = WardrobeKeybinds.wardrobeSlots.find { it.value == keyEvent.key }
+                ?.takeIf { it.slot?.item?.isEmpty == false } ?: return@on
 
             slot0 = slot
             swapping = true
@@ -47,9 +45,9 @@ object WardrobeHelper {
         on<PacketEvent.Receive, ClientboundOpenScreenPacket> {
             if (!swapping) return@on
             if ("Wardrobe" !in title.stripped()) return@on
-            val player = client.player ?: return@on
+            val player = Smoothie.client.player ?: return@on
 
-            mainThread {
+            Smoothie.mainThread {
                 player.containerMenu = type.create(containerId, player.inventory)
             }
 
@@ -64,7 +62,7 @@ object WardrobeHelper {
         on<TickStartEvent> {
             if (!swapping) return@on
 
-            val player = client.player ?: return@on
+            val player = Smoothie.client.player ?: return@on
             val menu = player.containerMenu ?: return@on
             val slot = slot0 ?: return@on
 
@@ -74,7 +72,7 @@ object WardrobeHelper {
             if (mcSlot.item.isEmpty) return@on
 
             if (!slot.equipped) {
-                client.gameMode?.handleInventoryMouseClick(id, slot.idx, 0, ClickType.PICKUP, player)
+                Smoothie.client.gameMode?.handleInventoryMouseClick(id, slot.idx, 0, ClickType.PICKUP, player)
             }
 
             player.closeContainer()

@@ -1,4 +1,4 @@
-package xyz.aerii.nebulune.modules
+package xyz.aerii.nebulune.modules.impl.kuudra
 
 import xyz.aerii.athen.annotations.Load
 import xyz.aerii.athen.annotations.OnlyIn
@@ -10,8 +10,8 @@ import xyz.aerii.athen.config.Category
 import xyz.aerii.athen.events.TickEvent
 import xyz.aerii.athen.handlers.Smoothie.alert
 import xyz.aerii.athen.handlers.Smoothie.client
-import xyz.aerii.athen.handlers.Texter.parse
 import xyz.aerii.athen.handlers.Typo.modMessage
+import xyz.aerii.athen.handlers.parse
 import xyz.aerii.athen.modules.Module
 
 @Load

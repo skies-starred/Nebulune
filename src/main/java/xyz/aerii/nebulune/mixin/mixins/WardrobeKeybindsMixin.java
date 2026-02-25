@@ -8,7 +8,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import xyz.aerii.athen.events.core.CancellableEvent;
 import xyz.aerii.athen.handlers.Smoothie;
 import xyz.aerii.athen.modules.impl.general.WardrobeKeybinds;
-import xyz.aerii.nebulune.modules.WardrobeHelper;
+import xyz.aerii.nebulune.modules.impl.general.WardrobeHelper;
 
 @Mixin(WardrobeKeybinds.class)
 public class WardrobeKeybindsMixin {

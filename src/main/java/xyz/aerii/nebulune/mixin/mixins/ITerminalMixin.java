@@ -20,7 +20,7 @@ import xyz.aerii.athen.modules.impl.dungeon.terminals.solver.TerminalSolver;
 import xyz.aerii.athen.modules.impl.dungeon.terminals.solver.base.Click;
 import xyz.aerii.athen.modules.impl.dungeon.terminals.solver.base.ITerminal;
 import xyz.aerii.nebulune.Nebulune;
-import xyz.aerii.nebulune.modules.TerminalHelper;
+import xyz.aerii.nebulune.modules.impl.dungeons.TerminalHelper;
 
 import java.util.List;
 

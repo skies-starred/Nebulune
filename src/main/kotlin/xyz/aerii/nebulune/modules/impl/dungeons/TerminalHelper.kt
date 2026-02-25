@@ -1,6 +1,6 @@
 @file:Suppress("ObjectPropertyName")
 
-package xyz.aerii.nebulune.modules
+package xyz.aerii.nebulune.modules.impl.dungeons
 
 import xyz.aerii.athen.annotations.Load
 import xyz.aerii.athen.modules.impl.dungeon.terminals.solver.TerminalSolver

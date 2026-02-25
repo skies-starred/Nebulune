@@ -1,6 +1,6 @@
 @file:Suppress("ObjectPrivatePropertyName")
 
-package xyz.aerii.nebulune.modules
+package xyz.aerii.nebulune.modules.impl.kuudra
 
 import xyz.aerii.athen.annotations.Load
 import xyz.aerii.athen.api.kuudra.KuudraAPI

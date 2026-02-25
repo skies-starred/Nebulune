@@ -10,8 +10,8 @@ import xyz.aerii.athen.handlers.Smoothie.client
 import xyz.aerii.athen.handlers.Smoothie.showTitle
 import xyz.aerii.athen.handlers.Texter.onHover
 import xyz.aerii.athen.handlers.Texter.onUrl
-import xyz.aerii.athen.handlers.Texter.parse
 import xyz.aerii.athen.handlers.Typo.modMessage
+import xyz.aerii.athen.handlers.parse
 import xyz.aerii.athen.ui.themes.Catppuccin
 import xyz.aerii.nebulune.Nebulune
 import kotlin.time.Duration.Companion.seconds

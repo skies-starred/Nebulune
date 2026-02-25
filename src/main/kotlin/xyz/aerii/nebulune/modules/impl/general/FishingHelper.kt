@@ -1,13 +1,13 @@
 @file:Suppress("ObjectPrivatePropertyName")
 
-package xyz.aerii.nebulune.modules
+package xyz.aerii.nebulune.modules.impl.general
 
 import net.minecraft.world.entity.Entity
 import xyz.aerii.athen.annotations.Load
 import xyz.aerii.athen.annotations.OnlyIn
 import xyz.aerii.athen.config.Category
 import xyz.aerii.athen.events.EntityEvent
-import xyz.aerii.athen.handlers.Smoothie.client
+import xyz.aerii.athen.handlers.Smoothie
 import xyz.aerii.athen.handlers.Typo.stripped
 import xyz.aerii.athen.modules.Module
 import xyz.aerii.nebulune.events.TickStartEvent
@@ -33,7 +33,7 @@ object FishingHelper : Module(
 
     init {
         on<EntityEvent.Update.Named> {
-            val entity = client.player?.fishing as? Entity ?: return@on
+            val entity = Smoothie.client.player?.fishing as? Entity ?: return@on
             if (component.stripped() != "!!!") return@on
             if (infoLineEntity.distanceTo(entity) > 2f) return@on
 
