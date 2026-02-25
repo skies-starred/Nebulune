@@ -184,10 +184,9 @@ object WorldScanner: Module(
     private val grottos = mutableListOf<Triple<Pair<Int, Int>, BlockPos, Int>>()
     private val structures = mutableListOf<Pair<Structure, Triple<Int, Int, Int>>>()
     private val scannedChunks = mutableListOf<Pair<Int, Int>>()
-    private val grottoChunksMap =
-        mutableMapOf<Pair<Int, Int>, Triple<Pair<Int, Int>, BlockPos, Int>>()
+    private val grottoChunksMap = mutableMapOf<Pair<Int, Int>, Triple<Pair<Int, Int>, BlockPos, Int>>()
 
-    val scope = CoroutineScope(Dispatchers.Default.limitedParallelism(1))
+    private val scope = CoroutineScope(Dispatchers.Default.limitedParallelism(1))
 
     init {
         on<ClientChunkEvent.Load> {
@@ -216,15 +215,14 @@ object WorldScanner: Module(
                         2 -> Render3D.drawStyledBox(aabb, color, Render3D.BoxStyle.BOTH, 2f, false)
                     }
                     if (grottoConfig.tracer()) drawTracer(center, grottoConfig.color(), 2f, false)
-                    if (grottoConfig.displayName()) drawString(
-                        "Fairy Grotto",
+                    if (grottoConfig.displayName()) drawString("Fairy Grotto",
                         center.add(0.0, 10.0, 0.0),
                         grottoConfig.color().rgb,
                         Color(0, 0, 0, (255 * grottoConfig.displayBackgroundOpacity()).toInt()).rgb,
                         grottoConfig.displayScale(),
-                        false,
-                        true,
-                        true
+                        depthTest = false,
+                        shadow = true,
+                        increase = true
                     )
                     if (grottoConfigShowNumberOfBlocks) drawString(
                         grotto.third.toString(),
@@ -232,12 +230,13 @@ object WorldScanner: Module(
                         grottoConfig.color().rgb,
                         Color(0, 0, 0, (255 * grottoConfigShowNumberOfBlocksBackgroundOpacity).toInt()).rgb,
                         grottoConfig.displayScale(),
-                        false,
-                        true,
-                        true
+                        depthTest = false,
+                        shadow = true,
+                        increase = true
                     )
                 }
             }
+
             for (structure in structures) {
                 if (structure.first.config.enable()) {
                     val structureConfig = structure.first.config
@@ -257,9 +256,9 @@ object WorldScanner: Module(
                         structureConfig.color().rgb,
                         Color(0, 0, 0, (255 * structureConfig.displayBackgroundOpacity()).toInt()).rgb,
                         structureConfig.displayScale(),
-                        false,
-                        true,
-                        true
+                        depthTest = false,
+                        shadow = true,
+                        increase = true
                     )
                 }
             }
@@ -273,38 +272,23 @@ object WorldScanner: Module(
         y: Int,
         z: Int
     ): Boolean {
-
-        if (structure == Structure.FAIRY_GROTTO) {
-            return false
-        }
+        if (structure == Structure.FAIRY_GROTTO) return false
 
         val worldX = chunk.pos.x * 16 + x
         val worldZ = chunk.pos.z * 16 + z
         val worldPos = BlockPos(worldX, y, worldZ)
-        if (structure == Structure.WORM_FISHING)
-            if (x < 513 || y < 80 || z < 513) {
-            return false
-        }
 
-        if (!structure.quarter.testPredicate(worldPos)) {
-            return false
-        }
+        if (structure == Structure.WORM_FISHING && (x < 513 || y < 80 || z < 513)) return false
+        if (!structure.quarter.testPredicate(worldPos)) return false
 
         val blockPos = BlockPos.MutableBlockPos()
-
         for (structureY in structure.blocks.indices) {
-
             blockPos.set(x, y + structureY, z)
-
             val (block, enumProperty, expectedValue) = structure.blocks[structureY]
-
             if (block == null) continue
 
             val worldState = chunk.getBlockState(blockPos)
-
-            if (!worldState.`is`(block)) {
-                return false
-            }
+            if (!worldState.`is`(block)) return false
 
             if (enumProperty != null && expectedValue != null) {
                 if (
@@ -319,9 +303,7 @@ object WorldScanner: Module(
         return true
     }
 
-    private fun getAllNearbyGrottoChunks(x: Int, z: Int)
-            : MutableList<Triple<Pair<Int, Int>, BlockPos, Int>> {
-
+    private fun getAllNearbyGrottoChunks(x: Int, z: Int): MutableList<Triple<Pair<Int, Int>, BlockPos, Int>> {
         val result = mutableListOf<Triple<Pair<Int, Int>, BlockPos, Int>>()
         val visited = mutableSetOf<Pair<Int, Int>>()
         val queue = ArrayDeque<Pair<Int, Int>>()
@@ -368,34 +350,26 @@ object WorldScanner: Module(
         for (x in 0..15) {
             for (z in 0..15) {
                 for (y in 0..169) {
-
                     val worldX = chunkX * 16 + x
-                    val worldY = y
                     val worldZ = chunkZ * 16 + z
 
-                    worldPos.set(worldX, worldY, worldZ)
+                    worldPos.set(worldX, y, worldZ)
 
                     for (structureToScan in structuresToScan) {
-
                         if (structureToScan in foundStructure) continue
+                        if (!scanStructure(chunk, structureToScan, x, y, z)) continue
 
-                        if (scanStructure(chunk, structureToScan, x, y, z)) {
+                        foundStructure.add(structureToScan)
+                        if (structureToScan.config.showNotification()) (structureToScan.displayName + " Found").notify(duration = 5000)
+                        if (structureToScan.config.sendCoordsInChat()) "${structureToScan.displayName} found at x: $worldX, y: $y, z: $worldZ".modMessage()
 
-                            foundStructure.add(structureToScan)
-                            if (structureToScan.config.showNotification())
-                                (structureToScan.displayName + " Found")
-                                    .notify(duration = 5000)
-                            if (structureToScan.config.sendCoordsInChat())
-                                "${structureToScan.displayName} found at x: ${worldX}, y: ${worldY}, z: ${worldZ}"
-                                    .modMessage()
-                            structures.add(
-                                structureToScan to Triple(
-                                    worldX + structureToScan.offsetX,
-                                    worldY + structureToScan.offsetY,
-                                    worldZ + structureToScan.offsetZ
-                                )
+                        structures.add(
+                            structureToScan to Triple(
+                                worldX + structureToScan.offsetX,
+                                y + structureToScan.offsetY,
+                                worldZ + structureToScan.offsetZ
                             )
-                        }
+                        )
                     }
 
                     if (grottoConfig.enable()) {
@@ -406,15 +380,8 @@ object WorldScanner: Module(
                             state.`is`(Blocks.MAGENTA_STAINED_GLASS_PANE) ||
                             state.`is`(Blocks.MAGENTA_STAINED_GLASS)
                         ) {
-                            worldPos.set(
-                                chunk.pos.x * 16 + x,
-                                y,
-                                chunk.pos.z * 16 + z
-                            )
-
-                            if (!CrystalHollowsQuarter.NUCLEUS.testPredicate(worldPos)) {
-                                chunkJasperBlocks.add(worldPos.immutable())
-                            }
+                            worldPos.set(chunk.pos.x * 16 + x, y, chunk.pos.z * 16 + z)
+                            if (!CrystalHollowsQuarter.NUCLEUS.testPredicate(worldPos)) chunkJasperBlocks.add(worldPos.immutable())
                         }
                     }
                 }
@@ -423,7 +390,6 @@ object WorldScanner: Module(
 
 
         if (chunkJasperBlocks.isEmpty()) return
-
         val size = chunkJasperBlocks.size
 
         val center = BlockPos(
@@ -453,11 +419,7 @@ object WorldScanner: Module(
 
         grottos.add(Triple(Pair(chunkX, chunkZ), merged, cluster.sumOf { it.third }))
 
-        if (grottoConfig.showNotification() && numGrottos != grottos.size)
-            (Structure.FAIRY_GROTTO.displayName + " Found")
-                .notify(duration = 5000)
-        if (grottoConfig.sendCoordsInChat() && numGrottos != grottos.size)
-            "Fairy Grotto found at x: ${merged.x}, y: ${merged.y}, z: ${merged.z}"
-                .modMessage()
+        if (grottoConfig.showNotification() && numGrottos != grottos.size) (Structure.FAIRY_GROTTO.displayName + " Found").notify(duration = 5000)
+        if (grottoConfig.sendCoordsInChat() && numGrottos != grottos.size) "Fairy Grotto found at x: ${merged.x}, y: ${merged.y}, z: ${merged.z}".modMessage()
     }
 }
