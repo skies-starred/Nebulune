@@ -168,10 +168,7 @@ public abstract class ITerminalMixin {
             var slot = slots.get(slotIndex);
             sim.slotClicked(slot, slotIndex, click.getButton(), click.getButton() == 0 ? ClickType.CLONE : ClickType.PICKUP);
 
-            if (TerminalSolver.INSTANCE.getSound$enabled()) {
-                var sound = TerminalSolver.INSTANCE.getSound$click();
-                if (sound != null) Smoothie.play(sound, TerminalSolver.INSTANCE.getSound$volume(), TerminalSolver.INSTANCE.getSound$pitch());
-            }
+            if (TerminalSolver.INSTANCE.getSound$enabled()) TerminalSolver.INSTANCE.getClickSound().play();
 
             return;
         }
@@ -181,10 +178,7 @@ public abstract class ITerminalMixin {
         var player = client.player;
         if (gameMode == null || player == null) return;
 
-        if (TerminalSolver.INSTANCE.getSound$enabled()) {
-            var sound = TerminalSolver.INSTANCE.getSound$click();
-            if (sound != null) Smoothie.play(sound, TerminalSolver.INSTANCE.getSound$volume(), TerminalSolver.INSTANCE.getSound$pitch());
-        }
+        if (TerminalSolver.INSTANCE.getSound$enabled()) TerminalSolver.INSTANCE.getClickSound().play();
 
         gameMode.handleInventoryMouseClick(
                 TerminalAPI.INSTANCE.getLastId(),
