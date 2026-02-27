@@ -58,6 +58,8 @@ object WardrobeHelper {
 
     init {
         on<InputEvent.Keyboard.Press> {
+            if (client.screen != null) return@on
+
             val key = keyEvent.key
 
             if (!moveEquip && swapping) for (a in all) if ((a as KeyMappingAccessor).boundKey.value == key) return@on cancel()
