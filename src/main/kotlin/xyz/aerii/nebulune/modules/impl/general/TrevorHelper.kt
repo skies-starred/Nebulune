@@ -4,11 +4,11 @@ package xyz.aerii.nebulune.modules.impl.general
 
 import net.minecraft.network.chat.ClickEvent
 import net.minecraft.world.entity.LivingEntity
-import net.minecraft.world.entity.animal.Chicken
-import net.minecraft.world.entity.animal.Cow
-import net.minecraft.world.entity.animal.Pig
-import net.minecraft.world.entity.animal.Rabbit
-import net.minecraft.world.entity.animal.horse.Horse
+import net.minecraft.world.entity.animal/*? >= 1.21.11 {*//*.chicken*//*? }*/.Chicken
+import net.minecraft.world.entity.animal/*? >= 1.21.11 {*//*.cow*//*? }*/.Cow
+import net.minecraft.world.entity.animal/*? >= 1.21.11 {*//*.pig*//*? }*/.Pig
+import net.minecraft.world.entity.animal/*? >= 1.21.11 {*//*.rabbit*//*? }*/.Rabbit
+import net.minecraft.world.entity.animal/*? >= 1.21.11 {*//*.equine*//*? } else {*/.horse/*? }*/.Horse
 import net.minecraft.world.entity.animal.sheep.Sheep
 import tech.thatgravyboat.skyblockapi.api.data.MayorCandidates
 import tech.thatgravyboat.skyblockapi.utils.extentions.serverMaxHealth
