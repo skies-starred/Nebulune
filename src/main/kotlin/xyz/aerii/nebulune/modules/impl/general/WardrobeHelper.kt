@@ -73,7 +73,7 @@ object WardrobeHelper {
 
             "wd".command()
             cancel()
-        }.runWhen(autoEquip.state and LocationAPI.isOnSkyBlock)
+        }.runWhen(WardrobeKeybinds.react and autoEquip.state)
 
         on<PacketEvent.Receive, ClientboundOpenScreenPacket> {
             if (!swapping) return@on
@@ -88,11 +88,11 @@ object WardrobeHelper {
             id = containerId
             wait = equipDelay + (0..delayVariance).random()
             it.cancel()
-        }.runWhen(autoEquip.state and LocationAPI.isOnSkyBlock)
+        }.runWhen(WardrobeKeybinds.react and autoEquip.state)
 
         on<GuiEvent.Container.Close> {
             reset()
-        }.runWhen(autoEquip.state and LocationAPI.isOnSkyBlock)
+        }.runWhen(WardrobeKeybinds.react and autoEquip.state)
 
         on<TickStartEvent> {
             if (!swapping) return@on
@@ -112,7 +112,7 @@ object WardrobeHelper {
 
             close()
             reset()
-        }.runWhen(autoEquip.state and LocationAPI.isOnSkyBlock)
+        }.runWhen(WardrobeKeybinds.react and autoEquip.state)
     }
 
     @JvmStatic
