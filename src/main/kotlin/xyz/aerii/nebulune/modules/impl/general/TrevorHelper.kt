@@ -11,6 +11,7 @@ import net.minecraft.world.entity.animal/*? >= 1.21.11 {*//*.rabbit*//*? }*/.Rab
 import net.minecraft.world.entity.animal/*? >= 1.21.11 {*//*.equine*//*? } else {*/.horse/*? }*/.Horse
 import net.minecraft.world.entity.animal.sheep.Sheep
 import tech.thatgravyboat.skyblockapi.api.data.MayorCandidates
+import tech.thatgravyboat.skyblockapi.api.data.MayorPerks
 import tech.thatgravyboat.skyblockapi.utils.extentions.serverMaxHealth
 import tech.thatgravyboat.skyblockapi.utils.regex.RegexUtils.findThenNull
 import xyz.aerii.athen.annotations.Load
@@ -35,7 +36,6 @@ import xyz.aerii.athen.utils.toDurationFromMillis
 import xyz.aerii.nebulune.utils.drawTracer
 import java.awt.Color
 import kotlin.time.Duration.Companion.milliseconds
-import kotlin.time.Duration.Companion.seconds
 
 @Load
 @OnlyIn(islands = [SkyBlockIsland.THE_BARN])
@@ -78,6 +78,9 @@ object TrevorHelper : Module(
     private var cooldown: Long = 0
     private var rarity: Rarity? = null
 
+    private val cd: Long
+        get() = if (MayorPerks.PELT_POCALYPSE.active) 15_000 else 20_000
+
     init {
         on<LocationEvent.ServerConnect> {
             reset()
@@ -100,9 +103,9 @@ object TrevorHelper : Module(
         on<MessageEvent.Chat.Receive> {
             startRegex.findThenNull(stripped, "type") { (t) ->
                 rarity = Rarity.get(t) ?: return@findThenNull
-                cooldown = System.currentTimeMillis() + 20_000L
+                cooldown = System.currentTimeMillis() + cd
 
-                Chronos.Time after 20.seconds then {
+                Chronos.Time after cd.milliseconds then {
                     if (endAlert) `alert$message`.parse().alert(soundType = `alert$sound`.sound)
                     cooldown = 0
                 }
@@ -111,7 +114,7 @@ object TrevorHelper : Module(
             if (stripped == "Return to the Trapper soon to get a new animal to hunt!") {
                 if (!autoCall) return@on reset()
 
-                val ms = (cooldown - System.currentTimeMillis()).coerceAtLeast(0)
+                val ms = (cooldown - System.currentTimeMillis() - 2000L).coerceAtLeast(0)
                 val extra = (callDelay + (0..2).random()) * 50L
 
                 Chronos.Time after (ms + extra).milliseconds then {
