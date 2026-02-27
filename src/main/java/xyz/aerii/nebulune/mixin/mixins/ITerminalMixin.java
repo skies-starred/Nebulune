@@ -22,13 +22,13 @@ import xyz.aerii.athen.modules.impl.dungeon.terminals.solver.base.ITerminal;
 import xyz.aerii.nebulune.Nebulune;
 import xyz.aerii.nebulune.modules.impl.dungeons.TerminalHelper;
 
-import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 @Mixin(ITerminal.class)
 public abstract class ITerminalMixin {
     @Final
     @Shadow
-    private List<Click> list;
+    private CopyOnWriteArrayList<Click> list;
 
     @Shadow
     public abstract TerminalType getTerminalType();
@@ -69,13 +69,14 @@ public abstract class ITerminalMixin {
         int slots = getTerminalType().getSlots();
         float gridW = 9 * 18f;
         float gridH = ((float) slots / 9) * 18f;
-        float headerH = 26f;
+        float headerH = TerminalSolver.INSTANCE.getUi$hideHeader() ? 0f : 20f;
+        float padding = TerminalSolver.INSTANCE.getUi$hideHeader() ? 0f : 6f;
 
         float ox = width / 2 - gridW / 2;
-        float oy = height / 2 - (gridH + headerH) / 2;
+        float oy = height / 2 - (gridH + headerH + padding) / 2;
 
         int x = (int) ((mx - ox) / 18);
-        int y = (int) ((my - (oy + headerH)) / 18);
+        int y = (int) ((my - (oy + headerH + padding)) / 18);
         if (x < 0 || x > 8 || y < 0) return;
 
         int slot = x + y * 9;
@@ -92,11 +93,13 @@ public abstract class ITerminalMixin {
     }
 
     @Inject(method = "main(FFFFF)V", at = @At("TAIL"))
-    private void nebulune$hover(float ox, float oy, float gridW, float headerH, float uiScale, CallbackInfo ci) {
+    private void nebulune$main(float ox, float oy, float gridW, float headerH, float uiScale, CallbackInfo ci) {
         if (TerminalHelper.INSTANCE.getMode() != 1) return;
         if (!TerminalHelper.INSTANCE.getHoverTerms()) return;
         if (getTerminalType() == TerminalType.MELODY) return;
         if (System.currentTimeMillis() - TerminalAPI.INSTANCE.getOpenTime() < TerminalSolver.INSTANCE.getFcDelay()) return;
+
+        float padding = TerminalSolver.INSTANCE.getUi$hideHeader() ? 0f : 6f;
 
         long now = System.currentTimeMillis();
         long delay = TerminalHelper.INSTANCE.delay();
@@ -107,7 +110,7 @@ public abstract class ITerminalMixin {
         float my = (float) (client.mouseHandler.ypos() / uiScale);
 
         int xSlot = (int) ((mx - ox) / 18);
-        int ySlot = (int) ((my - (oy + headerH + 6f)) / 18);
+        int ySlot = (int) ((my - (oy + headerH + padding)) / 18);
         if (xSlot < 0 || xSlot > 8 || ySlot < 0) return;
 
         int slot = xSlot + ySlot * 9;
@@ -131,7 +134,7 @@ public abstract class ITerminalMixin {
     @ModifyVariable(method = "main(FFFFF)V", at = @At(value = "STORE", ordinal = 0), ordinal = 0)
     private String nebulune$modifyTitleText(String titleText) {
         if (TerminalHelper.INSTANCE.getMode() != 1) return titleText;
-        return titleText + " | " + TerminalHelper.INSTANCE.getClicks().size();
+        return titleText + " - " + TerminalHelper.INSTANCE.getClicks().size();
     }
 
     @Inject(method = "update", at = @At(value = "INVOKE", target = "Lxyz/aerii/athen/modules/impl/dungeon/terminals/solver/base/ITerminal;compute(ILnet/minecraft/world/item/ItemStack;)V", shift = At.Shift.AFTER))
