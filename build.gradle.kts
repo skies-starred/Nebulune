@@ -44,8 +44,8 @@ dependencies {
     modRuntimeOnly(libs.devauth)
     modCompileOnly("entityculling".mc(mc))
 
-    //modImplementation("athen-prod".mc(mc))
-    modImplementation("athen-act".mc(mc)) { exclude(group = "tech.thatgravyboat", module = "skyblock-api") }
+    modImplementation("athen-prod".mc(mc))
+    //modImplementation("athen-act".mc(mc)) { exclude(group = "tech.thatgravyboat", module = "skyblock-api") }
     modImplementation("modmenu".mc(mc))
     modImplementation("fabric-api".mc(mc))
     modImplementation(libs.fabric.loader)
@@ -56,8 +56,6 @@ dependencies {
     modImplementation(libs.classgraph)
     modImplementation(libs.autoupdate)
     modImplementation("omnicore".mc(mc))
-    modImplementation("olympus".mc(mc))
-    modImplementation("rlib".mc(mc))
     modImplementation(libs.lwjgl.nanovg)
     for (p in platforms) modImplementation("${libs.lwjgl.nanovg.get()}:natives-$p")
 
