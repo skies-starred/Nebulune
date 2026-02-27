@@ -15,6 +15,6 @@ public class WardrobeKeybindsMixin {
     @Inject(method = "fn", at = @At("TAIL"))
     private void nebulune$fn(CancellableEvent $this$fn, int key, CallbackInfo ci) {
         LocalPlayer player = Smoothie.getClient().player;
-        if (player != null && WardrobeHelper.INSTANCE.getAutoClose()) WardrobeHelper.close();
+        if (player != null && WardrobeHelper.INSTANCE.getAutoClose()) WardrobeHelper.close(1);
     }
 }

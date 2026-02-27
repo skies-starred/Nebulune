@@ -114,10 +114,10 @@ object WardrobeHelper {
     }
 
     @JvmStatic
-    fun close() {
+    fun close(i: Int? = null) {
         val player = client.player ?: return
 
-        Chronos.Tick after closeDelay + (0..delayVariance).random() then {
+        Chronos.Tick after (i ?: (closeDelay + (0..delayVariance).random())) then {
             player.closeContainer()
         }
     }
