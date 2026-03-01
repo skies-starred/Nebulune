@@ -49,6 +49,7 @@ object TrevorHelper : Module(
 
     private val autoCall by config.switch("Auto call")
     private val callDelay by config.slider("Call delay", 1, 0, 5, "ticks").dependsOn { autoCall }
+    private val callOff by config.slider("Call early", 2.0, 0.0, 5.0, "seconds", true).dependsOn { autoCall }
 
     private val autoAccept by config.switch("Auto accept")
     private val acceptDelay by config.slider("Accept delay", 1, 0, 5, "ticks").dependsOn { autoAccept }
@@ -114,7 +115,7 @@ object TrevorHelper : Module(
             if (stripped == "Return to the Trapper soon to get a new animal to hunt!") {
                 if (!autoCall) return@on reset()
 
-                val ms = (cooldown - System.currentTimeMillis() - 2000L).coerceAtLeast(0)
+                val ms = (cooldown - System.currentTimeMillis() - (callOff * 1000).toLong()).coerceAtLeast(0)
                 val extra = (callDelay + (0..2).random()) * 50L
 
                 Chronos.Time after (ms + extra).milliseconds then {
