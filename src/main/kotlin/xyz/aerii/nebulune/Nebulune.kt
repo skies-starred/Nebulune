@@ -8,7 +8,7 @@ import xyz.aerii.athen.handlers.Chronos
 import kotlin.time.Duration.Companion.milliseconds
 
 object Nebulune : ClientModInitializer {
-    const val modVersion: String = /*$ mod_version*/ "0.1.1"
+    const val modVersion: String = /*$ mod_version*/ "0.1.2"
     const val modId: String = /*$ mod_id*/ "nebulune"
 
     override fun onInitializeClient() {
