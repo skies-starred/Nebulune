@@ -35,14 +35,14 @@ object DaggerSwap : Module(
 
     init {
         on<EntityEvent.Update.Named> {
-            val entity = infoLineEntity.getAttachedTo() ?: return@on
+            val entity = entity.getAttachedTo() ?: return@on
             if (SlayerAPI.slayerBosses[entity]?.isOwnedByPlayer != true) return@on
 
             fn(component)
         }
 
         on<EntityEvent.Update.Attach> {
-            val entity = infoLineEntity.getAttachedTo() ?: return@on
+            val entity = entity.getAttachedTo() ?: return@on
             if (SlayerAPI.slayerBosses[entity]?.isOwnedByPlayer != true) return@on
 
             fn(component)

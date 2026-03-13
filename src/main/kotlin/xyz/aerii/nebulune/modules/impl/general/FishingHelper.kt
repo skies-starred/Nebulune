@@ -35,7 +35,7 @@ object FishingHelper : Module(
         on<EntityEvent.Update.Named> {
             val entity = Smoothie.client.player?.fishing as? Entity ?: return@on
             if (component.stripped() != "!!!") return@on
-            if (infoLineEntity.distanceTo(entity) > 2f) return@on
+            if (entity.distanceTo(entity) > 2f) return@on
 
             val t0 =
                 if (`variance$pull` > 0) (0..`variance$pull`).random()
