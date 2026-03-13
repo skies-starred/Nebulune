@@ -5,6 +5,7 @@ package xyz.aerii.nebulune
 import net.fabricmc.api.ClientModInitializer
 import xyz.aerii.athen.Athen
 import xyz.aerii.athen.handlers.Chronos
+import java.util.concurrent.atomic.AtomicInteger
 import kotlin.time.Duration.Companion.milliseconds
 
 object Nebulune : ClientModInitializer {
@@ -18,5 +19,14 @@ object Nebulune : ClientModInitializer {
     @JvmStatic
     fun after(timeMillis: Long, block: () -> Unit) {
         Chronos.Time after timeMillis.milliseconds then(block)
+    }
+
+    @JvmStatic
+    fun afterTimed(ms: Int, action: () -> Unit) {
+        val count = AtomicInteger(0)
+        val check = { if (count.incrementAndGet() == 2) action() }
+
+        Chronos.Time after ms.milliseconds then check
+        Chronos.Server after (ms / 50) then check
     }
 }
