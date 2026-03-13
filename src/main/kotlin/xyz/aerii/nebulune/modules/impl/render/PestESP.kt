@@ -64,7 +64,7 @@ object PestESP : Module(
             }
         }
 
-        on<LocationEvent.ServerConnect> {
+        on<LocationEvent.Server.Connect> {
             entities.clear()
         }
     }

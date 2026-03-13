@@ -83,7 +83,7 @@ object TrevorHelper : Module(
         get() = if (MayorPerks.PELT_POCALYPSE.active) 15_000 else 20_000
 
     init {
-        on<LocationEvent.ServerConnect> {
+        on<LocationEvent.Server.Connect> {
             reset()
         }
 

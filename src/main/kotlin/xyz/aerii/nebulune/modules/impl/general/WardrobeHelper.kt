@@ -7,7 +7,6 @@ import net.minecraft.network.protocol.game.ClientboundOpenScreenPacket
 import net.minecraft.world.inventory.ClickType
 import net.minecraft.world.item.Items
 import xyz.aerii.athen.annotations.Load
-import xyz.aerii.athen.api.location.LocationAPI
 import xyz.aerii.athen.events.GuiEvent
 import xyz.aerii.athen.events.InputEvent
 import xyz.aerii.athen.events.PacketEvent
@@ -15,12 +14,12 @@ import xyz.aerii.athen.events.core.on
 import xyz.aerii.athen.events.core.runWhen
 import xyz.aerii.athen.handlers.Chronos
 import xyz.aerii.athen.handlers.React.Companion.and
-import xyz.aerii.athen.handlers.Smoothie
 import xyz.aerii.athen.handlers.Smoothie.client
 import xyz.aerii.athen.handlers.Typo.command
 import xyz.aerii.athen.handlers.Typo.stripped
 import xyz.aerii.athen.mixin.accessors.KeyMappingAccessor
 import xyz.aerii.athen.modules.impl.general.WardrobeKeybinds
+import xyz.aerii.athen.utils.mainThread
 import xyz.aerii.athen.utils.render.Render2D.sizedText
 import xyz.aerii.nebulune.events.TickStartEvent
 
@@ -80,7 +79,7 @@ object WardrobeHelper {
             if ("Wardrobe" !in title.stripped()) return@on
             val player = client.player ?: return@on
 
-            Smoothie.mainThread {
+            mainThread {
                 if (!moveEquip) for (a in all) a.isDown = false
                 player.containerMenu = type.create(containerId, player.inventory)
             }
