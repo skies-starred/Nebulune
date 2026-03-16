@@ -24,10 +24,10 @@ entityculling-1-21-11 = "Dx3xsUER"
 athen-act-1-21-10 = "3cf5020942"
 athen-act-1-21-11 = "3cf5020942"
 
-athen-prod-1-21-10 = "QSr7Cg0q"
-athen-prod-1-21-11 = "iXJb5uln"
+athen-prod-1-21-10 = "RrVLmn0r"
+athen-prod-1-21-11 = "BjtmyUNX"
 
-skyblock-api = "4.0.9"
+skyblock-api = "4.0.13-b2"
 classgraph = "4.8.184"
 lwjgl-nanovg = "3.3.3"
 omnicore = "1.0.0-beta.40"
