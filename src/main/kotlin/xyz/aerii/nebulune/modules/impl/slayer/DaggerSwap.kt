@@ -5,16 +5,15 @@ import net.minecraft.world.item.Item
 import net.minecraft.world.item.Items
 import tech.thatgravyboat.skyblockapi.api.datatype.DataTypes
 import tech.thatgravyboat.skyblockapi.api.datatype.getData
-import tech.thatgravyboat.skyblockapi.helpers.getAttachedTo
+import xyz.aerii.athen.accessors.attachedNames
 import xyz.aerii.athen.annotations.Load
 import xyz.aerii.athen.annotations.OnlyIn
 import xyz.aerii.athen.api.location.SkyBlockIsland
-import xyz.aerii.athen.api.skyblock.SlayerAPI
 import xyz.aerii.athen.config.Category
-import xyz.aerii.athen.events.EntityEvent
 import xyz.aerii.athen.handlers.Smoothie.client
 import xyz.aerii.athen.handlers.Typo.stripped
 import xyz.aerii.athen.modules.Module
+import xyz.aerii.nebulune.events.PlayerAttackEvent
 import xyz.aerii.nebulune.events.TickStartEvent
 import xyz.aerii.nebulune.mixin.accessors.InventoryAccessor
 import xyz.aerii.nebulune.utils.rightClick
@@ -34,18 +33,14 @@ object DaggerSwap : Module(
     private var wait: Int = -1
 
     init {
-        on<EntityEvent.Update.Named> {
-            val entity = entity.getAttachedTo() ?: return@on
-            if (SlayerAPI.slayerBosses[entity]?.isOwnedByPlayer != true) return@on
+        on<PlayerAttackEvent> {
+            for (c in entity.attachedNames) {
+                val s = c.string
+                if (":" !in s || "♨" !in s) continue
 
-            fn(component)
-        }
-
-        on<EntityEvent.Update.Attach> {
-            val entity = entity.getAttachedTo() ?: return@on
-            if (SlayerAPI.slayerBosses[entity]?.isOwnedByPlayer != true) return@on
-
-            fn(component)
+                fn(c)
+                break
+            }
         }
 
         on<TickStartEvent> {
@@ -93,7 +88,7 @@ object DaggerSwap : Module(
         Spirit("SPIRIT ♨", setOf("HEARTMAW_DAGGER", "BURSTMAW_DAGGER", "MAWDUST_DAGGER"), Items.IRON_SWORD);
 
         companion object {
-            fun get(a: String) = entries.find { it.str in a }
+            fun get(a: String) = entries.firstOrNull { it.str in a }
         }
     }
 }
