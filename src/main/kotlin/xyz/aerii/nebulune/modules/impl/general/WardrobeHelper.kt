@@ -29,6 +29,7 @@ object WardrobeHelper {
     private val autoEquip = WardrobeKeybinds.config.switch("Auto equip").custom("autoEquip")
     private val _unused by WardrobeKeybinds.config.textParagraph("Automatically equips the wardrobe slot without opening the gui. Use at your own risk.")
     private val moveEquip by WardrobeKeybinds.config.switch("Equip while moving").dependsOn { autoEquip.value }
+    private val _unused0 by WardrobeKeybinds.config.textParagraph("Equip while moving increases your chances of being banned by a lot.").dependsOn { autoEquip.value && moveEquip }
     private val equipDelay by WardrobeKeybinds.config.slider("Click delay", 1, 0, 8, "ticks").dependsOn { autoEquip.value }
     private val closeDelay by WardrobeKeybinds.config.slider("Close delay", 1, 0, 8, "ticks").dependsOn { autoEquip.value }
     private val delayVariance by WardrobeKeybinds.config.slider("Max delay variety", 1, 0, 5, "ticks").dependsOn { autoEquip.value }
