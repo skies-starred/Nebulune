@@ -54,6 +54,7 @@ object WardrobeHelper {
     private var swapping: Boolean = false
     private var id: Int = -1
     private var wait: Int = 0
+    private var start: Long = 0
 
     init {
         on<InputEvent.Keyboard.Press> {
@@ -69,6 +70,7 @@ object WardrobeHelper {
             slot0 = slot
             swapping = true
             id = -1
+            start = System.currentTimeMillis()
 
             "wd".command()
             cancel()
@@ -95,6 +97,7 @@ object WardrobeHelper {
 
         on<TickStartEvent> {
             if (!swapping) return@on
+            if (System.currentTimeMillis() - start > 2000) return@on reset()
             if (!WardrobeKeybinds.inMenu) return@on
             if (wait-- > 0) return@on
 
@@ -128,5 +131,6 @@ object WardrobeHelper {
         slot0 = null
         id = -1
         wait = 0
+        start = 0
     }
 }
