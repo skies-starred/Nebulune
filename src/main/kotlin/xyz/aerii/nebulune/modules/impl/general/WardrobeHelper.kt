@@ -3,7 +3,9 @@
 package xyz.aerii.nebulune.modules.impl.general
 
 import net.minecraft.client.KeyMapping
+import net.minecraft.network.protocol.game.ClientboundContainerClosePacket
 import net.minecraft.network.protocol.game.ClientboundOpenScreenPacket
+import net.minecraft.network.protocol.game.ServerboundContainerClosePacket
 import net.minecraft.world.inventory.ClickType
 import net.minecraft.world.item.Items
 import xyz.aerii.athen.annotations.Load
@@ -30,6 +32,7 @@ object WardrobeHelper {
     private val _unused by WardrobeKeybinds.config.textParagraph("Automatically equips the wardrobe slot without opening the gui. Use at your own risk.")
     private val moveEquip by WardrobeKeybinds.config.switch("Equip while moving").dependsOn { autoEquip.value }
     private val _unused0 by WardrobeKeybinds.config.textParagraph("Equip while moving increases your chances of being banned by a lot.").dependsOn { autoEquip.value && moveEquip }
+    private val resetOpen by WardrobeKeybinds.config.switch("Reset on GUI open", true).dependsOn { autoEquip.value }
     private val equipDelay by WardrobeKeybinds.config.slider("Click delay", 1, 0, 8, "ticks").dependsOn { autoEquip.value }
     private val closeDelay by WardrobeKeybinds.config.slider("Close delay", 1, 0, 8, "ticks").dependsOn { autoEquip.value }
     private val delayVariance by WardrobeKeybinds.config.slider("Max delay variety", 1, 0, 5, "ticks").dependsOn { autoEquip.value }
@@ -53,6 +56,7 @@ object WardrobeHelper {
 
     private var slot0: WardrobeKeybinds.WardrobeSlot? = null
     private var swapping: Boolean = false
+    private var inMenu: Boolean = false
     private var id: Int = -1
     private var wait: Int = 0
     private var start: Long = 0
@@ -89,17 +93,26 @@ object WardrobeHelper {
 
             id = containerId
             wait = equipDelay + (0..delayVariance).random()
+            inMenu = true
             it.cancel()
         }.runWhen(WardrobeKeybinds.react and autoEquip.state)
 
-        on<GuiEvent.Container.Close> {
+        on<PacketEvent.Receive, ClientboundContainerClosePacket> {
             reset()
+        }.runWhen(WardrobeKeybinds.react and autoEquip.state)
+
+        on<PacketEvent.Send, ServerboundContainerClosePacket> {
+            reset()
+        }.runWhen(WardrobeKeybinds.react and autoEquip.state)
+
+        on<GuiEvent.Open.Container> {
+            if (resetOpen) reset()
         }.runWhen(WardrobeKeybinds.react and autoEquip.state)
 
         on<TickStartEvent> {
             if (!swapping) return@on
             if (System.currentTimeMillis() - start > 2000) return@on reset()
-            if (!WardrobeKeybinds.inMenu) return@on
+            if (!inMenu) return@on
             if (wait-- > 0) return@on
 
             val player = client.player ?: return@on
@@ -129,6 +142,7 @@ object WardrobeHelper {
 
     private fun reset() {
         swapping = false
+        inMenu = false
         slot0 = null
         id = -1
         wait = 0
