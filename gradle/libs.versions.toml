@@ -27,7 +27,7 @@ athen-act-1-21-11 = "a5e8ba67d3"
 athen-prod-1-21-10 = "5kxuABmo"
 athen-prod-1-21-11 = "2tA5ZfZD"
 
-skyblock-api = "4.0.13-b2"
+skyblock-api = "4.0.12"
 classgraph = "4.8.184"
 lwjgl-nanovg = "3.3.3"
 omnicore = "1.0.0-beta.40"
