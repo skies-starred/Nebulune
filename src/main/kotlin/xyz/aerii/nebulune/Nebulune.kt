@@ -9,7 +9,7 @@ import java.util.concurrent.atomic.AtomicInteger
 import kotlin.time.Duration.Companion.milliseconds
 
 object Nebulune : ClientModInitializer {
-    const val modVersion: String = /*$ mod_version*/ "0.1.3"
+    const val modVersion: String = /*$ mod_version*/ "0.1.4"
     const val modId: String = /*$ mod_id*/ "nebulune"
 
     override fun onInitializeClient() {
