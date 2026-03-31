@@ -26,7 +26,7 @@ object AutoSoulcry : Module(
     private val minDelay by config.slider("Min delay", 1, 0, 5, "ticks")
     private val maxDelay by config.slider("Max delay", 3, 0, 5, "ticks")
 
-    private val ids = setOf("VOIDEDGE_KATANA", "VORPAL_KATANA")
+    private val ids = setOf("VOIDEDGE_KATANA", "VORPAL_KATANA", "ATOMSPLIT_KATANA")
     private var tick = -1
 
     init {
