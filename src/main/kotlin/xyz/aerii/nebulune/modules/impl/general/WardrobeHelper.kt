@@ -2,6 +2,7 @@
 
 package xyz.aerii.nebulune.modules.impl.general
 
+import com.mojang.brigadier.arguments.IntegerArgumentType
 import net.minecraft.client.KeyMapping
 import net.minecraft.network.protocol.game.ClientboundContainerClosePacket
 import net.minecraft.network.protocol.game.ClientboundOpenScreenPacket
@@ -9,6 +10,7 @@ import net.minecraft.network.protocol.game.ServerboundContainerClosePacket
 import net.minecraft.world.inventory.ClickType
 import net.minecraft.world.item.Items
 import xyz.aerii.athen.annotations.Load
+import xyz.aerii.athen.events.CommandRegistration
 import xyz.aerii.athen.events.GuiEvent
 import xyz.aerii.athen.events.InputEvent
 import xyz.aerii.athen.events.PacketEvent
@@ -17,12 +19,15 @@ import xyz.aerii.athen.events.core.runWhen
 import xyz.aerii.athen.handlers.Chronos
 import xyz.aerii.athen.handlers.React.Companion.and
 import xyz.aerii.athen.handlers.Smoothie.client
+import xyz.aerii.athen.handlers.Typo
 import xyz.aerii.athen.handlers.Typo.command
+import xyz.aerii.athen.handlers.Typo.modMessage
 import xyz.aerii.athen.handlers.Typo.stripped
 import xyz.aerii.athen.mixin.accessors.KeyMappingAccessor
 import xyz.aerii.athen.modules.impl.general.WardrobeKeybinds
 import xyz.aerii.athen.utils.mainThread
 import xyz.aerii.athen.utils.render.Render2D.sizedText
+import xyz.aerii.nebulune.Nebulune
 import xyz.aerii.nebulune.events.TickStartEvent
 
 @Load
@@ -62,6 +67,27 @@ object WardrobeHelper {
     private var start: Long = 0
 
     init {
+        on<CommandRegistration> {
+            event.register(Nebulune.modId) {
+                then("wd") {
+                    thenCallback("slot", IntegerArgumentType.integer(1, 9)) {
+                        if (!WardrobeKeybinds.enabled) return@thenCallback "Enable wardrobe keybinds!".modMessage(Typo.PrefixType.ERROR)
+                        if (!autoEquip.value) return@thenCallback "Enable auto equip in wardrobe keybinds!".modMessage(Typo.PrefixType.ERROR)
+
+                        val int = IntegerArgumentType.getInteger(this, "slot")
+                        val slot = WardrobeKeybinds.wardrobeSlots.find { it.idx == 35 + int } ?: return@thenCallback
+
+                        slot0 = slot
+                        swapping = true
+                        id = -1
+                        start = System.currentTimeMillis()
+
+                        "wd".command()
+                    }
+                }
+            }
+        }
+
         on<InputEvent.Keyboard.Press> {
             if (client.screen != null) return@on
 
@@ -70,7 +96,7 @@ object WardrobeHelper {
             if (!moveEquip && swapping) for (a in all) if ((a as KeyMappingAccessor).boundKey.value == key) return@on cancel()
             if (swapping) return@on
 
-            val slot = WardrobeKeybinds.wardrobeSlots.find { it.value == key }?.takeIf { it.slot?.item?.isEmpty == false } ?: return@on
+            val slot = WardrobeKeybinds.wardrobeSlots.find { it.value == key } ?: return@on
 
             slot0 = slot
             swapping = true
