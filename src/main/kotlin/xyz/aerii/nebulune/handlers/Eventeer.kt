@@ -6,6 +6,7 @@ import net.fabricmc.fabric.api.event.player.AttackBlockCallback
 import net.fabricmc.fabric.api.event.player.AttackEntityCallback
 import net.minecraft.world.InteractionResult
 import xyz.aerii.athen.annotations.Priority
+import xyz.aerii.nebulune.events.BlockHitEvent
 import xyz.aerii.nebulune.events.TickStartEvent
 import xyz.aerii.nebulune.events.ClientChunkEvent
 import xyz.aerii.nebulune.events.PlayerAttackEvent
@@ -27,7 +28,7 @@ object Eventeer {
         }
 
         AttackBlockCallback.EVENT.register { _, _, _, pos, _ ->
-            InteractionResult.FAIL
+            if (BlockHitEvent(pos).post()) InteractionResult.FAIL else InteractionResult.PASS
         }
     }
 }
