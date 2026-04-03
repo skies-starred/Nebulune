@@ -3,8 +3,13 @@
 package xyz.aerii.nebulune
 
 import net.fabricmc.api.ClientModInitializer
+import tech.thatgravyboat.skyblockapi.helpers.McClient
 import xyz.aerii.athen.Athen
+import xyz.aerii.athen.config.ui.ClickGUI
+import xyz.aerii.athen.events.CommandRegistration
+import xyz.aerii.athen.events.core.on
 import xyz.aerii.athen.handlers.Chronos
+import xyz.aerii.athen.handlers.Typo.modMessage
 import java.util.concurrent.atomic.AtomicInteger
 import kotlin.time.Duration.Companion.milliseconds
 
@@ -14,6 +19,20 @@ object Nebulune : ClientModInitializer {
 
     override fun onInitializeClient() {
         Athen.LOGGER.info("Nebulune loaded.")
+
+        on<CommandRegistration> {
+            event.register(modId) {
+                thenCallback("config") {
+                    McClient.setScreen(ClickGUI)
+                    "Opening Config GUI...".modMessage()
+                }
+
+                callback {
+                    McClient.setScreen(ClickGUI)
+                    "Opening Config GUI...".modMessage()
+                }
+            }
+        }
     }
 
     @JvmStatic

@@ -11,3 +11,11 @@ fun rightClick() {
     KeyMapping.click(key)
     KeyMapping.set(key, false)
 }
+
+fun leftClick() {
+    val options = client.options ?: return
+    val key = (options.keyAttack as KeyMappingAccessor).boundKey
+    KeyMapping.set(key, true)
+    KeyMapping.click(key)
+    KeyMapping.set(key, false)
+}
