@@ -13,12 +13,12 @@ import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import xyz.aerii.athen.api.dungeon.terminals.TerminalAPI;
 import xyz.aerii.athen.api.dungeon.terminals.TerminalType;
-import xyz.aerii.athen.handlers.Smoothie;
 import xyz.aerii.athen.modules.impl.dungeon.terminals.simulator.TerminalSimulator;
 import xyz.aerii.athen.modules.impl.dungeon.terminals.simulator.base.ITerminalSim;
 import xyz.aerii.athen.modules.impl.dungeon.terminals.solver.TerminalSolver;
 import xyz.aerii.athen.modules.impl.dungeon.terminals.solver.base.Click;
 import xyz.aerii.athen.modules.impl.dungeon.terminals.solver.base.ITerminal;
+import xyz.aerii.library.api.ClientKt;
 import xyz.aerii.nebulune.Nebulune;
 import xyz.aerii.nebulune.accessors.ITerminalAccessor;
 import xyz.aerii.nebulune.modules.impl.dungeons.AutoTerms;
@@ -122,7 +122,7 @@ public abstract class ITerminalMixin implements ITerminalAccessor {
         QueueTerms.INSTANCE.setYearning(true);
 
         if (TerminalSimulator.INSTANCE.getS().getValue()) {
-            var client = Smoothie.getClient();
+            var client = ClientKt.getClient();
             var screen = client.screen;
             if (!(screen instanceof ITerminalSim sim)) return;
 
@@ -138,7 +138,7 @@ public abstract class ITerminalMixin implements ITerminalAccessor {
             return;
         }
 
-        var client = Smoothie.getClient();
+        var client = ClientKt.getClient();
         var gameMode = client.gameMode;
         var player = client.player;
         if (gameMode == null || player == null) return;

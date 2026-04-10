@@ -4,8 +4,9 @@ package xyz.aerii.nebulune.modules.impl.kuudra
 
 import xyz.aerii.athen.annotations.Load
 import xyz.aerii.athen.handlers.Chronos
-import xyz.aerii.athen.handlers.Smoothie.client
 import xyz.aerii.athen.modules.impl.kuudra.StunHelper
+import xyz.aerii.library.api.client
+import xyz.aerii.library.handlers.time.client
 
 @Load
 object Stunner {
@@ -18,7 +19,7 @@ object Stunner {
         val player = client.player ?: return
         val menu = player.containerMenu ?: return
 
-        Chronos.Tick after `autoClose$delay` then {
+        Chronos.schedule(`autoClose$delay`.client) {
             if (menu == player.containerMenu) player.closeContainer()
         }
     }

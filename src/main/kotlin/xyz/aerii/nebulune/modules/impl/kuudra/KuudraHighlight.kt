@@ -7,10 +7,10 @@ import xyz.aerii.athen.api.kuudra.KuudraAPI
 import xyz.aerii.athen.events.WorldRenderEvent
 import xyz.aerii.athen.events.core.on
 import xyz.aerii.athen.events.core.runWhen
-import xyz.aerii.athen.handlers.React.Companion.and
 import xyz.aerii.athen.modules.impl.kuudra.KuudraInfo
 import xyz.aerii.athen.ui.themes.Catppuccin
 import xyz.aerii.athen.utils.render.renderPos
+import xyz.aerii.library.handlers.Observable.Companion.and
 import xyz.aerii.nebulune.utils.drawTracer
 import java.awt.Color
 
@@ -26,6 +26,6 @@ object KuudraHighlight {
             if (!KuudraAPI.inRun) return@on
             val k = KuudraAPI.kuudra ?: return@on
             drawTracer(k.renderPos, `tracer$color`, `tracer$width`, `tracer$depth`)
-        }.runWhen(KuudraInfo.react and tracer.state)
+        }.runWhen(KuudraInfo.observable and tracer.state)
     }
 }

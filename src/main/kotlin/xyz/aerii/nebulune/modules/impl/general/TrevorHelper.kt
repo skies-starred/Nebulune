@@ -22,17 +22,18 @@ import xyz.aerii.athen.events.LocationEvent
 import xyz.aerii.athen.events.MessageEvent
 import xyz.aerii.athen.events.WorldRenderEvent
 import xyz.aerii.athen.handlers.Chronos
-import xyz.aerii.athen.handlers.Smoothie.alert
-import xyz.aerii.athen.handlers.Typo.command
-import xyz.aerii.athen.handlers.Typo.stripped
-import xyz.aerii.athen.handlers.parse
 import xyz.aerii.athen.modules.Module
 import xyz.aerii.athen.ui.themes.Catppuccin
 import xyz.aerii.athen.utils.render.Render2D.sizedText
 import xyz.aerii.athen.utils.render.Render3D
 import xyz.aerii.athen.utils.render.renderBoundingBox
 import xyz.aerii.athen.utils.render.renderPos
-import xyz.aerii.athen.utils.toDurationFromMillis
+import xyz.aerii.library.api.command
+import xyz.aerii.library.handlers.parser.parse
+import xyz.aerii.library.handlers.time.client
+import xyz.aerii.library.utils.alert
+import xyz.aerii.library.utils.stripped
+import xyz.aerii.library.utils.toDurationFromMillis
 import xyz.aerii.nebulune.utils.drawTracer
 import java.awt.Color
 import kotlin.time.Duration.Companion.milliseconds
@@ -106,7 +107,7 @@ object TrevorHelper : Module(
                 rarity = Rarity.get(t) ?: return@findThenNull
                 cooldown = System.currentTimeMillis() + cd
 
-                Chronos.Time after cd.milliseconds then {
+                Chronos.schedule(cd.milliseconds) {
                     if (endAlert) `alert$message`.parse().alert(soundType = `alert$sound`.sound)
                     cooldown = 0
                 }
@@ -118,16 +119,13 @@ object TrevorHelper : Module(
                 val ms = (cooldown - System.currentTimeMillis() - (callOff * 1000).toLong()).coerceAtLeast(0)
                 val extra = (callDelay + (0..2).random()) * 50L
 
-                Chronos.Time after (ms + extra).milliseconds then {
-                    "/call trevor".command()
-                }
-
+                Chronos.schedule((ms + extra).milliseconds) { "/call trevor".command() }
                 return@on reset()
             }
 
             if (!autoAccept) return@on
             if (message.siblings?.getOrNull(0)?.stripped() == "Accept the trapper's task to hunt the animal?") {
-                Chronos.Tick after acceptDelay + (0..2).random() then {
+                Chronos.schedule((acceptDelay + (0..2).random()).client) {
                     (message.siblings[3]?.style?.clickEvent as? ClickEvent.RunCommand)?.command?.command()
                 }
 

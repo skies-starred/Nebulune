@@ -4,15 +4,15 @@ import com.google.gson.JsonArray
 import xyz.aerii.athen.annotations.Priority
 import xyz.aerii.athen.events.LocationEvent
 import xyz.aerii.athen.events.core.on
-import xyz.aerii.athen.handlers.Beacon
+import xyz.aerii.athen.handlers.Beacon.request
 import xyz.aerii.athen.handlers.Chronos
-import xyz.aerii.athen.handlers.Smoothie.client
-import xyz.aerii.athen.handlers.Smoothie.showTitle
 import xyz.aerii.athen.handlers.Texter.onHover
 import xyz.aerii.athen.handlers.Texter.onUrl
 import xyz.aerii.athen.handlers.Typo.modMessage
-import xyz.aerii.athen.handlers.parse
 import xyz.aerii.athen.ui.themes.Catppuccin
+import xyz.aerii.library.api.mainThread
+import xyz.aerii.library.handlers.parser.parse
+import xyz.aerii.library.utils.showTitle
 import xyz.aerii.nebulune.Nebulune
 import kotlin.time.Duration.Companion.seconds
 
@@ -37,22 +37,22 @@ object UpdateNotifier {
     }
 
     init {
-        on<LocationEvent.ServerConnect> {
+        on<LocationEvent.Server.Connect> {
             if (times++ >= 3) return@on
             if (times == 1) {
-                Chronos.Time after 5.seconds then { latest() }
+                Chronos.schedule(5.seconds) { latest() }
                 return@on
             }
 
-            run()
+            fn()
         }
     }
 
-    private fun run() {
+    private fun fn() {
         val current = Nebulune.modVersion.v() ?: return
         val latest = latestVersion?.takeIf { it > current } ?: return
 
-        client.execute {
+        mainThread {
             "<aqua>Update available: <red>${latest.display()}".parse().showTitle()
             "<yellow>Update available for <${Catppuccin.Mocha.Green.argb}>Nebulune: <red>${current.display()} <gray>-> <aqua>${latest.display()}".parse()
                 .onHover("<${Catppuccin.Mocha.Mauve.argb}>Click to view release!".parse())
@@ -73,13 +73,10 @@ object UpdateNotifier {
     }
 
     private fun latest() {
-        Beacon.get(GITHUB_API) {
+        GITHUB_API.request {
             onSuccess<JsonArray> { array ->
-                latestVersion = array
-                    .mapNotNull { it.asJsonObject["tag_name"]?.asString?.v() }
-                    .maxOrNull()
-
-                run()
+                latestVersion = array.mapNotNull { it.asJsonObject["tag_name"]?.asString?.v() }.maxOrNull()
+                fn()
             }
         }
     }

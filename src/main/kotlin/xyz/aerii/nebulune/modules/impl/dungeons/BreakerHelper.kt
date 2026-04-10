@@ -14,8 +14,8 @@ import xyz.aerii.athen.api.location.SkyBlockIsland
 import xyz.aerii.athen.config.Category
 import xyz.aerii.athen.events.LocationEvent
 import xyz.aerii.athen.events.PacketEvent
-import xyz.aerii.athen.handlers.Smoothie.client
 import xyz.aerii.athen.modules.Module
+import xyz.aerii.library.api.client
 import xyz.aerii.nebulune.events.BlockHitEvent
 
 @Load

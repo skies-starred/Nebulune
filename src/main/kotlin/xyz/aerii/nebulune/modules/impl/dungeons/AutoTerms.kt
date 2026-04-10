@@ -8,14 +8,14 @@ import xyz.aerii.athen.config.Category
 import xyz.aerii.athen.events.DungeonEvent
 import xyz.aerii.athen.events.TickEvent
 import xyz.aerii.athen.events.core.runWhen
-import xyz.aerii.athen.handlers.Smoothie.client
 import xyz.aerii.athen.modules.Module
 import xyz.aerii.athen.modules.impl.dungeon.terminals.simulator.TerminalSimulator
 import xyz.aerii.athen.modules.impl.dungeon.terminals.simulator.base.ITerminalSim
 import xyz.aerii.athen.modules.impl.dungeon.terminals.solver.TerminalSolver
 import xyz.aerii.athen.modules.impl.dungeon.terminals.solver.base.Click
 import xyz.aerii.athen.modules.impl.dungeon.terminals.solver.impl.*
-import xyz.aerii.athen.utils.mainThread
+import xyz.aerii.library.api.client
+import xyz.aerii.library.api.mainThread
 import xyz.aerii.nebulune.Nebulune
 import xyz.aerii.nebulune.accessors.ITerminalAccessor
 import kotlin.math.pow

@@ -8,11 +8,11 @@ import xyz.aerii.athen.api.kuudra.enums.KuudraTier
 import xyz.aerii.athen.api.location.SkyBlockIsland
 import xyz.aerii.athen.config.Category
 import xyz.aerii.athen.events.TickEvent
-import xyz.aerii.athen.handlers.Smoothie.alert
-import xyz.aerii.athen.handlers.Smoothie.client
 import xyz.aerii.athen.handlers.Typo.modMessage
-import xyz.aerii.athen.handlers.parse
 import xyz.aerii.athen.modules.Module
+import xyz.aerii.library.api.client
+import xyz.aerii.library.handlers.parser.parse
+import xyz.aerii.library.utils.alert
 
 @Load
 @OnlyIn(islands = [SkyBlockIsland.KUUDRA])

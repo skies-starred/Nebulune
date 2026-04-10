@@ -7,9 +7,9 @@ import xyz.aerii.athen.annotations.Load
 import xyz.aerii.athen.annotations.OnlyIn
 import xyz.aerii.athen.config.Category
 import xyz.aerii.athen.events.EntityEvent
-import xyz.aerii.athen.handlers.Smoothie
-import xyz.aerii.athen.handlers.Typo.stripped
 import xyz.aerii.athen.modules.Module
+import xyz.aerii.library.api.client
+import xyz.aerii.library.utils.stripped
 import xyz.aerii.nebulune.events.TickStartEvent
 import xyz.aerii.nebulune.utils.rightClick
 
@@ -33,7 +33,7 @@ object FishingHelper : Module(
 
     init {
         on<EntityEvent.Update.Named> {
-            val entity = Smoothie.client.player?.fishing as? Entity ?: return@on
+            val entity = client.player?.fishing as? Entity ?: return@on
             if (component.stripped() != "!!!") return@on
             if (entity.distanceTo(entity) > 2f) return@on
 

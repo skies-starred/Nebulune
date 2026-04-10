@@ -17,16 +17,17 @@ import xyz.aerii.athen.events.PacketEvent
 import xyz.aerii.athen.events.core.on
 import xyz.aerii.athen.events.core.runWhen
 import xyz.aerii.athen.handlers.Chronos
-import xyz.aerii.athen.handlers.React.Companion.and
-import xyz.aerii.athen.handlers.Smoothie.client
 import xyz.aerii.athen.handlers.Typo
-import xyz.aerii.athen.handlers.Typo.command
 import xyz.aerii.athen.handlers.Typo.modMessage
-import xyz.aerii.athen.handlers.Typo.stripped
 import xyz.aerii.athen.mixin.accessors.KeyMappingAccessor
 import xyz.aerii.athen.modules.impl.general.WardrobeKeybinds
-import xyz.aerii.athen.utils.mainThread
 import xyz.aerii.athen.utils.render.Render2D.sizedText
+import xyz.aerii.library.api.client
+import xyz.aerii.library.api.command
+import xyz.aerii.library.api.mainThread
+import xyz.aerii.library.handlers.Observable.Companion.and
+import xyz.aerii.library.handlers.time.client
+import xyz.aerii.library.utils.stripped
 import xyz.aerii.nebulune.Nebulune
 import xyz.aerii.nebulune.events.TickStartEvent
 
@@ -105,7 +106,7 @@ object WardrobeHelper {
 
             "wd".command()
             cancel()
-        }.runWhen(WardrobeKeybinds.react and autoEquip.state)
+        }.runWhen(WardrobeKeybinds.observable and autoEquip.state)
 
         on<PacketEvent.Receive, ClientboundOpenScreenPacket> {
             if (!swapping) return@on
@@ -121,19 +122,19 @@ object WardrobeHelper {
             wait = equipDelay + (0..delayVariance).random()
             inMenu = true
             it.cancel()
-        }.runWhen(WardrobeKeybinds.react and autoEquip.state)
+        }.runWhen(WardrobeKeybinds.observable and autoEquip.state)
 
         on<PacketEvent.Receive, ClientboundContainerClosePacket> {
             reset()
-        }.runWhen(WardrobeKeybinds.react and autoEquip.state)
+        }.runWhen(WardrobeKeybinds.observable and autoEquip.state)
 
         on<PacketEvent.Send, ServerboundContainerClosePacket> {
             reset()
-        }.runWhen(WardrobeKeybinds.react and autoEquip.state)
+        }.runWhen(WardrobeKeybinds.observable and autoEquip.state)
 
         on<GuiEvent.Open.Container> {
             if (resetOpen) reset()
-        }.runWhen(WardrobeKeybinds.react and autoEquip.state)
+        }.runWhen(WardrobeKeybinds.observable and autoEquip.state)
 
         on<TickStartEvent> {
             if (!swapping) return@on
@@ -154,14 +155,14 @@ object WardrobeHelper {
 
             close()
             reset()
-        }.runWhen(WardrobeKeybinds.react and autoEquip.state)
+        }.runWhen(WardrobeKeybinds.observable and autoEquip.state)
     }
 
     @JvmStatic
     fun close(i: Int? = null) {
         val player = client.player ?: return
 
-        Chronos.Tick after (i ?: (closeDelay + (0..delayVariance).random())) then {
+        Chronos.schedule((i ?: (closeDelay + (0..delayVariance).random())).client) {
             player.closeContainer()
         }
     }

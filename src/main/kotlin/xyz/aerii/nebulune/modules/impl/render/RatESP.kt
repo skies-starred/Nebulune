@@ -14,11 +14,12 @@ import xyz.aerii.athen.events.LocationEvent
 import xyz.aerii.athen.events.PacketEvent
 import xyz.aerii.athen.events.WorldRenderEvent
 import xyz.aerii.athen.handlers.Chronos
-import xyz.aerii.athen.handlers.Smoothie
 import xyz.aerii.athen.modules.Module
 import xyz.aerii.athen.ui.themes.Catppuccin
 import xyz.aerii.athen.utils.render.Render3D
 import xyz.aerii.athen.utils.render.renderPos
+import xyz.aerii.library.api.level
+import xyz.aerii.library.handlers.time.client
 import xyz.aerii.nebulune.utils.drawTracer
 import java.awt.Color
 
@@ -38,11 +39,11 @@ object RatESP : Module(
 
     init {
         on<PacketEvent.Receive, ClientboundSetEntityDataPacket> {
-            Chronos.Tick after 2 then {
-                val entity = Smoothie.level?.getEntity(id) as? ArmorStand ?: return@then
-                if (!entity.hasItemInSlot(EquipmentSlot.HEAD)) return@then
-                if (entity in entities) return@then
-                if (entity.getItemBySlot(EquipmentSlot.HEAD)?.getTexture() != RAT) return@then
+            Chronos.schedule(2.client) {
+                val entity = level?.getEntity(id) as? ArmorStand ?: return@schedule
+                if (!entity.hasItemInSlot(EquipmentSlot.HEAD)) return@schedule
+                if (entity in entities) return@schedule
+                if (entity.getItemBySlot(EquipmentSlot.HEAD)?.getTexture() != RAT) return@schedule
 
                 entities.add(entity)
             }

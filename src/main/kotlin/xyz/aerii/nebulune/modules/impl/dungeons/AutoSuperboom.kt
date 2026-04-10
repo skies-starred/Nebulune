@@ -15,11 +15,11 @@ import xyz.aerii.athen.config.Category
 import xyz.aerii.athen.events.CommandRegistration
 import xyz.aerii.athen.events.InputEvent
 import xyz.aerii.athen.handlers.Scribble
-import xyz.aerii.athen.handlers.Smoothie.client
-import xyz.aerii.athen.handlers.Typo.lie
 import xyz.aerii.athen.handlers.Typo.modMessage
-import xyz.aerii.athen.handlers.parse
 import xyz.aerii.athen.modules.Module
+import xyz.aerii.library.api.client
+import xyz.aerii.library.api.lie
+import xyz.aerii.library.handlers.parser.parse
 import xyz.aerii.nebulune.Nebulune
 import xyz.aerii.nebulune.events.TickStartEvent
 import xyz.aerii.nebulune.mixin.accessors.InventoryAccessor

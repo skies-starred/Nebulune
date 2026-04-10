@@ -23,7 +23,7 @@ repositories {
     strictMaven("https://maven.deftu.dev/snapshots", "dev.deftu")
     strictMaven("https://maven.deftu.dev/releases", "dev.deftu")
     strictMaven("https://repo.nea.moe/releases", "moe.nea")
-    strictMaven("https://jitpack.io", "com.github.skies-starred.Athen")
+    strictMaven("https://jitpack.io", "com.github.skies-starred")
     mavenLocal()
 }
 
@@ -45,8 +45,8 @@ dependencies {
     modRuntimeOnly(libs.devauth)
     modCompileOnly("entityculling".mc(mc))
 
-    modImplementation("athen-prod".mc(mc))
-    //modImplementation("athen-act".mc(mc)) { exclude(group = "tech.thatgravyboat", module = "skyblock-api") }
+    //modImplementation("athen-prod".mc(mc))
+    modImplementation("athen-act".mc(mc)) { exclude(group = "tech.thatgravyboat", module = "skyblock-api") }
     modImplementation("modmenu".mc(mc))
     modImplementation("fabric-api".mc(mc))
     modImplementation(libs.fabric.loader)
@@ -56,7 +56,7 @@ dependencies {
 
     modImplementation(libs.classgraph)
     modImplementation(libs.autoupdate)
-    modImplementation("omnicore".mc(mc))
+    modImplementation("library".mc(mc))
     modImplementation(libs.lwjgl.nanovg)
     for (p in platforms) modImplementation("${libs.lwjgl.nanovg.get()}:natives-$p")
 

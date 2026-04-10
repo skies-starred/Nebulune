@@ -10,9 +10,9 @@ import xyz.aerii.athen.annotations.Load
 import xyz.aerii.athen.annotations.OnlyIn
 import xyz.aerii.athen.api.location.SkyBlockIsland
 import xyz.aerii.athen.config.Category
-import xyz.aerii.athen.handlers.Smoothie.client
-import xyz.aerii.athen.handlers.Typo.stripped
 import xyz.aerii.athen.modules.Module
+import xyz.aerii.library.api.client
+import xyz.aerii.library.utils.stripped
 import xyz.aerii.nebulune.events.PlayerAttackEvent
 import xyz.aerii.nebulune.events.TickStartEvent
 import xyz.aerii.nebulune.mixin.accessors.InventoryAccessor

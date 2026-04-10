@@ -10,10 +10,11 @@ import xyz.aerii.athen.config.Category
 import xyz.aerii.athen.events.GuiEvent
 import xyz.aerii.athen.events.PacketEvent
 import xyz.aerii.athen.handlers.Chronos
-import xyz.aerii.athen.handlers.Smoothie.client
-import xyz.aerii.athen.handlers.Typo.stripped
 import xyz.aerii.athen.modules.Module
-import xyz.aerii.nebulune.utils.send
+import xyz.aerii.library.api.client
+import xyz.aerii.library.handlers.time.client
+import xyz.aerii.library.utils.send
+import xyz.aerii.library.utils.stripped
 
 @Load
 @OnlyIn(islands = [SkyBlockIsland.THE_CATACOMBS])
@@ -42,7 +43,7 @@ object ChestCloser : Module(
             val r = (minDelay..maxDelay.coerceAtLeast(minDelay)).random()
             if (r == 0) return@on ServerboundContainerClosePacket(containerId).send()
 
-            Chronos.Tick after r then {
+            Chronos.schedule(r.client) {
                 client.player?.closeContainer()
             }
         }

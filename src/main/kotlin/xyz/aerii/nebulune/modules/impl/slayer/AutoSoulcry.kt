@@ -9,9 +9,9 @@ import xyz.aerii.athen.annotations.Load
 import xyz.aerii.athen.annotations.OnlyIn
 import xyz.aerii.athen.api.skyblock.SlayerAPI
 import xyz.aerii.athen.config.Category
-import xyz.aerii.athen.handlers.Smoothie.client
 import xyz.aerii.athen.modules.Module
 import xyz.aerii.athen.utils.enchants
+import xyz.aerii.library.api.client
 import xyz.aerii.nebulune.events.TickStartEvent
 import xyz.aerii.nebulune.utils.rightClick
 
