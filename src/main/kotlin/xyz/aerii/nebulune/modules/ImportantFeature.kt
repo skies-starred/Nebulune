@@ -24,7 +24,7 @@ object ImportantFeature {
             if ((0..100).random() > 4) return@repeat
             val a = if (set.size == 1) set.first() else set.random()
 
-            "<red>[<orange>ዞ<red>] $a <yellow>has joined the lobby.".parse().lie()
+            "<red>[<orange>ዞ<red>] $a <yellow>joined the game.".parse().lie()
         }
     }
 }
