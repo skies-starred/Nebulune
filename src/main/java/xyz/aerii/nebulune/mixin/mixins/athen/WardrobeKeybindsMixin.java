@@ -1,4 +1,4 @@
-package xyz.aerii.nebulune.mixin.mixins;
+package xyz.aerii.nebulune.mixin.mixins.athen;
 
 import net.minecraft.client.player.LocalPlayer;
 import org.spongepowered.asm.mixin.Mixin;

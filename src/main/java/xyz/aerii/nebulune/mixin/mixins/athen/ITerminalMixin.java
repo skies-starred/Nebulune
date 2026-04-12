@@ -1,4 +1,4 @@
-package xyz.aerii.nebulune.mixin.mixins;
+package xyz.aerii.nebulune.mixin.mixins.athen;
 
 import kotlin.Unit;
 import net.minecraft.world.inventory.ClickType;
