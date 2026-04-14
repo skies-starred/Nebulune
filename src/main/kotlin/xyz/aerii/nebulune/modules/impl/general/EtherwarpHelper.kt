@@ -6,12 +6,12 @@ import xyz.aerii.athen.annotations.Load
 import xyz.aerii.athen.annotations.OnlyIn
 import xyz.aerii.athen.config.Category
 import xyz.aerii.athen.events.InputEvent
+import xyz.aerii.athen.events.TickEvent
 import xyz.aerii.athen.events.core.runWhen
 import xyz.aerii.athen.mixin.accessors.KeyMappingAccessor
 import xyz.aerii.athen.modules.Module
 import xyz.aerii.athen.utils.etherwarp
 import xyz.aerii.library.api.client
-import xyz.aerii.nebulune.events.TickStartEvent
 import xyz.aerii.nebulune.utils.rightClick
 
 @Load
@@ -49,7 +49,7 @@ object EtherwarpHelper : Module(
             action()
         }.runWhen(lcew.state)
 
-        on<TickStartEvent> {
+        on<TickEvent.Client.Start> {
             if (int == 0) return@on
             if (client.screen != null) return@on ::int.set(0)
 

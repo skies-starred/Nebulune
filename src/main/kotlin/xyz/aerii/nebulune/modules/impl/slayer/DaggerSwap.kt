@@ -10,11 +10,11 @@ import xyz.aerii.athen.annotations.Load
 import xyz.aerii.athen.annotations.OnlyIn
 import xyz.aerii.athen.api.location.SkyBlockIsland
 import xyz.aerii.athen.config.Category
+import xyz.aerii.athen.events.TickEvent
 import xyz.aerii.athen.modules.Module
 import xyz.aerii.library.api.client
 import xyz.aerii.library.utils.stripped
 import xyz.aerii.nebulune.events.PlayerAttackEvent
-import xyz.aerii.nebulune.events.TickStartEvent
 import xyz.aerii.nebulune.mixin.accessors.InventoryAccessor
 import xyz.aerii.nebulune.utils.rightClick
 
@@ -43,7 +43,7 @@ object DaggerSwap : Module(
             }
         }
 
-        on<TickStartEvent> {
+        on<TickEvent.Client.Start> {
             val swap = swap ?: return@on
             swap(swap)
         }

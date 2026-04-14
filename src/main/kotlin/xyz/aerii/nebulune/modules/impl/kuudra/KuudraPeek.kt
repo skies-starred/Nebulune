@@ -38,7 +38,7 @@ object KuudraPeek : Module(
     }
 
     init {
-        on<TickEvent.Client> {
+        on<TickEvent.Client.End> {
             if (!KuudraAPI.inRun) return@on
             if (KuudraAPI.tier != KuudraTier.INFERNAL) return@on
             if (KuudraAPI.phase != KuudraPhase.Kill) return@on

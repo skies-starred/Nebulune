@@ -14,6 +14,7 @@ import xyz.aerii.athen.events.CommandRegistration
 import xyz.aerii.athen.events.GuiEvent
 import xyz.aerii.athen.events.InputEvent
 import xyz.aerii.athen.events.PacketEvent
+import xyz.aerii.athen.events.TickEvent
 import xyz.aerii.athen.events.core.on
 import xyz.aerii.athen.events.core.runWhen
 import xyz.aerii.athen.handlers.Chronos
@@ -29,7 +30,6 @@ import xyz.aerii.library.handlers.Observable.Companion.and
 import xyz.aerii.library.handlers.time.client
 import xyz.aerii.library.utils.stripped
 import xyz.aerii.nebulune.Nebulune
-import xyz.aerii.nebulune.events.TickStartEvent
 
 @Load
 object WardrobeHelper {
@@ -136,7 +136,7 @@ object WardrobeHelper {
             if (resetOpen) reset()
         }.runWhen(WardrobeKeybinds.observable and autoEquip.state)
 
-        on<TickStartEvent> {
+        on<TickEvent.Client.Start> {
             if (!swapping) return@on
             if (System.currentTimeMillis() - start > 2000) return@on reset()
             if (!inMenu) return@on

@@ -40,7 +40,7 @@ object HoverTerms : Module(
     private var time = 0L
 
     init {
-        on<TickEvent.Client> {
+        on<TickEvent.Client.End> {
             val type = TerminalAPI.currentTerminal ?: return@on
             if (type == TerminalType.MELODY) return@on
             if (System.currentTimeMillis() - TerminalAPI.openTime < TerminalSolver.fcDelay) return@on

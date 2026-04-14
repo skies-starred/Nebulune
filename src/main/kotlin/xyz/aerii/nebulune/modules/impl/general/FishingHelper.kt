@@ -7,10 +7,10 @@ import xyz.aerii.athen.annotations.Load
 import xyz.aerii.athen.annotations.OnlyIn
 import xyz.aerii.athen.config.Category
 import xyz.aerii.athen.events.EntityEvent
+import xyz.aerii.athen.events.TickEvent
 import xyz.aerii.athen.modules.Module
 import xyz.aerii.library.api.client
 import xyz.aerii.library.utils.stripped
-import xyz.aerii.nebulune.events.TickStartEvent
 import xyz.aerii.nebulune.utils.rightClick
 
 @Load
@@ -45,7 +45,7 @@ object FishingHelper : Module(
             recasting = false
         }
 
-        on<TickStartEvent> {
+        on<TickEvent.Client.Start> {
             if (ticks < 0) return@on
             if (ticks-- > 0) return@on
 

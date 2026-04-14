@@ -14,6 +14,7 @@ import xyz.aerii.athen.api.location.SkyBlockIsland
 import xyz.aerii.athen.config.Category
 import xyz.aerii.athen.events.CommandRegistration
 import xyz.aerii.athen.events.InputEvent
+import xyz.aerii.athen.events.TickEvent
 import xyz.aerii.athen.handlers.Scribble
 import xyz.aerii.athen.handlers.Typo.modMessage
 import xyz.aerii.athen.modules.Module
@@ -21,7 +22,6 @@ import xyz.aerii.library.api.client
 import xyz.aerii.library.api.lie
 import xyz.aerii.library.handlers.parser.parse
 import xyz.aerii.nebulune.Nebulune
-import xyz.aerii.nebulune.events.TickStartEvent
 import xyz.aerii.nebulune.mixin.accessors.InventoryAccessor
 import xyz.aerii.nebulune.utils.leftClick
 
@@ -134,7 +134,7 @@ object AutoSuperboom : Module(
             cancel()
         }
 
-        on<TickStartEvent> {
+        on<TickEvent.Client.Start> {
             val p = client.player ?: return@on
             if (tick == -1) return@on
             if (tick-- > 0) return@on
