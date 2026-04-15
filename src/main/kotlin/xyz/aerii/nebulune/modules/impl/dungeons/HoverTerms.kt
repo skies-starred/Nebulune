@@ -49,18 +49,20 @@ object HoverTerms : Module(
             val mx = client.mouseHandler.xpos().toFloat() / uiScale
             val my = client.mouseHandler.ypos().toFloat() / uiScale
 
+            val sp = 16f + TerminalSolver.`ui$gap`
+            val pad = TerminalSolver.`ui$padding`
             val slots = type.slots
-            val gridW = 9 * 18f
-            val gridH = (slots / 9) * 18f
+            val gridW = 7 * sp + 2 * pad
+            val gridH = (slots / 9 - 2) * sp + 2 * pad
             val headerH = if (TerminalSolver.`ui$hideHeader`) 0f else 20f
             val padding = if (TerminalSolver.`ui$hideHeader`) 0f else 6f
 
             val ox = client.window.width / uiScale / 2 - gridW / 2
             val oy = client.window.height / uiScale / 2 - (gridH + headerH + padding) / 2
 
-            val x = ((mx - ox) / 18).toInt()
-            val y = ((my - (oy + headerH + padding)) / 18).toInt()
-            if (x !in 0..8 || y < 0) return@on
+            val x = ((mx - ox - pad) / sp).toInt() + 1
+            val y = ((my - (oy + headerH + padding) - pad) / sp).toInt() + 1
+            if (x !in 1..7 || y < 1) return@on
 
             val slot = x + y * 9
             if (slot >= slots) return@on

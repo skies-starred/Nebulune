@@ -66,18 +66,20 @@ public abstract class ITerminalMixin implements ITerminalAccessor {
     private void nebulune$click(float mx, float my, float width, float height, int mouseButton, CallbackInfo ci) {
         if (!QueueTerms.INSTANCE.getEnabled()) return;
 
+        float sp = 16f + TerminalSolver.INSTANCE.getUi$gap();
+        float pad = TerminalSolver.INSTANCE.getUi$padding();
         int slots = getTerminalType().getSlots();
-        float gridW = 9 * 18f;
-        float gridH = ((float) slots / 9) * 18f;
+        float gridW = 7 * sp + 2 * pad;
+        float gridH = ((float) slots / 9 - 2) * sp + 2 * pad;
         float headerH = TerminalSolver.INSTANCE.getUi$hideHeader() ? 0f : 20f;
         float padding = TerminalSolver.INSTANCE.getUi$hideHeader() ? 0f : 6f;
 
         float ox = width / 2 - gridW / 2;
         float oy = height / 2 - (gridH + headerH + padding) / 2;
 
-        int x = (int) ((mx - ox) / 18);
-        int y = (int) ((my - (oy + headerH + padding)) / 18);
-        if (x < 0 || x > 8 || y < 0) return;
+        int x = (int) ((mx - ox - pad) / sp) + 1;
+        int y = (int) ((my - (oy + headerH + padding) - pad) / sp) + 1;
+        if (x < 1 || x > 7 || y < 1) return;
 
         int slot = x + y * 9;
         if (slot >= slots) return;
