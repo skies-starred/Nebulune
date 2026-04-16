@@ -8,8 +8,11 @@ import xyz.aerii.athen.annotations.OnlyIn
 import xyz.aerii.athen.config.Category
 import xyz.aerii.athen.events.EntityEvent
 import xyz.aerii.athen.events.TickEvent
+import xyz.aerii.athen.handlers.Chronos
 import xyz.aerii.athen.modules.Module
 import xyz.aerii.library.api.client
+import xyz.aerii.library.handlers.time.client
+import xyz.aerii.library.handlers.time.start
 import xyz.aerii.library.utils.stripped
 import xyz.aerii.nebulune.utils.rightClick
 
@@ -28,41 +31,24 @@ object FishingHelper : Module(
     private val `delay$recast` by config.slider("Recast delay", 1, 0, 10, "ticks").dependsOn { recast }
     private val `variance$recast` by config.slider("Delay variance", 0, 0, 5, "ticks").dependsOn { recast }
 
-    private var ticks = -1
-    private var recasting = false
-
     init {
         on<EntityEvent.Update.Named> {
             val entity = client.player?.fishing as? Entity ?: return@on
             if (component.stripped() != "!!!") return@on
             if (entity.distanceTo(entity) > 2f) return@on
 
-            val t0 =
-                if (`variance$pull` > 0) (0..`variance$pull`).random()
-                else 0
+            val a = (`delay$pull` + if (`variance$pull` > 0) (0..`variance$pull`).random() else 0).coerceAtLeast(0)
 
-            ticks = (`delay$pull` + t0).coerceAtLeast(0)
-            recasting = false
-        }
+            Chronos.schedule(a.client.start) {
+                rightClick()
 
-        on<TickEvent.Client.Start> {
-            if (ticks < 0) return@on
-            if (ticks-- > 0) return@on
+                if (!recast) return@schedule
 
-            rightClick()
-
-            if (!recast || recasting) {
-                ticks = -1
-                recasting = false
-                return@on
+                val b = 2 + `delay$recast` + if (`variance$recast` > 0) (0..`variance$recast`).random() else 0
+                Chronos.schedule(b.client.start) {
+                    rightClick()
+                }
             }
-
-            val t0 =
-                if (`variance$recast` > 0) (0..`variance$recast`).random()
-                else 0
-
-            ticks = 2 + `delay$recast` + t0
-            recasting = true
         }
     }
 }

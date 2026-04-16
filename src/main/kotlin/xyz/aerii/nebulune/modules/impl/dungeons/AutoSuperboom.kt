@@ -14,13 +14,15 @@ import xyz.aerii.athen.api.location.SkyBlockIsland
 import xyz.aerii.athen.config.Category
 import xyz.aerii.athen.events.CommandRegistration
 import xyz.aerii.athen.events.InputEvent
-import xyz.aerii.athen.events.TickEvent
+import xyz.aerii.athen.handlers.Chronos
 import xyz.aerii.athen.handlers.Scribble
 import xyz.aerii.athen.handlers.Typo.modMessage
 import xyz.aerii.athen.modules.Module
 import xyz.aerii.library.api.client
 import xyz.aerii.library.api.lie
 import xyz.aerii.library.handlers.parser.parse
+import xyz.aerii.library.handlers.time.client
+import xyz.aerii.library.handlers.time.start
 import xyz.aerii.nebulune.Nebulune
 import xyz.aerii.nebulune.mixin.accessors.InventoryAccessor
 import xyz.aerii.nebulune.utils.leftClick
@@ -47,10 +49,6 @@ object AutoSuperboom : Module(
     private val breakable = scribble.mutableSet("breakable", Codec.STRING, mutableSetOf("minecraft:cracked_stone_bricks", "minecraft:barrier"))
 
     private val set = setOf("SUPERBOOM_TNT", "INFINITE_SUPERBOOM_TNT")
-    private var tick = -1
-    private var og = -1
-    private var ts = -1
-    private var int = 0
 
     init {
         on<CommandRegistration> {
@@ -123,42 +121,24 @@ object AutoSuperboom : Module(
             val block = client.level?.getBlockState(h.blockPos) ?: return@on
             if (BuiltInRegistries.BLOCK.getKey(block.block).toString() !in breakable.value) return@on
 
-            val s = (p.inventory as InventoryAccessor).selectedSlot
+            val acc = p.inventory as InventoryAccessor
+            val s = acc.selectedSlot
             val t = fn()?.takeIf { it != s } ?: return@on
 
-            tick = (minDelay..maxDelay.coerceAtLeast(minDelay)).random()
-            og = s
-            ts = t
-            int = 0
-
             cancel()
-        }
 
-        on<TickEvent.Client.Start> {
-            val p = client.player ?: return@on
-            if (tick == -1) return@on
-            if (tick-- > 0) return@on
+            Chronos.schedule((minDelay..maxDelay.coerceAtLeast(minDelay)).random().client.start) {
+                acc.selectedSlot = t
 
-            val acc = p.inventory as InventoryAccessor
-            when (int) {
-                0 -> {
-                    val slot = ts.takeIf { it != -1 } ?: return@on reset()
-                    acc.selectedSlot = slot
-                    int = 1
-                    tick = 1
-                }
-
-                1 -> {
+                Chronos.schedule(1.client.start) {
                     leftClick()
 
-                    if (!swapBack) return@on reset()
-                    int = 2
-                    tick = (`swapBack$minDelay`..`swapBack$maxDelay`.coerceAtLeast(`swapBack$minDelay`)).random()
-                }
+                    if (!swapBack) return@schedule
+                    val b = (`swapBack$minDelay`..`swapBack$maxDelay`.coerceAtLeast(`swapBack$minDelay`)).random()
 
-                2 -> {
-                    acc.selectedSlot = if (`swapBack$type` == 0) og else (`swapBack$custom`.coerceIn(1, 9) - 1)
-                    reset()
+                    Chronos.schedule(b.client.start) {
+                        acc.selectedSlot = if (`swapBack$type` == 0) s else (`swapBack$custom`.coerceIn(1, 9) - 1)
+                    }
                 }
             }
         }
@@ -168,11 +148,5 @@ object AutoSuperboom : Module(
         val player = client.player ?: return null
         for (i in 0..8) if (player.inventory.getItem(i)?.getSkyBlockId()?.skyblockId in set) return i
         return null
-    }
-
-    private fun reset() {
-        tick = -1
-        og = -1
-        int = 0
     }
 }

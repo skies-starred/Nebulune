@@ -6,12 +6,14 @@ import xyz.aerii.athen.annotations.Load
 import xyz.aerii.athen.annotations.OnlyIn
 import xyz.aerii.athen.config.Category
 import xyz.aerii.athen.events.InputEvent
-import xyz.aerii.athen.events.TickEvent
 import xyz.aerii.athen.events.core.runWhen
+import xyz.aerii.athen.handlers.Chronos
 import xyz.aerii.athen.mixin.accessors.KeyMappingAccessor
 import xyz.aerii.athen.modules.Module
 import xyz.aerii.athen.utils.etherwarp
 import xyz.aerii.library.api.client
+import xyz.aerii.library.handlers.time.client
+import xyz.aerii.library.handlers.time.start
 import xyz.aerii.nebulune.utils.rightClick
 
 @Load
@@ -25,7 +27,6 @@ object EtherwarpHelper : Module(
     private val shift by config.switch("Shift automatically").dependsOn { lcew.value }
 
     private val ints = intArrayOf(2, 3, 4)
-    private var int = 0
 
     init {
         on<InputEvent.Mouse.Press> {
@@ -37,27 +38,21 @@ object EtherwarpHelper : Module(
 
             val a = p.isCrouching
             if (!a && !shift) return@on
-            if (!a && int == 0) {
+
+            if (!a) {
                 KeyMapping.set((client.options.keyShift as KeyMappingAccessor).boundKey, true)
-                int = ints.random()
+                Chronos.schedule(ints.random().client.start) {
+                    action()
+
+                    Chronos.schedule(1.client.start) { KeyMapping.set((client.options.keyShift as KeyMappingAccessor).boundKey, false) }
+                }
+
                 return@on cancel()
             }
-
-            if (!a) return@on
 
             cancel()
             action()
         }.runWhen(lcew.state)
-
-        on<TickEvent.Client.Start> {
-            if (int == 0) return@on
-            if (client.screen != null) return@on ::int.set(0)
-
-            int--
-
-            if (int == 1) return@on action()
-            if (int == 0) KeyMapping.set((client.options.keyShift as KeyMappingAccessor).boundKey, false)
-        }
     }
 
     private fun action() {
