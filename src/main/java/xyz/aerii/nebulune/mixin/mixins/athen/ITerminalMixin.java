@@ -37,6 +37,15 @@ public abstract class ITerminalMixin implements ITerminalAccessor {
     public abstract TerminalType getTerminalType();
 
     @Shadow
+    protected abstract int getInt0();
+
+    @Shadow
+    protected abstract int getInt1();
+
+    @Shadow
+    protected abstract float getFloat();
+
+    @Shadow
     protected abstract Click forSlot(int slot);
 
     @Shadow
@@ -48,6 +57,21 @@ public abstract class ITerminalMixin implements ITerminalAccessor {
     @Override
     public CopyOnWriteArrayList<Click> nebulune$getList() {
         return list;
+    }
+
+    @Override
+    public int nebulune$int0() {
+        return getInt0();
+    }
+
+    @Override
+    public int nebulune$int1() {
+        return getInt1();
+    }
+
+    @Override
+    public float nebulune$float() {
+        return getFloat();
     }
 
     @Inject(method = "onOpen", at = @At("HEAD"))
@@ -66,10 +90,10 @@ public abstract class ITerminalMixin implements ITerminalAccessor {
     private void nebulune$click(float mx, float my, float width, float height, int mouseButton, CallbackInfo ci) {
         if (!QueueTerms.INSTANCE.getEnabled()) return;
 
-        float sp = 16f + TerminalSolver.INSTANCE.getUi$gap();
+        float sp = getFloat();
         float pad = TerminalSolver.INSTANCE.getUi$padding();
         int slots = getTerminalType().getSlots();
-        float gridW = 7 * sp + 2 * pad;
+        float gridW = getInt0() * sp + 2 * pad;
         float gridH = ((float) slots / 9 - 2) * sp + 2 * pad;
         float headerH = TerminalSolver.INSTANCE.getUi$hideHeader() ? 0f : 20f;
         float padding = TerminalSolver.INSTANCE.getUi$hideHeader() ? 0f : 6f;
@@ -77,9 +101,9 @@ public abstract class ITerminalMixin implements ITerminalAccessor {
         float ox = width / 2 - gridW / 2;
         float oy = height / 2 - (gridH + headerH + padding) / 2;
 
-        int x = (int) ((mx - ox - pad) / sp) + 1;
+        int x = (int) ((mx - ox - pad) / sp) + getInt1();
         int y = (int) ((my - (oy + headerH + padding) - pad) / sp) + 1;
-        if (x < 1 || x > 7 || y < 1) return;
+        if (x < getInt1() || x >= getInt1() + getInt0() || y < 1) return;
 
         int slot = x + y * 9;
         if (slot >= slots) return;

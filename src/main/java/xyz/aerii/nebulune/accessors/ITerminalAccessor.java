@@ -6,4 +6,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 public interface ITerminalAccessor {
     CopyOnWriteArrayList<Click> nebulune$getList();
+    float nebulune$float();
+    int nebulune$int0();
+    int nebulune$int1();
 }

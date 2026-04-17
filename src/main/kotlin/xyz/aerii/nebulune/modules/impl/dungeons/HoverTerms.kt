@@ -44,15 +44,19 @@ object HoverTerms : Module(
             val type = TerminalAPI.currentTerminal ?: return@on
             if (type == TerminalType.MELODY) return@on
             if (System.currentTimeMillis() - TerminalAPI.openTime < TerminalSolver.fcDelay) return@on
+            val solver = solvers[type] as? ITerminalAccessor ?: return@on
 
             val uiScale = 3f * TerminalSolver.`ui$scale`
             val mx = client.mouseHandler.xpos().toFloat() / uiScale
             val my = client.mouseHandler.ypos().toFloat() / uiScale
 
-            val sp = 16f + TerminalSolver.`ui$gap`
+            val int0 = solver.`nebulune$int0`()
+            val int1 = solver.`nebulune$int1`()
+
+            val sp = solver.`nebulune$float`()
             val pad = TerminalSolver.`ui$padding`
             val slots = type.slots
-            val gridW = 7 * sp + 2 * pad
+            val gridW = int0 * sp + 2 * pad
             val gridH = (slots / 9 - 2) * sp + 2 * pad
             val headerH = if (TerminalSolver.`ui$hideHeader`) 0f else 20f
             val padding = if (TerminalSolver.`ui$hideHeader`) 0f else 6f
@@ -60,14 +64,14 @@ object HoverTerms : Module(
             val ox = client.window.width / uiScale / 2 - gridW / 2
             val oy = client.window.height / uiScale / 2 - (gridH + headerH + padding) / 2
 
-            val x = ((mx - ox - pad) / sp).toInt() + 1
+            val x = ((mx - ox - pad) / sp).toInt() + int1
             val y = ((my - (oy + headerH + padding) - pad) / sp).toInt() + 1
-            if (x !in 1..7 || y < 1) return@on
+            if (x !in int1 until int1 + int0 || y < 1) return@on
 
             val slot = x + y * 9
             if (slot >= slots) return@on
 
-            val list = (solvers[type] as? ITerminalAccessor)?.`nebulune$getList`() ?: return@on
+            val list = solver.`nebulune$getList`() ?: return@on
             val c = list.find { it.slot == slot } ?: return@on reset()
 
             if (slot != slot0) {
