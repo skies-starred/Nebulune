@@ -18,41 +18,36 @@ Get Athen at: https://modrinth.com/mod/athen
 
 ### Dungeons
 
-* Dungeon Map
-* Terminal Solver
-* Terminal Simulator
-* Terminal Waypoints
-* Party Finder
-    * Player stats on hover
-    * Highlighted parties
-    * Stats preview on join
+* Auto superboom
+* Auto terminals
+* Breaker helper: zero ping db, prevent breaking secrets
+* Chest closer
+* Hover terminals
+* Queue terminals
 
 ### General
 
-* Item Quality indicator
-* Item Tweaks:
-    * Show item age
-    * Show item price
-    * Show cake numbers
-    * Remove gear score
-    * Remove vanilla enchants
-* Show missing enchants
-* Sign Key - press **Enter** to confirm signs instantly
+* Auto experiments
+* Etherwarp helper: left click etherwarp
+* Fishing helper
+* Trevor helper: auto call, auto accept, and pelt esp
+* Wardrobe helper: auto close, auto equip, and auto equip while moving
+
+### Kuudra
+
+* Kuudra ESP
+* Kuudra Peek alert
+* Stun helper: auto close shop gui
+
+### Render
+
+* Camera helper: camera clip and custom camera distance
+* Hideon ESP
+* Pest ESP
+* Rat ESP
 
 ### Slayers
 
-* Slayer display
-* Slayer stats
-* Slayer timers (spawn & kill)
-* Slayer highlights:
-    * Bosses
-    * Minibosses
-    * Demons
-* Slayer carry tracker
-* Vengeance damage tracker (chat display)
-* Vengeance activation timer
-
-### Carries
-
-* Dungeon carry tracker
-* Slayer carry tracker
+* Auto soulcry
+* Boss ESP
+* Dagger swapper
