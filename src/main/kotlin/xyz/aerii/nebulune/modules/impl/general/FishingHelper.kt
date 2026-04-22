@@ -1,16 +1,17 @@
-@file:Suppress("ObjectPrivatePropertyName")
+@file:Suppress("ObjectPrivatePropertyName", "Unused")
 
 package xyz.aerii.nebulune.modules.impl.general
 
 import net.minecraft.world.entity.Entity
+import net.minecraft.world.item.Items
 import xyz.aerii.athen.annotations.Load
 import xyz.aerii.athen.annotations.OnlyIn
 import xyz.aerii.athen.config.Category
 import xyz.aerii.athen.events.EntityEvent
-import xyz.aerii.athen.events.TickEvent
 import xyz.aerii.athen.handlers.Chronos
 import xyz.aerii.athen.modules.Module
 import xyz.aerii.library.api.client
+import xyz.aerii.library.api.held
 import xyz.aerii.library.handlers.time.client
 import xyz.aerii.library.handlers.time.start
 import xyz.aerii.library.utils.stripped
@@ -28,6 +29,8 @@ object FishingHelper : Module(
     private val `variance$pull` by config.slider("Delay variance", 0, 0, 3, "ticks").dependsOn { autoPull }
 
     private val recast by config.switch("Auto recast")
+    private val `recast$check` by config.switch("Recast check", true).dependsOn { recast }
+    private val `_recast$check` by config.textParagraph("Recast check checks if the fishing rod is already being used, and uses it if not.").dependsOn { recast }
     private val `delay$recast` by config.slider("Recast delay", 1, 0, 10, "ticks").dependsOn { recast }
     private val `variance$recast` by config.slider("Delay variance", 0, 0, 5, "ticks").dependsOn { recast }
 
@@ -49,6 +52,16 @@ object FishingHelper : Module(
                     rightClick()
                 }
             }
+        }
+
+        Chronos.repeat((15 * 20).client.start) {
+            if (!enabled) return@repeat
+            if (!recast) return@repeat
+            if (!`recast$check`) return@repeat
+            if (client.player?.fishing != null) return@repeat
+            if (held?.item != Items.FISHING_ROD) return@repeat
+
+            rightClick()
         }
     }
 }
