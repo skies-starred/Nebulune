@@ -3,6 +3,7 @@
 package xyz.aerii.nebulune.modules.impl.slayer
 
 import net.minecraft.world.item.Items
+import net.minecraft.world.phys.EntityHitResult
 import tech.thatgravyboat.skyblockapi.api.area.slayer.SlayerType
 import tech.thatgravyboat.skyblockapi.api.datatype.DataTypes
 import tech.thatgravyboat.skyblockapi.api.datatype.getData
@@ -29,6 +30,7 @@ object AutoSoulcry : Module(
     Category.SLAYER
 ) {
     private val mana by config.switch("Check mana", true)
+    private val hitbox by config.switch("Check boss hitbox", true)
     private val minDelay by config.slider("Min delay", 1, 0, 5, "ticks")
     private val maxDelay by config.slider("Max delay", 3, 0, 5, "ticks")
     private val detectType = config.multiCheckbox("Detection type", listOf("Tick based", "Attack based")).custom("detectType")
@@ -40,13 +42,13 @@ object AutoSoulcry : Module(
 
     init {
         on<TickEvent.Client.Start> {
-            val slayer = SlayerAPI.slayer?.type as? SlayerType ?: return@on
-            if (slayer != SlayerType.VOIDGLOOM_SERAPH) return@on reset()
+            val slayer = SlayerAPI.slayer
+            if (slayer?.type as? SlayerType != SlayerType.VOIDGLOOM_SERAPH) return@on reset()
             if (client.screen != null) return@on reset()
-
             val item = held ?: return@on reset()
             if (item.item != Items.DIAMOND_SWORD) return@on reset()
             if (item.getData(DataTypes.SKYBLOCK_ID)?.skyblockId !in ids) return@on reset()
+            if (hitbox && client.hitResult as? EntityHitResult != slayer.entity) return@on
 
             val m = if ("ultimate_wise" in item.enchants()) 100 else 200
             if (mana && (StatsAPI.mana + StatsAPI.overflowMana) < m) return@on reset()
