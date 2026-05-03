@@ -45,8 +45,8 @@ dependencies {
     modRuntimeOnly(libs.devauth)
     modCompileOnly("entityculling".mc(mc))
 
-    modImplementation("athen-prod".mc(mc))
-    //modImplementation("athen-act".mc(mc)) { exclude(group = "tech.thatgravyboat", module = "skyblock-api") }
+    //modImplementation("athen-prod".mc(mc))
+    modImplementation("athen-act".mc(mc)) { exclude(group = "tech.thatgravyboat", module = "skyblock-api") }
     modImplementation("modmenu".mc(mc))
     modImplementation("fabric-api".mc(mc))
     modImplementation(libs.fabric.loader)
