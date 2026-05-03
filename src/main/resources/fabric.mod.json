@@ -26,6 +26,6 @@
     "fabric-api": "*",
     "fabric-language-kotlin": "*",
     "minecraft": "${minecraft}",
-    "athen": ">=0.1.1"
+    "athen": ">=0.1.6"
   }
 }
