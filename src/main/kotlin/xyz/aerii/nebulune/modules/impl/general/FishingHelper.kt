@@ -58,7 +58,9 @@ object FishingHelper : Module(
             if (!enabled) return@repeat
             if (!recast) return@repeat
             if (!`recast$check`) return@repeat
-            if (client.player?.fishing != null) return@repeat
+            val p = client.player ?: return@repeat
+
+            if (p.fishing != null && p.fishing?.hookedIn == null) return@repeat
             if (held?.item != Items.FISHING_ROD) return@repeat
 
             rightClick()
