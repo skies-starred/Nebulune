@@ -11,7 +11,6 @@ import net.minecraft.world.entity.animal/*? >= 1.21.11 {*//*.rabbit*//*? }*/.Rab
 import net.minecraft.world.entity.animal/*? >= 1.21.11 {*//*.equine*//*? } else {*/.horse/*? }*/.Horse
 import net.minecraft.world.entity.animal.sheep.Sheep
 import tech.thatgravyboat.skyblockapi.api.data.MayorCandidates
-import tech.thatgravyboat.skyblockapi.api.data.MayorPerks
 import tech.thatgravyboat.skyblockapi.utils.extentions.serverMaxHealth
 import tech.thatgravyboat.skyblockapi.utils.regex.RegexUtils.findThenNull
 import xyz.aerii.athen.annotations.Load
@@ -37,6 +36,7 @@ import xyz.aerii.library.utils.toDurationFromMillis
 import xyz.aerii.nebulune.utils.drawTracer
 import java.awt.Color
 import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.Duration.Companion.seconds
 
 @Load
 @OnlyIn(islands = [SkyBlockIsland.THE_BARN])
@@ -80,9 +80,6 @@ object TrevorHelper : Module(
     private var cooldown: Long = 0
     private var rarity: Rarity? = null
 
-    private val cd: Long
-        get() = if (MayorPerks.PELT_POCALYPSE.active) 15_000 else 20_000
-
     init {
         on<LocationEvent.Server.Connect> {
             reset()
@@ -105,9 +102,9 @@ object TrevorHelper : Module(
         on<MessageEvent.Chat.Receive> {
             startRegex.findThenNull(stripped, "type") { (t) ->
                 rarity = Rarity.get(t) ?: return@findThenNull
-                cooldown = System.currentTimeMillis() + cd
+                cooldown = System.currentTimeMillis() + 15_000
 
-                Chronos.schedule(cd.milliseconds) {
+                Chronos.schedule(15.seconds) {
                     if (endAlert) `alert$message`.parse().alert(soundType = `alert$sound`.sound)
                     cooldown = 0
                 }
