@@ -63,7 +63,7 @@ object DaggerSwap : Module(
         val acc = inv as InventoryAccessor
 
         val heldStack = inv.getItem(acc.selectedSlot)
-        val heldId = heldStack?.getData(DataTypes.SKYBLOCK_ID)?.skyblockId
+        val heldId = heldStack?.getData(DataTypes.ID)
         if (heldId != null && heldId in attr.set) {
             if (heldStack.item != attr.item) rightClick()
             swap = null
@@ -72,7 +72,7 @@ object DaggerSwap : Module(
 
         for (i in 0..8) {
             val stack = inv.getItem(i) ?: continue
-            val id = stack.getData(DataTypes.SKYBLOCK_ID)?.skyblockId ?: continue
+            val id = stack.getData(DataTypes.ID) ?: continue
             if (id !in attr.set) continue
             if (acc.selectedSlot != i) acc.selectedSlot = i
             return

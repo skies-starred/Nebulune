@@ -45,9 +45,10 @@ object AutoSoulcry : Module(
             val slayer = SlayerAPI.slayer
             if (slayer?.type as? SlayerType != SlayerType.VOIDGLOOM_SERAPH) return@on reset()
             if (client.screen != null) return@on reset()
+
             val item = held ?: return@on reset()
             if (item.item != Items.DIAMOND_SWORD) return@on reset()
-            if (item.getData(DataTypes.SKYBLOCK_ID)?.skyblockId !in ids) return@on reset()
+            if (item.getData(DataTypes.ID) !in ids) return@on reset()
             if (hitbox && client.hitResult as? EntityHitResult != slayer.entity) return@on
 
             val m = if ("ultimate_wise" in item.enchants()) 100 else 200
@@ -66,7 +67,7 @@ object AutoSoulcry : Module(
 
             val item = held ?: return@on
             if (item.item != Items.DIAMOND_SWORD) return@on
-            if (item.getData(DataTypes.SKYBLOCK_ID)?.skyblockId !in ids) return@on
+            if (item.getData(DataTypes.ID) !in ids) return@on
 
             val m = if ("ultimate_wise" in item.enchants()) 100 else 200
             if (mana && (StatsAPI.mana + StatsAPI.overflowMana) < m) return@on
