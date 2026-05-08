@@ -15,7 +15,6 @@ import xyz.aerii.athen.modules.impl.dungeon.terminals.solver.TerminalSolver
 import xyz.aerii.athen.modules.impl.dungeon.terminals.solver.base.Click
 import xyz.aerii.athen.modules.impl.dungeon.terminals.solver.impl.*
 import xyz.aerii.library.api.client
-import xyz.aerii.library.api.mainThread
 import xyz.aerii.nebulune.accessors.ITerminalAccessor
 import kotlin.random.Random
 
@@ -40,10 +39,12 @@ object HoverTerms : Module(
     private var time = 0L
 
     init {
-        on<TickEvent.Client.End> {
+        on<TickEvent.Client.Start> {
             val type = TerminalAPI.currentTerminal ?: return@on
             if (type == TerminalType.MELODY) return@on
-            if (System.currentTimeMillis() - TerminalAPI.openTime < TerminalSolver.fcDelay) return@on
+
+            val now = System.currentTimeMillis()
+            if (now - TerminalAPI.openTime < TerminalSolver.fcDelay) return@on
             val solver = solvers[type] as? ITerminalAccessor ?: return@on
 
             val uiScale = 3f * TerminalSolver.`ui$scale`
@@ -76,32 +77,27 @@ object HoverTerms : Module(
 
             if (slot != slot0) {
                 slot0 = slot
-                time = System.currentTimeMillis() + delay()
+                time = now + delay()
             }
 
-            if (System.currentTimeMillis() < time) return@on
+            if (now < time) return@on
 
             slot0 = -1
             val final = if (type == TerminalType.RUBIX) Click(c.slot, if (c.button > 0) 0 else 1) else c
-            val windowId = TerminalAPI.lastId
-
-            mainThread {
-                if (!TerminalAPI.terminalOpen.value || TerminalAPI.lastId != windowId) return@mainThread
-                if (TerminalSimulator.s.value) {
-                    val screen = client.screen as? ITerminalSim ?: return@mainThread
-                    val slot0 = screen.menu?.slots?.getOrNull(final.slot) ?: return@mainThread
-                    screen.slotClicked(slot0, final.slot, final.button, if (final.button == 0) ClickType.CLONE else ClickType.PICKUP)
-                    return@mainThread
-                }
-
-                client.gameMode?.handleInventoryMouseClick(
-                    TerminalAPI.lastId,
-                    final.slot,
-                    if (final.button == 0) 2 else final.button,
-                    if (final.button == 0) ClickType.CLONE else ClickType.PICKUP,
-                    client.player ?: return@mainThread
-                )
+            if (TerminalSimulator.s.value) {
+                val screen = client.screen as? ITerminalSim ?: return@on
+                val slot0 = screen.menu?.slots?.getOrNull(final.slot) ?: return@on
+                screen.slotClicked(slot0, final.slot, final.button, if (final.button == 0) ClickType.CLONE else ClickType.PICKUP)
+                return@on
             }
+
+            client.gameMode?.handleInventoryMouseClick(
+                TerminalAPI.lastId,
+                final.slot,
+                if (final.button == 0) 2 else final.button,
+                if (final.button == 0) ClickType.CLONE else ClickType.PICKUP,
+                client.player ?: return@on
+            )
         }.runWhen(TerminalAPI.terminalOpen)
 
         on<DungeonEvent.Terminal.Open> {
