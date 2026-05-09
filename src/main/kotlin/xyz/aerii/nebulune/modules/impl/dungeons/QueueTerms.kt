@@ -2,7 +2,7 @@
 
 package xyz.aerii.nebulune.modules.impl.dungeons
 
-import net.minecraft.world.inventory.ContainerInput
+import net.minecraft.world.inventory.ClickType
 import xyz.aerii.athen.annotations.Load
 import xyz.aerii.athen.api.dungeon.terminals.TerminalAPI
 import xyz.aerii.athen.config.Category
@@ -49,14 +49,14 @@ object QueueTerms : Module(
             if (slotIndex >= slots.size) return
 
             val slot = slots[slotIndex]
-            screen.slotClicked(slot, slotIndex, click.button, if (click.button == 0) ContainerInput.CLONE else ContainerInput.PICKUP)
+            screen.slotClicked(slot, slotIndex, click.button, if (click.button == 0) ClickType.CLONE else ClickType.PICKUP)
 
             if (TerminalSolver.`sound$enabled`) TerminalSolver.clickSound.play()
             return
         }
 
         if (TerminalSolver.`sound$enabled`) TerminalSolver.clickSound.play()
-        guiClick(TerminalAPI.lastId, click.slot, if (click.button == 0) 2 else click.button, if (click.button == 0) ContainerInput.CLONE else ContainerInput.PICKUP)
+        guiClick(TerminalAPI.lastId, click.slot, if (click.button == 0) 2 else click.button, if (click.button == 0) ClickType.CLONE else ClickType.PICKUP)
 
         val id = TerminalAPI.lastId
         val timeout0 = timeout

@@ -1,6 +1,6 @@
 package xyz.aerii.nebulune.modules.impl.dungeons
 
-import net.minecraft.world.inventory.ContainerInput
+import net.minecraft.world.inventory.ClickType
 import xyz.aerii.athen.annotations.Load
 import xyz.aerii.athen.api.dungeon.terminals.TerminalAPI
 import xyz.aerii.athen.api.dungeon.terminals.TerminalType
@@ -88,11 +88,11 @@ object HoverTerms : Module(
             if (TerminalSimulator.s.value) {
                 val screen = client.screen as? ITerminalSim ?: return@on
                 val slot0 = screen.menu.slots.getOrNull(final.slot) ?: return@on
-                screen.slotClicked(slot0, final.slot, final.button, if (final.button == 0) ContainerInput.CLONE else ContainerInput.PICKUP)
+                screen.slotClicked(slot0, final.slot, final.button, if (final.button == 0) ClickType.CLONE else ClickType.PICKUP)
                 return@on
             }
 
-            guiClick(TerminalAPI.lastId, final.slot, if (final.button == 0) 2 else final.button, if (final.button == 0) ContainerInput.CLONE else ContainerInput.PICKUP)
+            guiClick(TerminalAPI.lastId, final.slot, if (final.button == 0) 2 else final.button, if (final.button == 0) ClickType.CLONE else ClickType.PICKUP)
         }.runWhen(TerminalAPI.terminalOpen)
 
         on<DungeonEvent.Terminal.Open> {
