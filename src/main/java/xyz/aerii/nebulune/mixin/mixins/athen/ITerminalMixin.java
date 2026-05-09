@@ -1,7 +1,5 @@
 package xyz.aerii.nebulune.mixin.mixins.athen;
 
-import kotlin.Unit;
-import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.item.ItemStack;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -11,15 +9,10 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import xyz.aerii.athen.api.dungeon.terminals.TerminalAPI;
 import xyz.aerii.athen.api.dungeon.terminals.TerminalType;
-import xyz.aerii.athen.modules.impl.dungeon.terminals.simulator.TerminalSimulator;
-import xyz.aerii.athen.modules.impl.dungeon.terminals.simulator.base.ITerminalSim;
 import xyz.aerii.athen.modules.impl.dungeon.terminals.solver.TerminalSolver;
 import xyz.aerii.athen.modules.impl.dungeon.terminals.solver.base.Click;
 import xyz.aerii.athen.modules.impl.dungeon.terminals.solver.base.ITerminal;
-import xyz.aerii.library.api.ClientKt;
-import xyz.aerii.nebulune.Nebulune;
 import xyz.aerii.nebulune.accessors.ITerminalAccessor;
 import xyz.aerii.nebulune.modules.impl.dungeons.AutoTerms;
 import xyz.aerii.nebulune.modules.impl.dungeons.HoverTerms;
@@ -51,9 +44,6 @@ public abstract class ITerminalMixin implements ITerminalAccessor {
     @Shadow
     protected abstract boolean valid(Click click);
 
-    @Shadow
-    protected abstract void compute(int slot, ItemStack item);
-
     @Override
     public CopyOnWriteArrayList<Click> nebulune$getList() {
         return list;
@@ -83,6 +73,7 @@ public abstract class ITerminalMixin implements ITerminalAccessor {
     @Inject(method = "onClose", at = @At("HEAD"))
     private void nebulune$onClose(CallbackInfo ci) {
         QueueTerms.INSTANCE.getClicks().clear();
+        QueueTerms.INSTANCE.getList().clear();
         HoverTerms.INSTANCE.reset();
     }
 
@@ -121,7 +112,7 @@ public abstract class ITerminalMixin implements ITerminalAccessor {
     @ModifyVariable(method = "main(FFFFF)V", at = @At(value = "STORE", ordinal = 0), ordinal = 0)
     private String nebulune$modifyTitleText(String titleText) {
         if (!QueueTerms.INSTANCE.getEnabled()) return titleText;
-        return titleText + " - " + QueueTerms.INSTANCE.getClicks().size();
+        return titleText + " - " + QueueTerms.INSTANCE.getClicks().size() + QueueTerms.INSTANCE.getList().size();
     }
 
     @Inject(method = "update", at = @At(value = "INVOKE", target = "Lxyz/aerii/athen/modules/impl/dungeon/terminals/solver/base/ITerminal;compute(ILnet/minecraft/world/item/ItemStack;)V", shift = At.Shift.AFTER))
@@ -140,57 +131,13 @@ public abstract class ITerminalMixin implements ITerminalAccessor {
 
         for (Click c : QueueTerms.INSTANCE.getClicks()) nebulune$adjust(c);
         QueueTerms.INSTANCE.getClicks().removeFirst();
-        nebulune$clickClick(next);
+        QueueTerms.INSTANCE.getList().add(next);
     }
 
     @Unique
     private void nebulune$clickClick(Click click) {
         QueueTerms.INSTANCE.setYearning(true);
-
-        if (TerminalSimulator.INSTANCE.getS().getValue()) {
-            var client = ClientKt.getClient();
-            var screen = client.screen;
-            if (!(screen instanceof ITerminalSim sim)) return;
-
-            var slots = sim.getMenu().slots;
-            int slotIndex = click.getSlot();
-            if (slotIndex >= slots.size()) return;
-
-            var slot = slots.get(slotIndex);
-            sim.slotClicked(slot, slotIndex, click.getButton(), click.getButton() == 0 ? ClickType.CLONE : ClickType.PICKUP);
-
-            if (TerminalSolver.INSTANCE.getSound$enabled()) TerminalSolver.INSTANCE.getClickSound().play();
-
-            return;
-        }
-
-        var client = ClientKt.getClient();
-        var gameMode = client.gameMode;
-        var player = client.player;
-        if (gameMode == null || player == null) return;
-
-        if (TerminalSolver.INSTANCE.getSound$enabled()) TerminalSolver.INSTANCE.getClickSound().play();
-
-        gameMode.handleInventoryMouseClick(
-                TerminalAPI.INSTANCE.getLastId(),
-                click.getSlot(),
-                click.getButton() == 0 ? 2 : click.getButton(),
-                click.getButton() == 0 ? ClickType.CLONE : ClickType.PICKUP,
-                player
-        );
-
-        int id = TerminalAPI.INSTANCE.getLastId();
-        int timeout = QueueTerms.INSTANCE.getTimeout();
-
-        Nebulune.afterTimed(timeout, () -> {
-            if (!TerminalAPI.INSTANCE.getTerminalOpen().getValue()) return Unit.INSTANCE;
-            if (id != TerminalAPI.INSTANCE.getLastId()) return Unit.INSTANCE;
-
-            QueueTerms.INSTANCE.getClicks().clear();
-            compute(0, ItemStack.EMPTY);
-            QueueTerms.INSTANCE.setYearning(false);
-            return Unit.INSTANCE;
-        });
+        QueueTerms.INSTANCE.getList().add(click);
     }
 
     @Unique

@@ -16,6 +16,7 @@ import xyz.aerii.athen.modules.impl.dungeon.terminals.solver.base.Click
 import xyz.aerii.athen.modules.impl.dungeon.terminals.solver.impl.*
 import xyz.aerii.library.api.client
 import xyz.aerii.nebulune.accessors.ITerminalAccessor
+import xyz.aerii.nebulune.utils.guiClick
 import kotlin.random.Random
 
 @Load
@@ -91,13 +92,7 @@ object HoverTerms : Module(
                 return@on
             }
 
-            client.gameMode?.handleInventoryMouseClick(
-                TerminalAPI.lastId,
-                final.slot,
-                if (final.button == 0) 2 else final.button,
-                if (final.button == 0) ClickType.CLONE else ClickType.PICKUP,
-                client.player ?: return@on
-            )
+            guiClick(TerminalAPI.lastId, final.slot, if (final.button == 0) 2 else final.button, if (final.button == 0) ClickType.CLONE else ClickType.PICKUP)
         }.runWhen(TerminalAPI.terminalOpen)
 
         on<DungeonEvent.Terminal.Open> {
