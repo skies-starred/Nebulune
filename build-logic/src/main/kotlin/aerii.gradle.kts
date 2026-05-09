@@ -48,14 +48,14 @@ val impl = if (new) "implementation" else "modImplementation"
 val comp = if (new) "compileOnly" else "modCompileOnly"
 val rune = if (new) "runtimeOnly" else "modRuntimeOnly"
 
-val modId = project.property("mod.id")
-val modName = project.property("mod.name")
-val modVer = project.property("mod.version")
+val modId = project.property("mod.id").toString()
+val modName = project.property("mod.name").toString()
+val modVer = project.property("mod.version").toString()
 
 val modAW = "$modId${if (new) "" else ".obf"}.accesswidener"
 
 version = "$modVer+$ver"
-base.archivesName = property("mod.id").toString()
+base.archivesName = modId
 
 repositories {
     fun strictMaven(url: String, vararg groups: String) = maven(url) { content { groups.forEach(::includeGroupAndSubgroups) } }
