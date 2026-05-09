@@ -7,7 +7,7 @@ import java.awt.Color
 
 fun drawTracer(to: Vec3, color: Color, lineWidth: Float = 3f, depthTest: Boolean = false) {
     val camera = client.gameRenderer.mainCamera
-    val from = camera.position/*? >= 1.21.11 { *//*()*//*? }*/.add(Vec3.directionFromRotation(camera.xRot/*? >= 1.21.11 { *//*()*//*? }*/, camera.yRot/*? >= 1.21.11 { *//*()*//*? }*/))
+    val from = camera.position/*? >= 1.21.11 { */()/*? }*/.add(Vec3.directionFromRotation(camera.xRot/*? >= 1.21.11 { */()/*? }*/, camera.yRot/*? >= 1.21.11 { */()/*? }*/))
     Render3D.drawLine(from, to, color, lineWidth, depthTest)
 }
 
@@ -23,7 +23,7 @@ fun drawString(
 ) {
     var toScale = scale
     if (increase) {
-        val camPos = client.gameRenderer.mainCamera.position/*? >= 1.21.11 { *//*()*//*? }*/
+        val camPos = client.gameRenderer.mainCamera.position/*? >= 1.21.11 { */()/*? }*/
         val dist = camPos.distanceTo(pos)
 
         toScale *= dist.toFloat() / 3f

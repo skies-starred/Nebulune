@@ -4,7 +4,7 @@ package xyz.aerii.nebulune.modules.impl.general
 
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen
 import net.minecraft.network.protocol.game.ClientboundContainerSetSlotPacket
-import net.minecraft.world.inventory.ClickType
+import net.minecraft.world.inventory.ContainerInput
 import net.minecraft.world.item.Items
 import xyz.aerii.athen.annotations.Load
 import xyz.aerii.athen.annotations.OnlyIn
@@ -15,9 +15,9 @@ import xyz.aerii.athen.events.PacketEvent
 import xyz.aerii.athen.events.TickEvent
 import xyz.aerii.athen.modules.Module
 import xyz.aerii.athen.utils.glint
+import xyz.aerii.athen.utils.guiClick
 import xyz.aerii.library.api.client
 import xyz.aerii.library.utils.stripped
-import xyz.aerii.nebulune.utils.guiClick
 import kotlin.collections.set
 
 @Load
@@ -69,7 +69,7 @@ object AutoExperiments : Module(
 
             val b = a.next
             if (b != null) {
-                guiClick(s.menu.containerId, b, clickType = ClickType.CLONE)
+                guiClick(s.menu.containerId, b, clickType = ContainerInput.CLONE)
                 click = n
             }
 

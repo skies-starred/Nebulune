@@ -56,8 +56,8 @@ object BreakerHelper : Module(
         }
 
         on<PacketEvent.Receive, ClientboundContainerSetSlotPacket> {
-            if (item?.getSkyBlockId()?.skyblockId != "DUNGEONBREAKER") return@on
-            val lore = item?.getRawLore() ?: return@on
+            if (item.getSkyBlockId()?.skyblockId != "DUNGEONBREAKER") return@on
+            val lore = item.getRawLore()
 
             for (l in lore) {
                 chargeRegex.findThenNull(l, "cur", "max") { (i1, i2) ->

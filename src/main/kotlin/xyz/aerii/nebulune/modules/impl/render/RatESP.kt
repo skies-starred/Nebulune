@@ -43,7 +43,7 @@ object RatESP : Module(
                 val entity = level?.getEntity(id) as? ArmorStand ?: return@schedule
                 if (!entity.hasItemInSlot(EquipmentSlot.HEAD)) return@schedule
                 if (entity in entities) return@schedule
-                if (entity.getItemBySlot(EquipmentSlot.HEAD)?.getTexture() != RAT) return@schedule
+                if (entity.getItemBySlot(EquipmentSlot.HEAD).getTexture() != RAT) return@schedule
 
                 entities.add(entity)
             }

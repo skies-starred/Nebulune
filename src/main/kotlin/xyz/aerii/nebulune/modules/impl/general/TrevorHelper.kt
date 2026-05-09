@@ -4,11 +4,11 @@ package xyz.aerii.nebulune.modules.impl.general
 
 import net.minecraft.network.chat.ClickEvent
 import net.minecraft.world.entity.LivingEntity
-import net.minecraft.world.entity.animal/*? >= 1.21.11 {*//*.chicken*//*? }*/.Chicken
-import net.minecraft.world.entity.animal/*? >= 1.21.11 {*//*.cow*//*? }*/.Cow
-import net.minecraft.world.entity.animal/*? >= 1.21.11 {*//*.pig*//*? }*/.Pig
-import net.minecraft.world.entity.animal/*? >= 1.21.11 {*//*.rabbit*//*? }*/.Rabbit
-import net.minecraft.world.entity.animal/*? >= 1.21.11 {*//*.equine*//*? } else {*/.horse/*? }*/.Horse
+import net.minecraft.world.entity.animal/*? >= 1.21.11 {*/.chicken/*? }*/.Chicken
+import net.minecraft.world.entity.animal/*? >= 1.21.11 {*/.cow/*? }*/.Cow
+import net.minecraft.world.entity.animal/*? >= 1.21.11 {*/.pig/*? }*/.Pig
+import net.minecraft.world.entity.animal/*? >= 1.21.11 {*/.rabbit/*? }*/.Rabbit
+import net.minecraft.world.entity.animal/*? >= 1.21.11 {*/.equine/*? } else {*//*.horse*//*? }*/.Horse
 import net.minecraft.world.entity.animal.sheep.Sheep
 import tech.thatgravyboat.skyblockapi.api.data.MayorCandidates
 import tech.thatgravyboat.skyblockapi.utils.extentions.serverMaxHealth
@@ -121,9 +121,9 @@ object TrevorHelper : Module(
             }
 
             if (!autoAccept) return@on
-            if (message.siblings?.getOrNull(0)?.stripped() == "Accept the trapper's task to hunt the animal?") {
+            if (message.siblings.getOrNull(0)?.stripped() == "Accept the trapper's task to hunt the animal?") {
                 Chronos.schedule((acceptDelay + (0..2).random()).client) {
-                    (message.siblings[3]?.style?.clickEvent as? ClickEvent.RunCommand)?.command?.command()
+                    (message.siblings[3].style.clickEvent as? ClickEvent.RunCommand)?.command?.command()
                 }
 
                 return@on

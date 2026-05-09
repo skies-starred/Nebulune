@@ -83,7 +83,6 @@ dependencies {
     "minecraft"("com.mojang:minecraft:$ver")
 
     rune("devauth".global)
-    comp("entityculling".versioned)
 
     //impl("athen-prod".versioned)
     impl("athen-act".versioned) { exclude(group = "tech.thatgravyboat", module = "skyblock-api") }
@@ -97,8 +96,8 @@ dependencies {
     impl("classgraph".global)
     impl("autoupdate".global)
     impl("library".versioned)
-    impl("lwjgl-nanovg".global)
-    for (p in listOf("windows", "linux", "macos", "macos-arm64")) impl("lwjgl-nanovg".global.get().toString() + ":natives-$p")
+    impl("lwjgl-nanovg".versioned)
+    for (p in listOf("windows", "linux", "macos", "macos-arm64")) impl("lwjgl-nanovg".versioned.get().toString() + ":natives-$p")
 
     impl("skyblock-api".global) {
         capabilities { requireCapability("tech.thatgravyboat:skyblock-api-$ver" + if (new) "" else "-remapped") }

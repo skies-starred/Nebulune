@@ -1,6 +1,6 @@
 package xyz.aerii.nebulune.modules.impl.dungeons
 
-import net.minecraft.world.inventory.ClickType
+import net.minecraft.world.inventory.ContainerInput
 import xyz.aerii.athen.annotations.Load
 import xyz.aerii.athen.api.dungeon.terminals.TerminalAPI
 import xyz.aerii.athen.api.dungeon.terminals.TerminalType
@@ -14,9 +14,9 @@ import xyz.aerii.athen.modules.impl.dungeon.terminals.simulator.base.ITerminalSi
 import xyz.aerii.athen.modules.impl.dungeon.terminals.solver.TerminalSolver
 import xyz.aerii.athen.modules.impl.dungeon.terminals.solver.base.Click
 import xyz.aerii.athen.modules.impl.dungeon.terminals.solver.impl.*
+import xyz.aerii.athen.utils.guiClick
 import xyz.aerii.library.api.client
 import xyz.aerii.nebulune.accessors.ITerminalAccessor
-import xyz.aerii.nebulune.utils.guiClick
 import kotlin.math.pow
 import kotlin.math.sqrt
 import kotlin.random.Random
@@ -151,12 +151,12 @@ object AutoTerms : Module(
 
         if (TerminalSimulator.s.value) {
             val screen = client.screen as? ITerminalSim ?: return
-            val slot0 = screen.menu?.slots?.getOrNull(c.slot) ?: return
-            screen.slotClicked(slot0, c.slot, c.button, if (c.button == 0) ClickType.CLONE else ClickType.PICKUP)
+            val slot0 = screen.menu.slots.getOrNull(c.slot) ?: return
+            screen.slotClicked(slot0, c.slot, c.button, if (c.button == 0) ContainerInput.CLONE else ContainerInput.PICKUP)
             return
         }
 
-        guiClick(TerminalAPI.lastId, c.slot, if (c.button == 0) 2 else c.button, if (c.button == 0) ClickType.CLONE else ClickType.PICKUP)
+        guiClick(TerminalAPI.lastId, c.slot, if (c.button == 0) 2 else c.button, if (c.button == 0) ContainerInput.CLONE else ContainerInput.PICKUP)
     }
 
     private val TerminalType.active: Boolean

@@ -43,7 +43,7 @@ object PestESP : Module(
                 if (!entity.hasItemInSlot(EquipmentSlot.HEAD)) return@schedule
                 if (entity in entities) return@schedule
 
-                val head = entity.getItemBySlot(EquipmentSlot.HEAD)?.getTexture() ?: return@schedule
+                val head = entity.getItemBySlot(EquipmentSlot.HEAD).getTexture() ?: return@schedule
                 if (head !in PEST_HEADS) return@schedule
 
                 entities.add(entity)

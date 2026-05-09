@@ -7,7 +7,6 @@ import net.minecraft.client.KeyMapping
 import net.minecraft.network.protocol.game.ClientboundContainerClosePacket
 import net.minecraft.network.protocol.game.ClientboundOpenScreenPacket
 import net.minecraft.network.protocol.game.ServerboundContainerClosePacket
-import net.minecraft.world.inventory.ClickType
 import net.minecraft.world.item.Items
 import xyz.aerii.athen.annotations.Load
 import xyz.aerii.athen.events.CommandRegistration
@@ -22,6 +21,7 @@ import xyz.aerii.athen.handlers.Typo
 import xyz.aerii.athen.handlers.Typo.modMessage
 import xyz.aerii.athen.mixin.accessors.KeyMappingAccessor
 import xyz.aerii.athen.modules.impl.general.WardrobeKeybinds
+import xyz.aerii.athen.utils.guiClick
 import xyz.aerii.athen.utils.render.Render2D.sizedText
 import xyz.aerii.library.api.client
 import xyz.aerii.library.api.command
@@ -148,10 +148,10 @@ object WardrobeHelper {
 
             if (menu.containerId != id) return@on
 
-            val mcSlot = menu.slots.getOrNull(slot.idx)?.takeIf { it.item?.isEmpty == false } ?: return@on
+            val mcSlot = menu.slots.getOrNull(slot.idx)?.takeIf { !it.item.isEmpty } ?: return@on
             if (mcSlot.item.item == Items.GRAY_DYE) return@on
 
-            if (!slot.equipped) client.gameMode?.handleInventoryMouseClick(id, slot.idx, 0, ClickType.PICKUP, player)
+            if (!slot.equipped) guiClick(id, slot.idx)
 
             close()
             reset()

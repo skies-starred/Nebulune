@@ -5,11 +5,11 @@ import net.minecraft.world.item.Item
 import net.minecraft.world.item.Items
 import tech.thatgravyboat.skyblockapi.api.datatype.DataTypes
 import tech.thatgravyboat.skyblockapi.api.datatype.getData
-import xyz.aerii.athen.accessors.attachedNames
 import xyz.aerii.athen.annotations.Load
 import xyz.aerii.athen.annotations.OnlyIn
 import xyz.aerii.athen.api.location.SkyBlockIsland
 import xyz.aerii.athen.config.Category
+import xyz.aerii.athen.ducks.entity.attachedNames
 import xyz.aerii.athen.events.TickEvent
 import xyz.aerii.athen.modules.Module
 import xyz.aerii.library.api.client
@@ -63,7 +63,7 @@ object DaggerSwap : Module(
         val acc = inv as InventoryAccessor
 
         val heldStack = inv.getItem(acc.selectedSlot)
-        val heldId = heldStack?.getData(DataTypes.ID)
+        val heldId = heldStack.getData(DataTypes.ID)
         if (heldId != null && heldId in attr.set) {
             if (heldStack.item != attr.item) rightClick()
             swap = null
@@ -71,7 +71,7 @@ object DaggerSwap : Module(
         }
 
         for (i in 0..8) {
-            val stack = inv.getItem(i) ?: continue
+            val stack = inv.getItem(i)
             val id = stack.getData(DataTypes.ID) ?: continue
             if (id !in attr.set) continue
             if (acc.selectedSlot != i) acc.selectedSlot = i

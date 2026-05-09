@@ -14,9 +14,13 @@ import xyz.aerii.nebulune.modules.impl.render.CameraHelper;
 
 @Mixin(Camera.class)
 public class CameraMixin {
-    @WrapOperation(method = "setup", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;getAttributeValue(Lnet/minecraft/core/Holder;)D"))
+    //? if >= 26.1 {
+    @WrapOperation(method = "alignWithEntity", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;getAttributeValue(Lnet/minecraft/core/Holder;)D"))
+    //? } else {
+    /*@WrapOperation(method = "setup", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;getAttributeValue(Lnet/minecraft/core/Holder;)D"))
+    *///? }
     private double nebulune$setup(LivingEntity instance, Holder<Attribute> attribute, Operation<Double> original) {
-        return CameraHelper.getDist() ? CameraHelper.getDistance() : instance.getAttributeValue(attribute);
+        return CameraHelper.getDist() ? CameraHelper.getDistance() : original.call(instance, attribute);
     }
 
     @Inject(method = "getMaxZoom", at = @At("HEAD"), cancellable = true)
