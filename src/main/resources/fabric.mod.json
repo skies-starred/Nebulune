@@ -9,7 +9,7 @@
   ],
   "license": "BSD 3-Clause",
   "icon": "assets/nebulune/icon.png",
-  "environment": "*",
+  "environment": "client",
   "entrypoints": {
     "client": [
       {
@@ -27,5 +27,11 @@
     "fabric-language-kotlin": "*",
     "minecraft": "${minecraft}",
     "athen": ">=0.1.6"
+  },
+  "custom": {
+    "modmenu": {
+      "update_checker": false,
+      "parent": "athen"
+    }
   }
 }
