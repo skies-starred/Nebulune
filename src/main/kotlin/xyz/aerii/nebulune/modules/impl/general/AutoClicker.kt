@@ -10,7 +10,6 @@ import tech.thatgravyboat.skyblockapi.api.datatype.getData
 import xyz.aerii.athen.Athen
 import xyz.aerii.athen.annotations.Load
 import xyz.aerii.athen.config.Category
-import xyz.aerii.athen.events.CommandRegistration
 import xyz.aerii.athen.events.InputEvent
 import xyz.aerii.athen.events.TickEvent
 import xyz.aerii.athen.events.core.runWhen
@@ -25,6 +24,7 @@ import xyz.aerii.library.api.lie
 import xyz.aerii.library.api.pressed
 import xyz.aerii.library.api.repeat
 import xyz.aerii.library.handlers.parser.parse
+import xyz.aerii.library.kommand.ICommand
 import xyz.aerii.nebulune.utils.leftClick
 import xyz.aerii.nebulune.utils.rightClick
 
@@ -33,7 +33,7 @@ object AutoClicker : Module(
     "Auto clicker",
     "Automatically clicks for you!",
     Category.GENERAL
-) {
+), ICommand {
     private val left by config.switch("Left clicker")
     private val `left$key` by config.keybind("Left key").dependsOn { left }
     private val `left$cps` by config.slider("Left CPS", 3, 5, 20).dependsOn { left }
@@ -102,74 +102,64 @@ object AutoClicker : Module(
             KeyMapping.set((client.options.keyAttack as KeyMappingAccessor).boundKey, false)
         }.runWhen(breaking.state)
 
-        on<CommandRegistration> {
-            event.register(Athen.modId) {
-                then("ac") {
-                    then("add") {
-                        thenCallback("left") {
-                            val h = fn() ?: return@thenCallback "Hold an item to whitelist.".modMessage()
-                            if (h in set1.value) return@thenCallback "$h is already in left whitelist!".modMessage()
+        command(Athen.modId) {
+            "ac" / "add" / "left" {
+                val h = fn() ?: return@invoke "Hold an item to whitelist.".modMessage()
+                if (h in set1.value) return@invoke "$h is already in left whitelist!".modMessage()
 
-                            set1.update { add(h) }
-                            "Added <green>$h<r> to left whitelist!".parse().modMessage()
-                        }
+                set1.update { add(h) }
+                "Added <green>$h<r> to left whitelist!".parse().modMessage()
+            }
 
-                        thenCallback("right") {
-                            val h = fn() ?: return@thenCallback "Hold an item to whitelist.".modMessage()
-                            if (h in set2.value) return@thenCallback "$h is already in right whitelist!".modMessage()
+            "ac" / "add" / "right" {
+                val h = fn() ?: return@invoke "Hold an item to whitelist.".modMessage()
+                if (h in set2.value) return@invoke "$h is already in right whitelist!".modMessage()
 
-                            set2.update { add(h) }
-                            "Added <green>$h<r> to right whitelist!".parse().modMessage()
-                        }
-                    }
+                set2.update { add(h) }
+                "Added <green>$h<r> to right whitelist!".parse().modMessage()
+            }
 
-                    then("remove") {
-                        thenCallback("left") {
-                            val h = fn() ?: return@thenCallback "Hold an item to whitelist.".modMessage()
-                            if (h !in set1.value) return@thenCallback "$h is not in left whitelist!".modMessage()
+            "ac" / "remove" / "left" {
+                val h = fn() ?: return@invoke "Hold an item to whitelist.".modMessage()
+                if (h !in set1.value) return@invoke "$h is not in left whitelist!".modMessage()
 
-                            set1.update { remove(h) }
-                            "Removed <green>$h<r> from left whitelist!".parse().modMessage()
-                        }
+                set1.update { remove(h) }
+                "Removed <green>$h<r> from left whitelist!".parse().modMessage()
+            }
 
-                        thenCallback("right") {
-                            val h = fn() ?: return@thenCallback "Hold an item to whitelist.".modMessage()
-                            if (h !in set2.value) return@thenCallback "$h is not in right whitelist!".modMessage()
+            "ac" / "remove" / "right" {
+                val h = fn() ?: return@invoke "Hold an item to whitelist.".modMessage()
+                if (h !in set2.value) return@invoke "$h is not in right whitelist!".modMessage()
 
-                            set2.update { remove(h) }
-                            "Removed <green>$h<r> from right whitelist!".parse().modMessage()
-                        }
-                    }
+                set2.update { remove(h) }
+                "Removed <green>$h<r> from right whitelist!".parse().modMessage()
+            }
 
-                    then("clear") {
-                        thenCallback("left") {
-                            set1.update { clear() }
-                            "Cleared left whitelist.".modMessage()
-                        }
+            "ac" / "clear" / "left" {
+                set1.update { clear() }
+                "Cleared left whitelist.".modMessage()
+            }
 
-                        thenCallback("right") {
-                            set2.update { clear() }
-                            "Cleared right whitelist.".modMessage()
-                        }
-                    }
+            "ac" / "clear" / "right" {
+                set2.update { clear() }
+                "Cleared right whitelist.".modMessage()
+            }
 
-                    thenCallback("list") {
-                        val a = ("<gray>" + ("-".repeat())).parse()
+            "ac" / "list" {
+                val a = ("<gray>" + ("-".repeat())).parse()
 
-                        "Autoclicker whitelist:".modMessage()
-                        a.lie()
+                "Autoclicker whitelist:".modMessage()
+                a.lie()
 
-                        "Left whitelist:".lie()
-                        for (s in set1.value) " <dark_gray>- <gray>$s".parse().lie()
-                        a.lie()
+                "Left whitelist:".lie()
+                for (s in set1.value) " <dark_gray>- <gray>$s".parse().lie()
+                a.lie()
 
-                        "Right whitelist:".lie()
-                        for (s in set2.value) " <dark_gray>- <gray>$s".parse().lie()
-                        a.lie()
+                "Right whitelist:".lie()
+                for (s in set2.value) " <dark_gray>- <gray>$s".parse().lie()
+                a.lie()
 
-                        if (!enabled) "Please turn on the feature \"AutoClicker\"".modMessage()
-                    }
-                }
+                if (!enabled) "Please turn on the feature \"AutoClicker\"".modMessage()
             }
         }
     }

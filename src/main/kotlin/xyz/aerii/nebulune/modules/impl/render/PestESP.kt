@@ -9,6 +9,7 @@ import tech.thatgravyboat.skyblockapi.utils.extentions.getTexture
 import xyz.aerii.athen.annotations.Load
 import xyz.aerii.athen.annotations.OnlyIn
 import xyz.aerii.athen.api.location.SkyBlockIsland
+import xyz.aerii.athen.api.rendering.level.impl.extensions.impl.extractFrameBox
 import xyz.aerii.athen.config.Category
 import xyz.aerii.athen.events.LocationEvent
 import xyz.aerii.athen.events.PacketEvent
@@ -16,11 +17,10 @@ import xyz.aerii.athen.events.WorldRenderEvent
 import xyz.aerii.athen.handlers.Chronos
 import xyz.aerii.athen.modules.Module
 import xyz.aerii.athen.ui.themes.Catppuccin
-import xyz.aerii.athen.utils.render.Render3D
 import xyz.aerii.athen.utils.render.renderPos
 import xyz.aerii.library.api.level
 import xyz.aerii.library.handlers.time.client
-import xyz.aerii.nebulune.utils.drawTracer
+import xyz.aerii.nebulune.utils.extractTracer
 import java.awt.Color
 
 @Load
@@ -60,8 +60,8 @@ object PestESP : Module(
                 }
 
                 val p = e.renderPos.add(-0.5, 1.0, -0.5)
-                Render3D.drawBox(AABB.unitCubeFromLowerCorner(p), color, thickness.toFloat(), depthTest)
-                if (tracer) drawTracer(p, color, thickness.toFloat(), depthTest)
+                extractFrameBox(AABB.unitCubeFromLowerCorner(p), color.rgb, thickness.toFloat(), depthTest)
+                if (tracer) extractTracer(p, color, thickness.toFloat(), depthTest)
             }
         }
 

@@ -10,6 +10,8 @@ import net.minecraft.world.phys.AABB
 import xyz.aerii.athen.annotations.Load
 import xyz.aerii.athen.annotations.OnlyIn
 import xyz.aerii.athen.api.location.SkyBlockIsland
+import xyz.aerii.athen.api.rendering.level.impl.extensions.impl.extractStyledBox
+import xyz.aerii.athen.api.rendering.level.impl.extensions.impl.extractText
 import xyz.aerii.athen.config.Category
 import xyz.aerii.athen.config.ExpandableHandle
 import xyz.aerii.athen.events.LocationEvent
@@ -17,10 +19,8 @@ import xyz.aerii.athen.events.WorldRenderEvent
 import xyz.aerii.athen.handlers.Notifier.notify
 import xyz.aerii.athen.handlers.Typo.modMessage
 import xyz.aerii.athen.modules.Module
-import xyz.aerii.athen.utils.render.Render3D
 import xyz.aerii.nebulune.events.ClientChunkEvent
-import xyz.aerii.nebulune.utils.drawString
-import xyz.aerii.nebulune.utils.drawTracer
+import xyz.aerii.nebulune.utils.extractTracer
 import java.awt.Color
 
 @Load
@@ -194,7 +194,7 @@ object WorldScanner: Module(
             else scannedChunks.add(Pair(chunk.pos.x, chunk.pos.z))
         }
 
-        on<LocationEvent.ServerChange> {
+        on<LocationEvent.Server.Connect> {
             grottos.clear()
             structures.clear()
             scannedChunks.clear()
@@ -209,28 +209,24 @@ object WorldScanner: Module(
                     val aabb = AABB(blockPos)
                     val color = grottoConfig.color()
 
-                    when (grottoConfig.highlightStyle()) {
-                        0 -> Render3D.drawBox(aabb, color, 2f, false)
-                        1 -> Render3D.drawFilledBox(aabb, color, false)
-                        2 -> Render3D.drawStyledBox(aabb, color, Render3D.BoxStyle.BOTH, 2f, false)
-                    }
-                    if (grottoConfig.tracer()) drawTracer(center, grottoConfig.color(), 2f, false)
-                    if (grottoConfig.displayName()) drawString("Fairy Grotto",
+                    extractStyledBox(aabb, color.rgb, grottoConfig.highlightStyle(), depth = false)
+                    if (grottoConfig.tracer()) extractTracer(center, grottoConfig.color(), 2f, false)
+                    if (grottoConfig.displayName()) extractText("Fairy Grotto",
                         center.add(0.0, 10.0, 0.0),
                         grottoConfig.color().rgb,
                         Color(0, 0, 0, (255 * grottoConfig.displayBackgroundOpacity()).toInt()).rgb,
                         grottoConfig.displayScale(),
-                        depthTest = false,
+                        depth = false,
                         shadow = true,
                         increase = true
                     )
-                    if (grottoConfigShowNumberOfBlocks) drawString(
+                    if (grottoConfigShowNumberOfBlocks) extractText(
                         grotto.third.toString(),
                         center,
                         grottoConfig.color().rgb,
                         Color(0, 0, 0, (255 * grottoConfigShowNumberOfBlocksBackgroundOpacity).toInt()).rgb,
                         grottoConfig.displayScale(),
-                        depthTest = false,
+                        depth = false,
                         shadow = true,
                         increase = true
                     )
@@ -244,19 +240,15 @@ object WorldScanner: Module(
                     val blockPos = BlockPos(pos.first, pos.second, pos.third)
                     val aabb = AABB(blockPos)
                     val color = structureConfig.color()
-                    when (structureConfig.highlightStyle()) {
-                        0 -> Render3D.drawBox(aabb, color, 2f, false)
-                        1 -> Render3D.drawFilledBox(aabb, color, false)
-                        2 -> Render3D.drawStyledBox(aabb, color, Render3D.BoxStyle.BOTH, 2f, false)
-                    }
-                    if (structureConfig.tracer()) drawTracer(blockPos.center, structureConfig.color(), 2f, false)
-                    if (structureConfig.displayName()) drawString(
+                    extractStyledBox(aabb, color.rgb, structureConfig.highlightStyle(), depth = false)
+                    if (structureConfig.tracer()) extractTracer(blockPos.center, structureConfig.color(), 2f, false)
+                    if (structureConfig.displayName()) extractText(
                         structure.first.displayName,
                         blockPos.center,
                         structureConfig.color().rgb,
                         Color(0, 0, 0, (255 * structureConfig.displayBackgroundOpacity()).toInt()).rgb,
                         structureConfig.displayScale(),
-                        depthTest = false,
+                        depth = false,
                         shadow = true,
                         increase = true
                     )

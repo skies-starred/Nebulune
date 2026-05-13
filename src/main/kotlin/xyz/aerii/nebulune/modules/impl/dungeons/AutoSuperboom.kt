@@ -2,7 +2,6 @@
 
 package xyz.aerii.nebulune.modules.impl.dungeons
 
-import com.mojang.brigadier.arguments.StringArgumentType
 import com.mojang.serialization.Codec
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.resources.ResourceLocation
@@ -12,7 +11,6 @@ import xyz.aerii.athen.annotations.Load
 import xyz.aerii.athen.annotations.OnlyIn
 import xyz.aerii.athen.api.location.SkyBlockIsland
 import xyz.aerii.athen.config.Category
-import xyz.aerii.athen.events.CommandRegistration
 import xyz.aerii.athen.events.InputEvent
 import xyz.aerii.athen.handlers.Chronos
 import xyz.aerii.athen.handlers.Scribble
@@ -23,6 +21,7 @@ import xyz.aerii.library.api.lie
 import xyz.aerii.library.handlers.parser.parse
 import xyz.aerii.library.handlers.time.client
 import xyz.aerii.library.handlers.time.start
+import xyz.aerii.library.kommand.ICommand
 import xyz.aerii.nebulune.Nebulune
 import xyz.aerii.nebulune.mixin.accessors.InventoryAccessor
 import xyz.aerii.nebulune.utils.leftClick
@@ -33,7 +32,7 @@ object AutoSuperboom : Module(
     "Auto superboom",
     "Automatically swaps to and uses the superboom if clicking on a breakable wall.",
     Category.DUNGEONS
-) {
+), ICommand {
     private val _unused by config.textParagraph("Use the command <red>\"/nebulune superboom [add|remove]\"<r> while looking at a block to add/remove it to the breakable blocks list!")
 
     private val minDelay by config.slider("Minimum delay", 1, 1, 5, "ticks")
@@ -51,64 +50,56 @@ object AutoSuperboom : Module(
     private val set = setOf("SUPERBOOM_TNT", "INFINITE_SUPERBOOM_TNT")
 
     init {
-        on<CommandRegistration> {
-            event.register(Nebulune.modId) {
-                then("superboom") {
-                    then("add") {
-                        callback {
-                            val h = client.hitResult as? BlockHitResult ?: return@callback "Not looking at a block!".modMessage()
-                            val b = client.level?.getBlockState(h.blockPos)?.block ?: return@callback
+        command(Nebulune.modId) {
+            "superboom" / "add" {
+                val h = client.hitResult as? BlockHitResult ?: return@invoke "Not looking at a block!".modMessage()
+                val b = client.level?.getBlockState(h.blockPos)?.block ?: return@invoke
 
-                            val id = BuiltInRegistries.BLOCK.getKey(b)
+                val id = BuiltInRegistries.BLOCK.getKey(b)
 
-                            if (id.toString() in breakable.value) return@callback "Block already in breakable list!".modMessage()
-                            breakable.update { add(id.toString()) }
+                if (id.toString() in breakable.value) return@invoke "Block already in breakable list!".modMessage()
+                breakable.update { add(id.toString()) }
 
-                            "Added \"${id.path}\" to the breakable block list!".modMessage()
-                        }
+                "Added \"${id.path}\" to the breakable block list!".modMessage()
+            }
 
-                        thenCallback("block", StringArgumentType.string()) {
-                            val it = "minecraft:${StringArgumentType.getString(this, "block")}"
-                            if (ResourceLocation.tryParse(it) == null) return@thenCallback "Invalid block id, or format! Try the command \"/nebulune superboom add\" while looking at the block.".modMessage()
-                            if (it in breakable.value) return@thenCallback "Block already in breakable list!".modMessage()
+            "superboom" / "add" / string("block") {
+                val it = "minecraft:${string("block")}"
+                if (ResourceLocation.tryParse(it) == null) return@string "Invalid block id, or format! Try the command \"/nebulune superboom add\" while looking at the block.".modMessage()
+                if (it in breakable.value) return@string "Block already in breakable list!".modMessage()
 
-                            breakable.update { add(it) }
-                            "Added \"${it.substringAfter(":")}\" to the breakable block list!".modMessage()
-                        }
-                    }
+                breakable.update { add(it) }
+                "Added \"${it.substringAfter(":")}\" to the breakable block list!".modMessage()
+            }
 
-                    then("remove") {
-                        callback {
-                            val h = client.hitResult as? BlockHitResult ?: return@callback "Not looking at a block!".modMessage()
-                            val b = client.level?.getBlockState(h.blockPos)?.block ?: return@callback
+            "superboom" / "remove" {
+                val h = client.hitResult as? BlockHitResult ?: return@invoke "Not looking at a block!".modMessage()
+                val b = client.level?.getBlockState(h.blockPos)?.block ?: return@invoke
 
-                            val id = BuiltInRegistries.BLOCK.getKey(b)
+                val id = BuiltInRegistries.BLOCK.getKey(b)
 
-                            if (id.toString() !in breakable.value) return@callback "Block not in breakable list!".modMessage()
-                            breakable.update { remove(id.toString()) }
+                if (id.toString() !in breakable.value) return@invoke "Block not in breakable list!".modMessage()
+                breakable.update { remove(id.toString()) }
 
-                            "Removed \"${id.path}\" from the breakable block list!".modMessage()
-                        }
+                "Removed \"${id.path}\" from the breakable block list!".modMessage()
+            }
 
-                        thenCallback("block", StringArgumentType.string()) {
-                            val it = "minecraft:${StringArgumentType.getString(this, "block")}"
-                            if (ResourceLocation.tryParse(it) == null) return@thenCallback "Invalid block id, or format! Try the command \"/nebulune superboom add\" while looking at the block.".modMessage()
-                            if (it !in breakable.value) return@thenCallback "Block not in breakable list!".modMessage()
+            "superboom" / "remove" / string("block") {
+                val it = "minecraft:${string("block")}"
+                if (ResourceLocation.tryParse(it) == null) return@string "Invalid block id, or format! Try the command \"/nebulune superboom add\" while looking at the block.".modMessage()
+                if (it !in breakable.value) return@string "Block not in breakable list!".modMessage()
 
-                            breakable.update { remove(it) }
-                            "Removed \"${it.substringAfter(":")}\" from the breakable block list!".modMessage()
-                        }
-                    }
+                breakable.update { remove(it) }
+                "Removed \"${it.substringAfter(":")}\" from the breakable block list!".modMessage()
+            }
 
-                    thenCallback("list") {
-                        "Breakable block list:".modMessage()
-                        for (a in breakable.value) {
-                            val b = a.substringBefore(":")
-                            val c = a.substringAfter(":")
+            "supeboom" / "list" {
+                "Breakable block list:".modMessage()
+                for (a in breakable.value) {
+                    val b = a.substringBefore(":")
+                    val c = a.substringAfter(":")
 
-                            " <dark_gray>- <gray>$b:<r>$c".parse().lie()
-                        }
-                    }
+                    " <dark_gray>- <gray>$b:<r>$c".parse().lie()
                 }
             }
         }

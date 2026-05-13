@@ -2,14 +2,13 @@
 
 package xyz.aerii.nebulune.modules.impl.general
 
-import com.mojang.brigadier.arguments.IntegerArgumentType
 import net.minecraft.client.KeyMapping
 import net.minecraft.network.protocol.game.ClientboundContainerClosePacket
 import net.minecraft.network.protocol.game.ClientboundOpenScreenPacket
 import net.minecraft.network.protocol.game.ServerboundContainerClosePacket
 import net.minecraft.world.item.Items
 import xyz.aerii.athen.annotations.Load
-import xyz.aerii.athen.events.CommandRegistration
+import xyz.aerii.athen.api.rendering.ui.text.vanilla.extensions.sizedText
 import xyz.aerii.athen.events.GuiEvent
 import xyz.aerii.athen.events.InputEvent
 import xyz.aerii.athen.events.PacketEvent
@@ -22,17 +21,17 @@ import xyz.aerii.athen.handlers.Typo.modMessage
 import xyz.aerii.athen.mixin.accessors.KeyMappingAccessor
 import xyz.aerii.athen.modules.impl.general.WardrobeKeybinds
 import xyz.aerii.athen.utils.guiClick
-import xyz.aerii.athen.utils.render.Render2D.sizedText
 import xyz.aerii.library.api.client
 import xyz.aerii.library.api.command
 import xyz.aerii.library.api.mainThread
 import xyz.aerii.library.handlers.Observable.Companion.and
 import xyz.aerii.library.handlers.time.client
+import xyz.aerii.library.kommand.ICommand
 import xyz.aerii.library.utils.stripped
 import xyz.aerii.nebulune.Nebulune
 
 @Load
-object WardrobeHelper {
+object WardrobeHelper : ICommand {
     val autoClose by WardrobeKeybinds.config.switch("Auto close after use")
     private val autoEquip = WardrobeKeybinds.config.switch("Auto equip").custom("autoEquip")
     private val _unused by WardrobeKeybinds.config.textParagraph("Automatically equips the wardrobe slot without opening the gui. Use at your own risk.")
@@ -68,24 +67,20 @@ object WardrobeHelper {
     private var start: Long = 0
 
     init {
-        on<CommandRegistration> {
-            event.register(Nebulune.modId) {
-                then("wd") {
-                    thenCallback("slot", IntegerArgumentType.integer(1, 9)) {
-                        if (!WardrobeKeybinds.enabled) return@thenCallback "Enable wardrobe keybinds!".modMessage(Typo.PrefixType.ERROR)
-                        if (!autoEquip.value) return@thenCallback "Enable auto equip in wardrobe keybinds!".modMessage(Typo.PrefixType.ERROR)
+        command(Nebulune.modId) {
+            "wd" / int("slot", 1, 9) {
+                if (!WardrobeKeybinds.enabled) return@int "Enable wardrobe keybinds!".modMessage(Typo.PrefixType.ERROR)
+                if (!autoEquip.value) return@int "Enable auto equip in wardrobe keybinds!".modMessage(Typo.PrefixType.ERROR)
 
-                        val int = IntegerArgumentType.getInteger(this, "slot")
-                        val slot = WardrobeKeybinds.wardrobeSlots.find { it.idx == 35 + int } ?: return@thenCallback
+                val int = int("slot")
+                val slot = WardrobeKeybinds.wardrobeSlots.find { it.idx == 35 + int } ?: return@int
 
-                        slot0 = slot
-                        swapping = true
-                        id = -1
-                        start = System.currentTimeMillis()
+                slot0 = slot
+                swapping = true
+                id = -1
+                start = System.currentTimeMillis()
 
-                        "wd".command()
-                    }
-                }
+                "wd".command()
             }
         }
 

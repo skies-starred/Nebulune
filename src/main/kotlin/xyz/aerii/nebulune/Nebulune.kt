@@ -5,32 +5,28 @@ package xyz.aerii.nebulune
 import net.fabricmc.api.ClientModInitializer
 import xyz.aerii.athen.Athen
 import xyz.aerii.athen.config.ui.ClickGUI
-import xyz.aerii.athen.events.CommandRegistration
-import xyz.aerii.athen.events.core.on
 import xyz.aerii.athen.handlers.Chronos
 import xyz.aerii.athen.handlers.Typo.modMessage
 import xyz.aerii.library.handlers.time.server
+import xyz.aerii.library.kommand.ICommand
 import java.util.concurrent.atomic.AtomicInteger
 import kotlin.time.Duration.Companion.milliseconds
 
-object Nebulune : ClientModInitializer {
+object Nebulune : ClientModInitializer, ICommand {
     const val modVersion: String = /*$ mod_version*/ "0.1.6"
     const val modId: String = /*$ mod_id*/ "nebulune"
 
     override fun onInitializeClient() {
         Athen.LOGGER.info("Nebulune loaded.")
+        command(modId) {
+            executes {
+                ClickGUI.open()
+                "Opening Config GUI...".modMessage()
+            }
 
-        on<CommandRegistration> {
-            event.register(modId) {
-                thenCallback("config") {
-                    ClickGUI.open()
-                    "Opening Config GUI...".modMessage()
-                }
-
-                callback {
-                    ClickGUI.open()
-                    "Opening Config GUI...".modMessage()
-                }
+            "config" {
+                ClickGUI.open()
+                "Opening Config GUI...".modMessage()
             }
         }
     }

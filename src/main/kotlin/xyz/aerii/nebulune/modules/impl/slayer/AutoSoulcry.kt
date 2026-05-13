@@ -13,13 +13,13 @@ import xyz.aerii.athen.annotations.OnlyIn
 import xyz.aerii.athen.api.location.SkyBlockIsland
 import xyz.aerii.athen.api.skyblock.SlayerAPI
 import xyz.aerii.athen.config.Category
+import xyz.aerii.athen.events.PlayerEvent
 import xyz.aerii.athen.events.TickEvent
 import xyz.aerii.athen.events.core.runWhen
 import xyz.aerii.athen.modules.Module
 import xyz.aerii.athen.utils.enchants
 import xyz.aerii.library.api.client
 import xyz.aerii.library.api.held
-import xyz.aerii.nebulune.events.PlayerAttackEvent
 import xyz.aerii.nebulune.utils.rightClick
 
 @Load
@@ -61,7 +61,7 @@ object AutoSoulcry : Module(
             reset()
         }.runWhen(detectType.state.map { 0 in it })
 
-        on<PlayerAttackEvent> {
+        on<PlayerEvent.Attack.Entity> {
             val si = SlayerAPI.slayerBosses[entity] ?: return@on
             if (!si.isOwnedByPlayer && !otherBosses) return@on
 

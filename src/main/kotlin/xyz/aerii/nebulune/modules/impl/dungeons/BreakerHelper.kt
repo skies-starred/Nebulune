@@ -14,9 +14,9 @@ import xyz.aerii.athen.api.location.SkyBlockIsland
 import xyz.aerii.athen.config.Category
 import xyz.aerii.athen.events.LocationEvent
 import xyz.aerii.athen.events.PacketEvent
+import xyz.aerii.athen.events.PlayerEvent
 import xyz.aerii.athen.modules.Module
 import xyz.aerii.library.api.client
-import xyz.aerii.nebulune.events.BlockHitEvent
 
 @Load
 @OnlyIn(islands = [SkyBlockIsland.THE_CATACOMBS])
@@ -34,7 +34,7 @@ object BreakerHelper : Module(
     private var max: Int = 0
 
     init {
-        on<BlockHitEvent> {
+        on<PlayerEvent.Attack.Block> {
             if (!zeroPing && !preventSecrets) return@on
 
             val p = client.player ?: return@on

@@ -5,14 +5,14 @@ import net.minecraft.world.item.DyeColor
 import xyz.aerii.athen.annotations.Load
 import xyz.aerii.athen.annotations.OnlyIn
 import xyz.aerii.athen.api.location.SkyBlockIsland
+import xyz.aerii.athen.api.rendering.level.impl.extensions.impl.extractFrameBox
 import xyz.aerii.athen.config.Category
 import xyz.aerii.athen.events.WorldRenderEvent
 import xyz.aerii.athen.modules.Module
 import xyz.aerii.athen.ui.themes.Catppuccin
-import xyz.aerii.athen.utils.render.Render3D
 import xyz.aerii.athen.utils.render.renderBoundingBox
 import xyz.aerii.athen.utils.render.renderPos
-import xyz.aerii.nebulune.utils.drawTracer
+import xyz.aerii.nebulune.utils.extractTracer
 import java.awt.Color
 
 @Load
@@ -32,8 +32,8 @@ object HideonESP : Module(
             val e = entity ?: return@on
             if (r.color != DyeColor.GREEN) return@on
 
-            Render3D.drawBox(e.renderBoundingBox, color, lineWidth, false)
-            if (tracer) drawTracer(e.renderPos, color, lineWidth)
+            extractFrameBox(e.renderBoundingBox, color.rgb, lineWidth, false)
+            if (tracer) extractTracer(e.renderPos, color, lineWidth)
         }
     }
 }

@@ -11,7 +11,7 @@ import xyz.aerii.athen.modules.impl.kuudra.KuudraInfo
 import xyz.aerii.athen.ui.themes.Catppuccin
 import xyz.aerii.athen.utils.render.renderPos
 import xyz.aerii.library.handlers.Observable.Companion.and
-import xyz.aerii.nebulune.utils.drawTracer
+import xyz.aerii.nebulune.utils.extractTracer
 import java.awt.Color
 
 @Load
@@ -25,7 +25,7 @@ object KuudraHighlight {
         on<WorldRenderEvent.Extract> {
             if (!KuudraAPI.inRun) return@on
             val k = KuudraAPI.kuudra ?: return@on
-            drawTracer(k.renderPos, `tracer$color`, `tracer$width`, `tracer$depth`)
+            extractTracer(k.renderPos, `tracer$color`, `tracer$width`, `tracer$depth`)
         }.runWhen(KuudraInfo.observable and tracer.state)
     }
 }

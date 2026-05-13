@@ -16,6 +16,8 @@ import tech.thatgravyboat.skyblockapi.utils.regex.RegexUtils.findThenNull
 import xyz.aerii.athen.annotations.Load
 import xyz.aerii.athen.annotations.OnlyIn
 import xyz.aerii.athen.api.location.SkyBlockIsland
+import xyz.aerii.athen.api.rendering.level.impl.extensions.impl.extractFrameBox
+import xyz.aerii.athen.api.rendering.ui.text.vanilla.extensions.sizedText
 import xyz.aerii.athen.config.Category
 import xyz.aerii.athen.events.LocationEvent
 import xyz.aerii.athen.events.MessageEvent
@@ -23,8 +25,6 @@ import xyz.aerii.athen.events.WorldRenderEvent
 import xyz.aerii.athen.handlers.Chronos
 import xyz.aerii.athen.modules.Module
 import xyz.aerii.athen.ui.themes.Catppuccin
-import xyz.aerii.athen.utils.render.Render2D.sizedText
-import xyz.aerii.athen.utils.render.Render3D
 import xyz.aerii.athen.utils.render.renderBoundingBox
 import xyz.aerii.athen.utils.render.renderPos
 import xyz.aerii.library.api.command
@@ -33,7 +33,7 @@ import xyz.aerii.library.handlers.time.client
 import xyz.aerii.library.utils.alert
 import xyz.aerii.library.utils.stripped
 import xyz.aerii.library.utils.toDurationFromMillis
-import xyz.aerii.nebulune.utils.drawTracer
+import xyz.aerii.nebulune.utils.extractTracer
 import java.awt.Color
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
@@ -95,8 +95,8 @@ object TrevorHelper : Module(
             val max = if (entity is Horse) entity.serverMaxHealth / 2f else entity.serverMaxHealth
             if (max != rarity.hp) return@on
 
-            Render3D.drawBox(entity.renderBoundingBox, rarity.color, depthTest = false)
-            if (`esp$tracer`) drawTracer(entity.renderPos, rarity.color)
+            extractFrameBox(entity.renderBoundingBox, rarity.color.rgb, depth = false)
+            if (`esp$tracer`) extractTracer(entity.renderPos, rarity.color)
         }
 
         on<MessageEvent.Chat.Receive> {
