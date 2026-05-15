@@ -25,7 +25,7 @@ object KuudraHighlight {
         on<WorldRenderEvent.Extract> {
             if (!KuudraAPI.inRun) return@on
             val k = KuudraAPI.kuudra ?: return@on
-            extractTracer(k.renderPos, `tracer$color`, `tracer$width`, `tracer$depth`)
+            extractTracer(k.renderPos, `tracer$color`.rgb, `tracer$width`, `tracer$depth`)
         }.runWhen(KuudraInfo.observable and tracer.state)
     }
 }

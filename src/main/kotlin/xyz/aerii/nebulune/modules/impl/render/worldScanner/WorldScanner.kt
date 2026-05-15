@@ -210,7 +210,7 @@ object WorldScanner: Module(
                     val color = grottoConfig.color()
 
                     extractStyledBox(aabb, color.rgb, grottoConfig.highlightStyle(), depth = false)
-                    if (grottoConfig.tracer()) extractTracer(center, grottoConfig.color(), 2f, false)
+                    if (grottoConfig.tracer()) extractTracer(center, grottoConfig.color().rgb, 2f, false)
                     if (grottoConfig.displayName()) extractText("Fairy Grotto",
                         center.add(0.0, 10.0, 0.0),
                         grottoConfig.color().rgb,
@@ -234,25 +234,24 @@ object WorldScanner: Module(
             }
 
             for (structure in structures) {
-                if (structure.first.config.enable()) {
-                    val structureConfig = structure.first.config
-                    val pos = structure.second
-                    val blockPos = BlockPos(pos.first, pos.second, pos.third)
-                    val aabb = AABB(blockPos)
-                    val color = structureConfig.color()
-                    extractStyledBox(aabb, color.rgb, structureConfig.highlightStyle(), depth = false)
-                    if (structureConfig.tracer()) extractTracer(blockPos.center, structureConfig.color(), 2f, false)
-                    if (structureConfig.displayName()) extractText(
-                        structure.first.displayName,
-                        blockPos.center,
-                        structureConfig.color().rgb,
-                        Color(0, 0, 0, (255 * structureConfig.displayBackgroundOpacity()).toInt()).rgb,
-                        structureConfig.displayScale(),
-                        depth = false,
-                        shadow = true,
-                        increase = true
-                    )
-                }
+                if (!structure.first.config.enable()) continue
+                val structureConfig = structure.first.config
+                val pos = structure.second
+                val blockPos = BlockPos(pos.first, pos.second, pos.third)
+                val aabb = AABB(blockPos)
+                val color = structureConfig.color()
+                extractStyledBox(aabb, color.rgb, structureConfig.highlightStyle(), depth = false)
+                if (structureConfig.tracer()) extractTracer(blockPos.center, structureConfig.color().rgb, 2f, false)
+                if (structureConfig.displayName()) extractText(
+                    structure.first.displayName,
+                    blockPos.center,
+                    structureConfig.color().rgb,
+                    Color(0, 0, 0, (255 * structureConfig.displayBackgroundOpacity()).toInt()).rgb,
+                    structureConfig.displayScale(),
+                    depth = false,
+                    shadow = true,
+                    increase = true
+                )
             }
         }
     }

@@ -96,7 +96,7 @@ object TrevorHelper : Module(
             if (max != rarity.hp) return@on
 
             extractFrameBox(entity.renderBoundingBox, rarity.color.rgb, depth = false)
-            if (`esp$tracer`) extractTracer(entity.renderPos, rarity.color)
+            if (`esp$tracer`) extractTracer(entity.renderPos, rarity.color.rgb)
         }
 
         on<MessageEvent.Chat.Receive> {

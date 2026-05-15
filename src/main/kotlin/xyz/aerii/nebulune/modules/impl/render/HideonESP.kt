@@ -33,7 +33,7 @@ object HideonESP : Module(
             if (r.color != DyeColor.GREEN) return@on
 
             extractFrameBox(e.renderBoundingBox, color.rgb, lineWidth, false)
-            if (tracer) extractTracer(e.renderPos, color, lineWidth)
+            if (tracer) extractTracer(e.renderPos, color.rgb, lineWidth)
         }
     }
 }

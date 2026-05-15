@@ -61,7 +61,7 @@ object PestESP : Module(
 
                 val p = e.renderPos.add(-0.5, 1.0, -0.5)
                 extractFrameBox(AABB.unitCubeFromLowerCorner(p), color.rgb, thickness.toFloat(), depthTest)
-                if (tracer) extractTracer(p, color, thickness.toFloat(), depthTest)
+                if (tracer) extractTracer(p, color.rgb, thickness.toFloat(), depthTest)
             }
         }
 
