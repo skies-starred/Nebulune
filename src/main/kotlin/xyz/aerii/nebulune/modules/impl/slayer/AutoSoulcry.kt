@@ -4,14 +4,14 @@ package xyz.aerii.nebulune.modules.impl.slayer
 
 import net.minecraft.world.item.Items
 import net.minecraft.world.phys.EntityHitResult
-import tech.thatgravyboat.skyblockapi.api.area.slayer.SlayerType
 import tech.thatgravyboat.skyblockapi.api.datatype.DataTypes
 import tech.thatgravyboat.skyblockapi.api.datatype.getData
 import tech.thatgravyboat.skyblockapi.api.profile.StatsAPI
 import xyz.aerii.athen.annotations.Load
 import xyz.aerii.athen.annotations.OnlyIn
 import xyz.aerii.athen.api.location.SkyBlockIsland
-import xyz.aerii.athen.api.skyblock.SlayerAPI
+import xyz.aerii.athen.api.slayers.SlayerAPI
+import xyz.aerii.athen.api.slayers.enums.type.impl.SlayerBoss
 import xyz.aerii.athen.config.Category
 import xyz.aerii.athen.events.PlayerEvent
 import xyz.aerii.athen.events.TickEvent
@@ -43,7 +43,7 @@ object AutoSoulcry : Module(
     init {
         on<TickEvent.Client.Start> {
             val slayer = SlayerAPI.slayer
-            if (slayer?.type as? SlayerType != SlayerType.VOIDGLOOM_SERAPH) return@on reset()
+            if (slayer?.type as? SlayerBoss != SlayerBoss.Voidgloom) return@on reset()
             if (client.screen != null) return@on reset()
 
             val item = held ?: return@on reset()
@@ -62,8 +62,8 @@ object AutoSoulcry : Module(
         }.runWhen(detectType.state.map { 0 in it })
 
         on<PlayerEvent.Attack.Entity> {
-            val si = SlayerAPI.slayerBosses[entity] ?: return@on
-            if (!si.isOwnedByPlayer && !otherBosses) return@on
+            val si = SlayerAPI.bosses[entity] ?: return@on
+            if (!si.owned && !otherBosses) return@on
 
             val item = held ?: return@on
             if (item.item != Items.DIAMOND_SWORD) return@on
