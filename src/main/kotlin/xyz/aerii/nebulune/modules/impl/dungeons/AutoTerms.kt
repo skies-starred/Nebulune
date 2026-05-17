@@ -62,13 +62,12 @@ object AutoTerms : Module(
         }
 
         on<TickEvent.Client.Start> {
-            if (TerminalType.MELODY.active) return@on fn()
+            val type = TerminalAPI.currentTerminal ?: return@on
+            if (TerminalType.MELODY.active && type == TerminalType.MELODY) return@on fn()
 
             if (list.isEmpty()) return@on
             if (TerminalAPI.lastId != id) return@on list.clear()
             if (System.currentTimeMillis() < next) return@on
-
-            val type = TerminalAPI.currentTerminal ?: return@on
             val next = list.removeFirst()
 
             val list = (solvers[type] as? ITerminalAccessor)?.`nebulune$getList`() ?: return@on list.clear()
