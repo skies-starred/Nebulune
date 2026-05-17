@@ -84,8 +84,8 @@ dependencies {
 
     rune("devauth".global)
 
-    impl("athen-prod".versioned)
-    //impl("athen-act".versioned) { exclude(group = "tech.thatgravyboat", module = "skyblock-api") }
+    //impl("athen-prod".versioned)
+    impl("athen-act".versioned) { exclude(group = "tech.thatgravyboat", module = "skyblock-api") }
     impl("modmenu".versioned)
     impl("fabric-api".versioned)
     impl("fabric-loader".global)
