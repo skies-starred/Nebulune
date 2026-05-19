@@ -18,6 +18,7 @@ import xyz.aerii.nebulune.modules.impl.dungeons.AutoTerms;
 import xyz.aerii.nebulune.modules.impl.dungeons.HoverTerms;
 import xyz.aerii.nebulune.modules.impl.dungeons.QueueTerms;
 
+import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 @Mixin(ITerminal.class)
@@ -25,6 +26,10 @@ public abstract class ITerminalMixin implements ITerminalAccessor {
     @Final
     @Shadow
     private CopyOnWriteArrayList<Click> list;
+
+    @Final
+    @Shadow
+    private TerminalType terminalType;
 
     @Shadow
     public abstract TerminalType getTerminalType();
@@ -103,10 +108,15 @@ public abstract class ITerminalMixin implements ITerminalAccessor {
         if (c == null || c.getButton() != mouseButton) return;
 
         nebulune$adjust(c);
-
-        if (QueueTerms.INSTANCE.getYearning()) QueueTerms.INSTANCE.getClicks().add(c);
-        else nebulune$clickClick(c);
         ci.cancel();
+
+        if (QueueTerms.INSTANCE.getYearning()) {
+            QueueTerms.INSTANCE.getClicks().add(c);
+            return;
+        }
+
+        QueueTerms.INSTANCE.setYearning(true);
+        QueueTerms.INSTANCE.getList().add(c);
     }
 
     @ModifyVariable(method = "main(FFFFF)V", at = @At(value = "STORE", ordinal = 0), ordinal = 0)
@@ -115,8 +125,8 @@ public abstract class ITerminalMixin implements ITerminalAccessor {
         return titleText + " - " + QueueTerms.INSTANCE.getClicks().size() + QueueTerms.INSTANCE.getList().size();
     }
 
-    @Inject(method = "update", at = @At(value = "INVOKE", target = "Lxyz/aerii/athen/modules/impl/dungeon/terminals/solver/base/ITerminal;compute(ILnet/minecraft/world/item/ItemStack;)V", shift = At.Shift.AFTER))
-    private void nebulune$update(int slot, ItemStack item, CallbackInfo ci) {
+    @Inject(method = "update", at = @At(value = "INVOKE", target = "Lxyz/aerii/athen/modules/impl/dungeon/terminals/solver/base/ITerminal;compute(Ljava/util/List;)V", shift = At.Shift.AFTER))
+    private void nebulune$update(List<ItemStack> items, CallbackInfo ci) {
         QueueTerms.INSTANCE.setYearning(false);
         AutoTerms.onUpdate();
 
@@ -132,12 +142,6 @@ public abstract class ITerminalMixin implements ITerminalAccessor {
         for (Click c : QueueTerms.INSTANCE.getClicks()) nebulune$adjust(c);
         QueueTerms.INSTANCE.getClicks().removeFirst();
         QueueTerms.INSTANCE.getList().add(next);
-    }
-
-    @Unique
-    private void nebulune$clickClick(Click click) {
-        QueueTerms.INSTANCE.setYearning(true);
-        QueueTerms.INSTANCE.getList().add(click);
     }
 
     @Unique

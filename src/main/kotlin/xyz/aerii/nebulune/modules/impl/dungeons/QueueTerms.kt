@@ -32,9 +32,9 @@ object QueueTerms : Module(
     init {
         on<TickEvent.Client.Start> {
             if (list.isNotEmpty()) click(list.removeFirst())
-        }.runWhen(TerminalAPI.terminalOpen)
+        }.runWhen(TerminalAPI.opened)
 
-        TerminalAPI.terminalOpen.onChange {
+        TerminalAPI.opened.onChange {
             list.clear()
         }
     }
@@ -50,24 +50,29 @@ object QueueTerms : Module(
 
             val slot = slots[slotIndex]
             screen.slotClicked(slot, slotIndex, click.button, if (click.button == 0) ClickType.CLONE else ClickType.PICKUP)
+            TerminalSolver.last = System.currentTimeMillis()
+            TerminalAPI.terminal?.impl?.clicked = true
 
             if (TerminalSolver.`sound$enabled`) TerminalSolver.clickSound.play()
             return
         }
 
         if (TerminalSolver.`sound$enabled`) TerminalSolver.clickSound.play()
-        guiClick(TerminalAPI.lastId, click.slot, if (click.button == 0) 2 else click.button, if (click.button == 0) ClickType.CLONE else ClickType.PICKUP)
+        guiClick(TerminalAPI.id, click.slot, if (click.button == 0) 2 else click.button, if (click.button == 0) ClickType.CLONE else ClickType.PICKUP)
+        TerminalSolver.last = System.currentTimeMillis()
+        TerminalAPI.terminal?.impl?.clicked = true
 
-        val id = TerminalAPI.lastId
+        val id = TerminalAPI.id
         val timeout0 = timeout
 
         Nebulune.afterTimed(timeout0) {
-            if (!TerminalAPI.terminalOpen.value) return@afterTimed
-            if (id != TerminalAPI.lastId) return@afterTimed
+            if (!TerminalAPI.opened.value) return@afterTimed
+            if (id != TerminalAPI.id) return@afterTimed
 
+            yearning = false
             list.clear()
             clicks.clear()
-            yearning = false
+            TerminalAPI.terminal?.impl?.onResync()
         }
     }
 }

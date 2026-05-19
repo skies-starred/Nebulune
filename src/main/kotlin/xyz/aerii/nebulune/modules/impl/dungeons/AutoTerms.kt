@@ -1,6 +1,5 @@
 package xyz.aerii.nebulune.modules.impl.dungeons
 
-import net.minecraft.world.inventory.ClickType
 import xyz.aerii.athen.annotations.Load
 import xyz.aerii.athen.api.dungeon.terminals.TerminalAPI
 import xyz.aerii.athen.api.dungeon.terminals.TerminalType
@@ -9,12 +8,9 @@ import xyz.aerii.athen.events.DungeonEvent
 import xyz.aerii.athen.events.TickEvent
 import xyz.aerii.athen.events.core.runWhen
 import xyz.aerii.athen.modules.Module
-import xyz.aerii.athen.modules.impl.dungeon.terminals.simulator.TerminalSimulator
-import xyz.aerii.athen.modules.impl.dungeon.terminals.simulator.base.ITerminalSim
 import xyz.aerii.athen.modules.impl.dungeon.terminals.solver.TerminalSolver
 import xyz.aerii.athen.modules.impl.dungeon.terminals.solver.base.Click
 import xyz.aerii.athen.modules.impl.dungeon.terminals.solver.impl.*
-import xyz.aerii.athen.utils.guiClick
 import xyz.aerii.library.api.client
 import xyz.aerii.nebulune.accessors.ITerminalAccessor
 import kotlin.math.pow
@@ -62,11 +58,11 @@ object AutoTerms : Module(
         }
 
         on<TickEvent.Client.Start> {
-            val type = TerminalAPI.currentTerminal ?: return@on
+            val type = TerminalAPI.terminal ?: return@on
             if (TerminalType.MELODY.active && type == TerminalType.MELODY) return@on fn()
 
             if (list.isEmpty()) return@on
-            if (TerminalAPI.lastId != id) return@on list.clear()
+            if (TerminalAPI.id != id) return@on list.clear()
             if (System.currentTimeMillis() < next) return@on
             val next = list.removeFirst()
 
@@ -74,12 +70,14 @@ object AutoTerms : Module(
             if (list.none { it.slot == next.slot }) return@on
 
             click(next)
-        }.runWhen(TerminalAPI.terminalOpen)
+        }.runWhen(TerminalAPI.opened)
     }
 
     @JvmStatic
     fun onUpdate() {
-        val type = TerminalAPI.currentTerminal ?: return
+        if (!enabled) return
+
+        val type = TerminalAPI.terminal ?: return
         if (!type.active || type == TerminalType.MELODY) return
 
         val clicks = (solvers[type] as? ITerminalAccessor)?.`nebulune$getList`()?.toList() ?: return
@@ -92,9 +90,9 @@ object AutoTerms : Module(
         if (list.any { it.slot == final.slot }) return
 
         last0 = final.slot
-        id = TerminalAPI.lastId
+        id = TerminalAPI.id
 
-        val fcLeft = TerminalSolver.fcDelay - (System.currentTimeMillis() - TerminalAPI.openTime)
+        val fcLeft = TerminalSolver.fcDelay - (System.currentTimeMillis() - TerminalAPI.open)
         val delay = maxOf(next(), if (fcLeft > 0) fcLeft else 0L)
         next = System.currentTimeMillis() + delay
 
@@ -102,11 +100,11 @@ object AutoTerms : Module(
     }
 
     private fun fn() {
-        if (System.currentTimeMillis() - TerminalAPI.openTime < TerminalSolver.fcDelay) return
+        if (System.currentTimeMillis() - TerminalAPI.open < TerminalSolver.fcDelay) return
 
-        val correct = TerminalAPI.`melody$correct` ?: return
-        val button = TerminalAPI.`melody$button` ?: return
-        if (TerminalAPI.`melody$current` != correct) return
+        val correct = MelodySolver.correct ?: return
+        val button = MelodySolver.button ?: return
+        if (MelodySolver.current != correct) return
         if (System.currentTimeMillis() - last1 < 250) return
 
         last1 = System.currentTimeMillis()
@@ -147,15 +145,7 @@ object AutoTerms : Module(
 
     private fun click(c: Click) {
         last0 = c.slot
-
-        if (TerminalSimulator.s.value) {
-            val screen = client.screen as? ITerminalSim ?: return
-            val slot0 = screen.menu.slots.getOrNull(c.slot) ?: return
-            screen.slotClicked(slot0, c.slot, c.button, if (c.button == 0) ClickType.CLONE else ClickType.PICKUP)
-            return
-        }
-
-        guiClick(TerminalAPI.lastId, c.slot, if (c.button == 0) 2 else c.button, if (c.button == 0) ClickType.CLONE else ClickType.PICKUP)
+        TerminalAPI.terminal?.impl?.click(c.slot, c.button)
     }
 
     private val TerminalType.active: Boolean
