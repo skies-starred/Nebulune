@@ -105,7 +105,8 @@ public abstract class ITerminalMixin implements ITerminalAccessor {
         if (slot >= slots) return;
 
         Click c = forSlot(slot);
-        if (c == null || c.getButton() != mouseButton) return;
+        if (c == null) return;
+        if (c.getButton() != mouseButton && !(terminalType == TerminalType.RUBIX && TerminalSolver.INSTANCE.getRubix$left())) return;
 
         nebulune$adjust(c);
         ci.cancel();
