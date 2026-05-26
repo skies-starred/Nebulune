@@ -11,6 +11,7 @@ import xyz.aerii.athen.modules.Module
 import xyz.aerii.library.api.command
 import xyz.aerii.library.handlers.time.client
 import xyz.aerii.library.handlers.time.start
+import xyz.aerii.library.utils.colorCoded
 
 @Load
 @OnlyIn(skyblock = true)
@@ -34,7 +35,7 @@ object AutoConversation : Module(
             if (d != null && (!b || c.color?.value == TextColor.GREEN)) a.add(d)
 
             for (s in message.siblings) {
-                val e = s.style.takeIf { !b || it.color?.value == TextColor.GREEN } ?: continue
+                val e = s.style.takeIf { !b || (it.color?.value == TextColor.GREEN || s.colorCoded().substringAfterLast("[").startsWith("§a")) } ?: continue
                 a.add((e.clickEvent as? ClickEvent.RunCommand)?.command ?: continue)
             }
 
