@@ -19,6 +19,7 @@ import xyz.aerii.athen.modules.impl.dungeon.terminals.simulator.base.ITerminalSi
 import xyz.aerii.athen.modules.impl.dungeon.terminals.solver.TerminalSolver;
 import xyz.aerii.athen.modules.impl.dungeon.terminals.solver.base.Click;
 import xyz.aerii.athen.modules.impl.dungeon.terminals.solver.base.ITerminal;
+import xyz.aerii.athen.utils.PlayerUtilsKt;
 import xyz.aerii.library.api.ClientKt;
 import xyz.aerii.nebulune.Nebulune;
 import xyz.aerii.nebulune.accessors.ITerminalAccessor;
@@ -182,19 +183,13 @@ public abstract class ITerminalMixin implements ITerminalAccessor {
             return;
         }
 
-        var client = ClientKt.getClient();
-        var gameMode = client.gameMode;
-        var player = client.player;
-        if (gameMode == null || player == null) return;
-
         if (TerminalSolver.INSTANCE.getSound$enabled()) TerminalSolver.INSTANCE.getClickSound().play();
 
-        gameMode.handleInventoryMouseClick(
+        PlayerUtilsKt.guiClick(
                 TerminalAPI.INSTANCE.getId(),
                 click.getSlot(),
                 click.getButton() == 0 ? 2 : click.getButton(),
-                click.getButton() == 0 ? ClickType.CLONE : ClickType.PICKUP,
-                player
+                click.getButton() == 0 ? ClickType.CLONE : ClickType.PICKUP
         );
         TerminalSolver.INSTANCE.setLast(System.currentTimeMillis());
         clicked = true;
