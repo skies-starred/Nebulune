@@ -1,5 +1,8 @@
 package xyz.aerii.nebulune.mixin.mixins.athen;
 
+import kotlin.Unit;
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.item.ItemStack;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -9,10 +12,15 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import xyz.aerii.athen.api.dungeon.terminals.TerminalAPI;
 import xyz.aerii.athen.api.dungeon.terminals.TerminalType;
+import xyz.aerii.athen.modules.impl.dungeon.terminals.simulator.TerminalSimulator;
+import xyz.aerii.athen.modules.impl.dungeon.terminals.simulator.base.ITerminalSim;
 import xyz.aerii.athen.modules.impl.dungeon.terminals.solver.TerminalSolver;
 import xyz.aerii.athen.modules.impl.dungeon.terminals.solver.base.Click;
 import xyz.aerii.athen.modules.impl.dungeon.terminals.solver.base.ITerminal;
+import xyz.aerii.library.api.ClientKt;
+import xyz.aerii.nebulune.Nebulune;
 import xyz.aerii.nebulune.accessors.ITerminalAccessor;
 import xyz.aerii.nebulune.modules.impl.dungeons.AutoTerms;
 import xyz.aerii.nebulune.modules.impl.dungeons.HoverTerms;
@@ -49,6 +57,15 @@ public abstract class ITerminalMixin implements ITerminalAccessor {
     @Shadow
     protected abstract boolean valid(Click click);
 
+    @Shadow
+    public abstract void onResync();
+
+    @Shadow
+    protected abstract void compute(List<ItemStack> list);
+
+    @Shadow
+    private boolean clicked;
+
     @Override
     public CopyOnWriteArrayList<Click> nebulune$getList() {
         return list;
@@ -78,7 +95,6 @@ public abstract class ITerminalMixin implements ITerminalAccessor {
     @Inject(method = "onClose", at = @At("HEAD"))
     private void nebulune$onClose(CallbackInfo ci) {
         QueueTerms.INSTANCE.getClicks().clear();
-        QueueTerms.INSTANCE.getList().clear();
         HoverTerms.INSTANCE.reset();
     }
 
@@ -116,14 +132,13 @@ public abstract class ITerminalMixin implements ITerminalAccessor {
             return;
         }
 
-        QueueTerms.INSTANCE.setYearning(true);
-        QueueTerms.INSTANCE.getList().add(c);
+        nebulune$clickClick(c);
     }
 
     @ModifyVariable(method = "main(FFFFF)V", at = @At(value = "STORE", ordinal = 0), ordinal = 0)
     private String nebulune$modifyTitleText(String titleText) {
         if (!QueueTerms.INSTANCE.getEnabled()) return titleText;
-        return titleText + " - " + QueueTerms.INSTANCE.getClicks().size() + QueueTerms.INSTANCE.getList().size();
+        return titleText + " - " + QueueTerms.INSTANCE.getClicks().size() + QueueTerms.INSTANCE.getClicks().size();
     }
 
     @Inject(method = "update", at = @At(value = "INVOKE", target = "Lxyz/aerii/athen/modules/impl/dungeon/terminals/solver/base/ITerminal;compute(Ljava/util/List;)V", shift = At.Shift.AFTER))
@@ -142,7 +157,66 @@ public abstract class ITerminalMixin implements ITerminalAccessor {
 
         for (Click c : QueueTerms.INSTANCE.getClicks()) nebulune$adjust(c);
         QueueTerms.INSTANCE.getClicks().removeFirst();
-        QueueTerms.INSTANCE.getList().add(next);
+        nebulune$clickClick(next);
+    }
+
+    @Unique
+    private void nebulune$clickClick(Click click) {
+        QueueTerms.INSTANCE.setYearning(true);
+
+        if (TerminalSimulator.INSTANCE.getS().getValue()) {
+            var client = ClientKt.getClient();
+            var screen = client.screen;
+            if (!(screen instanceof ITerminalSim sim)) return;
+
+            var slots = sim.getMenu().slots;
+            int slotIndex = click.getSlot();
+            if (slotIndex >= slots.size()) return;
+
+            var slot = slots.get(slotIndex);
+            sim.slotClicked(slot, slotIndex, click.getButton(), click.getButton() == 0 ? ClickType.CLONE : ClickType.PICKUP);
+            TerminalSolver.INSTANCE.setLast(System.currentTimeMillis());
+            clicked = true;
+
+            if (TerminalSolver.INSTANCE.getSound$enabled()) TerminalSolver.INSTANCE.getClickSound().play();
+            return;
+        }
+
+        var client = ClientKt.getClient();
+        var gameMode = client.gameMode;
+        var player = client.player;
+        if (gameMode == null || player == null) return;
+
+        if (TerminalSolver.INSTANCE.getSound$enabled()) TerminalSolver.INSTANCE.getClickSound().play();
+
+        gameMode.handleInventoryMouseClick(
+                TerminalAPI.INSTANCE.getId(),
+                click.getSlot(),
+                click.getButton() == 0 ? 2 : click.getButton(),
+                click.getButton() == 0 ? ClickType.CLONE : ClickType.PICKUP,
+                player
+        );
+        TerminalSolver.INSTANCE.setLast(System.currentTimeMillis());
+        clicked = true;
+
+        int id = TerminalAPI.INSTANCE.getId();
+        int timeout = QueueTerms.INSTANCE.getTimeout();
+
+        Nebulune.afterTimed(timeout, () -> {
+            if (!TerminalAPI.INSTANCE.getOpened().getValue()) return Unit.INSTANCE;
+            if (id != TerminalAPI.INSTANCE.getId()) return Unit.INSTANCE;
+
+            var menu = ClientKt.getClient().screen;
+            if (!(menu instanceof AbstractContainerScreen<?> a)) return Unit.INSTANCE;
+            var items = a.getMenu().getItems().subList(0, terminalType.getSlots());
+
+            QueueTerms.INSTANCE.getClicks().clear();
+            compute(items);
+            QueueTerms.INSTANCE.setYearning(false);
+
+            onResync();
+            return Unit.INSTANCE;
+        });
     }
 
     @Unique

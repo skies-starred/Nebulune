@@ -2,20 +2,10 @@
 
 package xyz.aerii.nebulune.modules.impl.dungeons
 
-import net.minecraft.world.inventory.ClickType
 import xyz.aerii.athen.annotations.Load
-import xyz.aerii.athen.api.dungeon.terminals.TerminalAPI
 import xyz.aerii.athen.config.Category
-import xyz.aerii.athen.events.TickEvent
-import xyz.aerii.athen.events.core.runWhen
 import xyz.aerii.athen.modules.Module
-import xyz.aerii.athen.modules.impl.dungeon.terminals.simulator.TerminalSimulator
-import xyz.aerii.athen.modules.impl.dungeon.terminals.simulator.base.ITerminalSim
-import xyz.aerii.athen.modules.impl.dungeon.terminals.solver.TerminalSolver
 import xyz.aerii.athen.modules.impl.dungeon.terminals.solver.base.Click
-import xyz.aerii.athen.utils.guiClick
-import xyz.aerii.library.api.client
-import xyz.aerii.nebulune.Nebulune
 
 @Load
 object QueueTerms : Module(
@@ -26,53 +16,5 @@ object QueueTerms : Module(
     val timeout by config.slider("Resync timeout", 800, 400, 1000, "ms")
 
     val clicks = mutableListOf<Click>()
-    val list = mutableListOf<Click>()
     var yearning = false
-
-    init {
-        on<TickEvent.Client.Start> {
-            if (list.isNotEmpty()) click(list.removeFirst())
-        }.runWhen(TerminalAPI.opened)
-
-        TerminalAPI.opened.onChange {
-            list.clear()
-        }
-    }
-
-    private fun click(click: Click) {
-        yearning = true
-
-        if (TerminalSimulator.s.value) {
-            val screen = client.screen as? ITerminalSim ?: return
-            val slots = screen.menu.slots ?: return
-            val slotIndex = click.slot
-            if (slotIndex >= slots.size) return
-
-            val slot = slots[slotIndex]
-            screen.slotClicked(slot, slotIndex, click.button, if (click.button == 0) ClickType.CLONE else ClickType.PICKUP)
-            TerminalSolver.last = System.currentTimeMillis()
-            TerminalAPI.terminal?.impl?.clicked = true
-
-            if (TerminalSolver.`sound$enabled`) TerminalSolver.clickSound.play()
-            return
-        }
-
-        if (TerminalSolver.`sound$enabled`) TerminalSolver.clickSound.play()
-        guiClick(TerminalAPI.id, click.slot, if (click.button == 0) 2 else click.button, if (click.button == 0) ClickType.CLONE else ClickType.PICKUP)
-        TerminalSolver.last = System.currentTimeMillis()
-        TerminalAPI.terminal?.impl?.clicked = true
-
-        val id = TerminalAPI.id
-        val timeout0 = timeout
-
-        Nebulune.afterTimed(timeout0) {
-            if (!TerminalAPI.opened.value) return@afterTimed
-            if (id != TerminalAPI.id) return@afterTimed
-
-            yearning = false
-            list.clear()
-            clicks.clear()
-            TerminalAPI.terminal?.impl?.onResync()
-        }
-    }
 }
