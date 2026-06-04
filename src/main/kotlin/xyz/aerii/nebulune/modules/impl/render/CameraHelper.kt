@@ -7,7 +7,7 @@ import xyz.aerii.athen.modules.Module
 @Load
 object CameraHelper : Module(
     "Camera helper",
-    "Cheat additions to the vanilla camera.",
+    "QoL additions to the vanilla camera.",
     Category.RENDER
 ) {
     private val _clip by config.switch("Camera clip")

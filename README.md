@@ -1,6 +1,6 @@
 # **Nebulune**
 
-A **cheat-oriented addon for Athen**, featuring additional features and functionality beyond standard QoL.
+A **QoL addon for Athen**, featuring additional features and functionality beyond standard QoL.
 
 NOTE: You will need Athen installed for Nebulune to work.
 Get Athen at: https://modrinth.com/mod/athen
