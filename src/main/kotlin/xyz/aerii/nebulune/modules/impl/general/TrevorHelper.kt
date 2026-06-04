@@ -102,9 +102,9 @@ object TrevorHelper : Module(
         on<MessageEvent.Chat.Receive> {
             startRegex.findThenNull(stripped, "type") { (t) ->
                 rarity = Rarity.get(t) ?: return@findThenNull
-                cooldown = System.currentTimeMillis() + 15_000
+                cooldown = System.currentTimeMillis() + 20_000
 
-                Chronos.schedule(15.seconds) {
+                Chronos.schedule(20.seconds) {
                     if (endAlert) `alert$message`.parse().alert(soundType = `alert$sound`.sound)
                     cooldown = 0
                 }
