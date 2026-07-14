@@ -1,8 +1,6 @@
 package xyz.aerii.nebulune.modules.impl.slayer
 
 import net.minecraft.network.chat.Component
-import net.minecraft.world.item.Item
-import net.minecraft.world.item.Items
 import tech.thatgravyboat.skyblockapi.api.datatype.DataTypes
 import tech.thatgravyboat.skyblockapi.api.datatype.getData
 import xyz.aerii.athen.annotations.Load
@@ -65,7 +63,7 @@ object DaggerSwap : Module(
         val heldStack = inv.getItem(acc.selectedSlot)
         val heldId = heldStack.getData(DataTypes.ID)
         if (heldId != null && heldId in attr.set) {
-            if (heldStack.item != attr.item) rightClick()
+            if (heldId !in attr.set) rightClick()
             swap = null
             return
         }
@@ -81,11 +79,11 @@ object DaggerSwap : Module(
         swap = null
     }
 
-    private enum class Attunements(val str: String, val set: Set<String>, val item: Item) {
-        Ashen("ASHEN ♨", setOf("HEARTFIRE_DAGGER", "BURSTFIRE_DAGGER", "FIREDUST_DAGGER"), Items.STONE_SWORD),
-        Auric("AURIC ♨", setOf("HEARTFIRE_DAGGER", "BURSTFIRE_DAGGER", "FIREDUST_DAGGER"), Items.GOLDEN_SWORD),
-        Crystal("CRYSTAL ♨", setOf("HEARTMAW_DAGGER", "BURSTMAW_DAGGER", "MAWDUST_DAGGER"), Items.DIAMOND_SWORD),
-        Spirit("SPIRIT ♨", setOf("HEARTMAW_DAGGER", "BURSTMAW_DAGGER", "MAWDUST_DAGGER"), Items.IRON_SWORD);
+    private enum class Attunements(val str: String, val set: Set<String>) {
+        Ashen("ASHEN ♨", setOf("HEARTFIRE_DAGGER", "BURSTFIRE_DAGGER", "FIREDUST_DAGGER")),
+        Auric("AURIC ♨", setOf("HEARTFIRE_DAGGER", "BURSTFIRE_DAGGER", "FIREDUST_DAGGER")),
+        Crystal("CRYSTAL ♨", setOf("HEARTMAW_DAGGER", "BURSTMAW_DAGGER", "MAWDUST_DAGGER")),
+        Spirit("SPIRIT ♨", setOf("HEARTMAW_DAGGER", "BURSTMAW_DAGGER", "MAWDUST_DAGGER"));
 
         companion object {
             fun get(a: String) = entries.firstOrNull { it.str in a }
