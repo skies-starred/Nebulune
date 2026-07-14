@@ -47,7 +47,6 @@ object AutoSoulcry : Module(
             if (client.screen != null) return@on reset()
 
             val item = held ?: return@on reset()
-            if (item.item != Items.DIAMOND_SWORD) return@on reset()
             if (item.getData(DataTypes.ID) !in ids) return@on reset()
             if (hitbox && client.hitResult as? EntityHitResult != slayer.entity) return@on
 
