@@ -4,7 +4,7 @@ package xyz.aerii.nebulune.modules.impl.dungeons
 
 import com.mojang.serialization.Codec
 import net.minecraft.core.registries.BuiltInRegistries
-import net.minecraft.resources.ResourceLocation
+import net.minecraft.resources.Identifier
 import net.minecraft.world.phys.BlockHitResult
 import tech.thatgravyboat.skyblockapi.api.remote.api.SkyBlockId.Companion.getSkyBlockId
 import xyz.aerii.athen.annotations.Load
@@ -65,7 +65,7 @@ object AutoSuperboom : Module(
 
             "superboom" / "add" / string("block") {
                 val it = "minecraft:${string("block")}"
-                if (ResourceLocation.tryParse(it) == null) return@string "Invalid block id, or format! Try the command \"/nebulune superboom add\" while looking at the block.".modMessage()
+                if (Identifier.tryParse(it) == null) return@string "Invalid block id, or format! Try the command \"/nebulune superboom add\" while looking at the block.".modMessage()
                 if (it in breakable.value) return@string "Block already in breakable list!".modMessage()
 
                 breakable.update { add(it) }
@@ -86,7 +86,7 @@ object AutoSuperboom : Module(
 
             "superboom" / "remove" / string("block") {
                 val it = "minecraft:${string("block")}"
-                if (ResourceLocation.tryParse(it) == null) return@string "Invalid block id, or format! Try the command \"/nebulune superboom add\" while looking at the block.".modMessage()
+                if (Identifier.tryParse(it) == null) return@string "Invalid block id, or format! Try the command \"/nebulune superboom add\" while looking at the block.".modMessage()
                 if (it !in breakable.value) return@string "Block not in breakable list!".modMessage()
 
                 breakable.update { remove(it) }
