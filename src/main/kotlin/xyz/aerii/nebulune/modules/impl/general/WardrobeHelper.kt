@@ -105,7 +105,7 @@ object WardrobeHelper : ICommand {
 
         on<PacketEvent.Receive, ClientboundOpenScreenPacket> {
             if (!swapping) return@on
-            if ("Wardrobe" !in title.stripped()) return@on
+            if ("Armor Sets" !in title.stripped()) return@on
             val player = client.player ?: return@on
 
             mainThread {
@@ -144,7 +144,7 @@ object WardrobeHelper : ICommand {
             if (menu.containerId != id) return@on
 
             val mcSlot = menu.slots.getOrNull(slot.idx)?.takeIf { !it.item.isEmpty } ?: return@on
-            if (mcSlot.item.item == Items.GRAY_DYE) return@on
+            if (mcSlot.item.item != Items.GRAY_DYE) return@on
 
             if (!slot.equipped) guiClick(id, slot.idx)
 
