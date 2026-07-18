@@ -76,7 +76,6 @@ object DaggerSwap : Module(
             val stack = inv.getItem(i)
             val id = stack.getData(DataTypes.ID) ?: continue
             if (id !in attr.set) continue
-            if (stack.fn() != attr.mode) continue
             if (acc.selectedSlot != i) acc.selectedSlot = i
             return
         }
