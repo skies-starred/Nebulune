@@ -2,7 +2,6 @@
 
 package xyz.aerii.nebulune.modules.impl.slayer
 
-import net.minecraft.world.item.Items
 import net.minecraft.world.phys.EntityHitResult
 import tech.thatgravyboat.skyblockapi.api.datatype.DataTypes
 import tech.thatgravyboat.skyblockapi.api.datatype.getData
@@ -65,7 +64,6 @@ object AutoSoulcry : Module(
             if (!si.owned && !otherBosses) return@on
 
             val item = held ?: return@on
-            if (item.item != Items.DIAMOND_SWORD) return@on
             if (item.getData(DataTypes.ID) !in ids) return@on
 
             val m = if ("ultimate_wise" in item.enchants()) 100 else 200
