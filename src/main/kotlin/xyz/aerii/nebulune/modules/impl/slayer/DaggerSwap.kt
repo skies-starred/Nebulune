@@ -67,7 +67,7 @@ object DaggerSwap : Module(
         val heldStack = inv.getItem(acc.selectedSlot)
         val heldId = heldStack.getData(DataTypes.ID)
         if (heldId != null && heldId in attr.set) {
-            if (heldStack.fn() != attr.mode) rightClick()
+            if (heldStack.fn() != attr.mode) return rightClick()
             swap = null
             return
         }
@@ -76,6 +76,7 @@ object DaggerSwap : Module(
             val stack = inv.getItem(i)
             val id = stack.getData(DataTypes.ID) ?: continue
             if (id !in attr.set) continue
+            if (stack.fn() != attr.mode) continue
             if (acc.selectedSlot != i) acc.selectedSlot = i
             return
         }
@@ -90,8 +91,8 @@ object DaggerSwap : Module(
     private enum class Attunements(val str: String, val set: Set<String>, val mode: Int) {
         Ashen("ASHEN ♨", setOf("HEARTFIRE_DAGGER", "BURSTFIRE_DAGGER", "FIREDUST_DAGGER"), 0),
         Auric("AURIC ♨", setOf("HEARTFIRE_DAGGER", "BURSTFIRE_DAGGER", "FIREDUST_DAGGER"), 1),
-        Crystal("CRYSTAL ♨", setOf("HEARTMAW_DAGGER", "BURSTMAW_DAGGER", "MAWDUST_DAGGER"), 2),
-        Spirit("SPIRIT ♨", setOf("HEARTMAW_DAGGER", "BURSTMAW_DAGGER", "MAWDUST_DAGGER"), 3);
+        Spirit("SPIRIT ♨", setOf("HEARTMAW_DAGGER", "BURSTMAW_DAGGER", "MAWDUST_DAGGER"), 2),
+        Crystal("CRYSTAL ♨", setOf("HEARTMAW_DAGGER", "BURSTMAW_DAGGER", "MAWDUST_DAGGER"), 3);
 
         companion object {
             fun get(a: String) = entries.firstOrNull { it.str in a }
