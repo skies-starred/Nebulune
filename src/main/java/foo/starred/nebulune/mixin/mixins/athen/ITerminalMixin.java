@@ -167,6 +167,7 @@ public abstract class ITerminalMixin implements ITerminalAccessor {
 
         if (TerminalSimulator.INSTANCE.getS().getValue()) {
             var client = ClientKt.getClient();
+            //~ if >= 26.2 'client.screen' -> 'client.gui.screen()'
             var screen = client.screen;
             if (!(screen instanceof ITerminalSim sim)) return;
 
@@ -201,6 +202,7 @@ public abstract class ITerminalMixin implements ITerminalAccessor {
             if (!TerminalAPI.INSTANCE.getOpened().getValue()) return Unit.INSTANCE;
             if (id != TerminalAPI.INSTANCE.getId()) return Unit.INSTANCE;
 
+            //~ if >= 26.2 'getClient().screen' -> 'getClient().gui.screen()'
             var menu = ClientKt.getClient().screen;
             if (!(menu instanceof AbstractContainerScreen<?> a)) return Unit.INSTANCE;
             var items = a.getMenu().getItems().subList(0, terminalType.getSlots());

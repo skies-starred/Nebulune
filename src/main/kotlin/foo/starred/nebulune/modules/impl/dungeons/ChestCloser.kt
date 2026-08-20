@@ -53,6 +53,7 @@ object ChestCloser : Module(
             if (mode != 1) return@on
             if (!mouse) return@on
 
+            //~ if >= 26.2 'client.screen' -> 'client.gui.screen()'
             val screen = client.screen as? AbstractContainerScreen<*> ?: return@on
             if (screen.title.stripped() !in set) return@on
 
@@ -65,6 +66,7 @@ object ChestCloser : Module(
             if (!key) return@on
             if (client.options.keyInventory.matches(keyEvent)) return@on
 
+            //~ if >= 26.2 'client.screen' -> 'client.gui.screen()'
             val screen = client.screen as? AbstractContainerScreen<*> ?: return@on
             if (screen.title.stripped() !in set) return@on
 

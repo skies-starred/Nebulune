@@ -39,6 +39,7 @@ object AutoHarp : Module(
         }.runWhen(bool)
 
         on<TickEvent.Client.Start> {
+            //~ if >= 26.2 'client.screen' -> 'client.gui.screen()'
             val screen = client.screen as? AbstractContainerScreen<*> ?: return@on
             val slots = screen.menu.slots
 

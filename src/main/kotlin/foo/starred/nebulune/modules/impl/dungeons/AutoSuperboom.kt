@@ -106,6 +106,7 @@ object AutoSuperboom : Module(
         }
 
         on<InputEvent.Mouse.Press> {
+            //~ if >= 26.2 'client.screen' -> 'client.gui.screen()'
             if (client.screen != null) return@on
             val p = client.player ?: return@on
             val h = client.hitResult as? BlockHitResult ?: return@on

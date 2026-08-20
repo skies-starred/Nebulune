@@ -52,6 +52,7 @@ object AutoClicker : Module(
 
     init {
         on<TickEvent.Client.Start> {
+            //~ if >= 26.2 'client.screen' -> 'client.gui.screen()'
             if (client.screen != null) return@on
             val p = client.player ?: return@on
             val lv = client.level ?: return@on

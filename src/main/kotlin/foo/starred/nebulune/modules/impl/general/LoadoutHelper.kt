@@ -85,6 +85,7 @@ object LoadoutHelper : ICommand {
         }
 
         on<InputEvent.Keyboard.Press> {
+            //~ if >= 26.2 'client.screen' -> 'client.gui.screen()'
             if (client.screen != null) return@on
 
             val key = keyEvent.key

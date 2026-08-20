@@ -103,7 +103,7 @@ dependencies {
     impl("lwjgl-nanovg".versioned)
     for (p in listOf("windows", "linux", "macos", "macos-arm64")) impl("lwjgl-nanovg".versioned.get().toString() + ":natives-$p")
 
-    impl("skyblock-api".global) {
+    impl("skyblock-api".versioned) {
         capabilities { requireCapability("tech.thatgravyboat:skyblock-api-$ver" + if (new) "" else "-remapped") }
     }
 

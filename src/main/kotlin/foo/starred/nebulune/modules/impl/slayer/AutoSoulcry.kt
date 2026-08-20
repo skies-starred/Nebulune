@@ -42,6 +42,7 @@ object AutoSoulcry : Module(
         on<TickEvent.Client.Start> {
             val slayer = SlayerAPI.slayer
             if (slayer?.type as? SlayerBoss != SlayerBoss.Voidgloom) return@on reset()
+            //~ if >= 26.2 'client.screen' -> 'client.gui.screen()'
             if (client.screen != null) return@on reset()
 
             val player = client.player ?: return@on reset()

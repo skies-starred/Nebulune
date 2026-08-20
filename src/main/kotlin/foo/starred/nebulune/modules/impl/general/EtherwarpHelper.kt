@@ -31,6 +31,7 @@ object EtherwarpHelper : Module(
 
     init {
         on<InputEvent.Mouse.Press> {
+            //~ if >= 26.2 'client.screen' -> 'client.gui.screen()'
             if (client.screen != null) return@on
             if (buttonInfo.button != 0) return@on
 

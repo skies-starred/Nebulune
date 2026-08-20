@@ -21,6 +21,7 @@ import net.minecraft.core.BlockPos
 import net.minecraft.world.level.block.Blocks
 import net.minecraft.world.level.chunk.LevelChunk
 import net.minecraft.world.phys.AABB
+import net.minecraft.world.phys.Vec3
 import java.awt.Color
 
 @Load
@@ -189,6 +190,7 @@ object WorldScanner: Module(
             if (grottoConfig.enable()) {
                 for (grotto in grottos) {
                     val blockPos = grotto.second
+                    //~ if >= 26.2 'blockPos.center' -> 'Vec3.atCenterOf(blockPos)'
                     val center = blockPos.center
                     val aabb = AABB(blockPos)
                     val color = grottoConfig.color()
@@ -225,9 +227,11 @@ object WorldScanner: Module(
                 val aabb = AABB(blockPos)
                 val color = structureConfig.color()
                 extractStyledBox(aabb, color.rgb, structureConfig.highlightStyle(), depth = false)
+                //~ if >= 26.2 'blockPos.center' -> 'Vec3.atCenterOf(blockPos)'
                 if (structureConfig.tracer()) extractTracer(blockPos.center, structureConfig.color().rgb, 2f, false)
                 if (structureConfig.displayName()) extractText(
                     structure.first.displayName,
+                    //~ if >= 26.2 'blockPos.center' -> 'Vec3.atCenterOf(blockPos)'
                     blockPos.center,
                     structureConfig.color().rgb,
                     Color(0, 0, 0, (255 * structureConfig.displayBackgroundOpacity()).toInt()).rgb,
@@ -351,7 +355,9 @@ object WorldScanner: Module(
                         val state = chunk.getBlockState(chunkPos)
 
                         if (
+                            //~ if >= 26.2 'Blocks.MAGENTA_STAINED_GLASS_PANE' -> 'Blocks.STAINED_GLASS_PANE.magenta()'
                             state.`is`(Blocks.MAGENTA_STAINED_GLASS_PANE) ||
+                            //~ if >= 26.2 'Blocks.MAGENTA_STAINED_GLASS' -> 'Blocks.STAINED_GLASS.magenta()'
                             state.`is`(Blocks.MAGENTA_STAINED_GLASS)
                         ) {
                             worldPos.set(chunk.pos.x * 16 + x, y, chunk.pos.z * 16 + z)

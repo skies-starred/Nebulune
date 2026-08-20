@@ -55,12 +55,14 @@ object AutoExperiments : Module(
         }
 
         on<PacketEvent.Receive, ClientboundContainerSetSlotPacket> {
+            //~ if >= 26.2 'client.screen' -> 'client.gui.screen()'
             val screen = client.screen as? AbstractContainerScreen<*> ?: return@on
             current?.fn(screen)
         }
 
         on<TickEvent.Client.Start> {
             val a = current ?: return@on
+            //~ if >= 26.2 'client.screen' -> 'client.gui.screen()'
             val s = client.screen as? AbstractContainerScreen<*> ?: return@on
 
             val n = System.currentTimeMillis()
