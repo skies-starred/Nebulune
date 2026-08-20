@@ -26,7 +26,7 @@ object AutoExperiments : Module(
     "Automatically does experiments for you!",
     Category.GENERAL
 ) {
-    private val _unused0 by config.textParagraph("Please disable SkyHanni's experiment solver if you have it enabled!")
+    private val _unused0 by config.information("Please disable SkyHanni's experiment solver if you have it enabled!")
     private val minDelay by config.slider("Min click delay", 200, 100, 1000, "ms")
     private val maxDelay by config.slider("Max click delay", 250, 100, 1000, "ms")
     private val autoClose by config.switch("Auto close")

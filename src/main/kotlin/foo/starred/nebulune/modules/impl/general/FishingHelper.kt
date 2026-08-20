@@ -2,6 +2,8 @@
 
 package foo.starred.nebulune.modules.impl.general
 
+import foo.starred.nebulune.compat.dependsOn
+
 import foo.starred.athen.annotations.Load
 import foo.starred.athen.annotations.OnlyIn
 import foo.starred.athen.api.scheduling.Scheduler
@@ -30,7 +32,7 @@ object FishingHelper : Module(
 
     private val recast by config.switch("Auto recast")
     private val `recast$check` by config.switch("Recast check").dependsOn { recast }
-    private val `_recast$check` by config.textParagraph("Recast check checks if the fishing rod is already being used, and uses it if not.").dependsOn { recast }
+    private val `_recast$check` by config.information("Recast check checks if the fishing rod is already being used, and uses it if not.").dependsOn { recast }
     private val `delay$recast` by config.slider("Recast delay", 1, 0, 10, "ticks").dependsOn { recast }
     private val `variance$recast` by config.slider("Delay variance", 0, 0, 5, "ticks").dependsOn { recast }
 

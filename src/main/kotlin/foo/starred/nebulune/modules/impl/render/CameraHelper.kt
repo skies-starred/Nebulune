@@ -1,5 +1,7 @@
 package foo.starred.nebulune.modules.impl.render
 
+import foo.starred.nebulune.compat.dependsOn
+
 import foo.starred.athen.annotations.Load
 import foo.starred.athen.config.Category
 import foo.starred.athen.modules.Module

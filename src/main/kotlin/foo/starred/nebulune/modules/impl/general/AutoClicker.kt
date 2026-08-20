@@ -2,6 +2,8 @@
 
 package foo.starred.nebulune.modules.impl.general
 
+import foo.starred.nebulune.compat.dependsOn
+
 import com.mojang.serialization.Codec
 import foo.starred.athen.Athen
 import foo.starred.athen.annotations.Load
@@ -38,7 +40,7 @@ object AutoClicker : Module(
     private val `right$cps` by config.slider("Right CPS", 3, 5, 20).dependsOn { right }
 
     private val jitter by config.slider("CPS jitter", 2, 1, 3, "clicks")
-    private val breaking = config.switch("Allow breaking blocks", true).custom("breaking")
+    private val breaking = config.switch("Allow breaking blocks", true).unique("breaking")
     private val breaker by config.switch("Block dungeon breaker", true)
     private val whitelist by config.switch("Whitelist mode")
 

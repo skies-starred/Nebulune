@@ -2,6 +2,8 @@
 
 package foo.starred.nebulune.modules.impl.general
 
+import foo.starred.nebulune.compat.dependsOn
+
 import foo.starred.athen.annotations.Load
 import foo.starred.athen.api.messaging.enums.MessagePrefixType
 import foo.starred.athen.api.messaging.impl.MessagingAPI.mod
@@ -33,10 +35,10 @@ import net.minecraft.world.item.Items
 @Load
 object WardrobeHelper : ICommand {
     val autoClose by WardrobeKeybinds.config.switch("Auto close after use")
-    private val autoEquip = WardrobeKeybinds.config.switch("Auto equip").custom("autoEquip")
-    private val _unused by WardrobeKeybinds.config.textParagraph("Automatically equips the wardrobe slot without opening the gui. Use at your own risk.")
+    private val autoEquip = WardrobeKeybinds.config.switch("Auto equip").unique("autoEquip")
+    private val _unused by WardrobeKeybinds.config.information("Automatically equips the wardrobe slot without opening the gui. Use at your own risk.")
     private val moveEquip by WardrobeKeybinds.config.switch("Equip while moving").dependsOn { autoEquip.value }
-    private val _unused0 by WardrobeKeybinds.config.textParagraph("Equip while moving increases your chances of being banned by a lot.").dependsOn { autoEquip.value && moveEquip }
+    private val _unused0 by WardrobeKeybinds.config.information("Equip while moving increases your chances of being banned by a lot.").dependsOn { autoEquip.value && moveEquip }
     private val resetOpen by WardrobeKeybinds.config.switch("Reset on GUI open", true).dependsOn { autoEquip.value }
     private val equipDelay by WardrobeKeybinds.config.slider("Click delay", 1, 0, 8, "ticks").dependsOn { autoEquip.value }
     private val closeDelay by WardrobeKeybinds.config.slider("Close delay", 1, 0, 8, "ticks").dependsOn { autoEquip.value }

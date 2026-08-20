@@ -2,6 +2,8 @@
 
 package foo.starred.nebulune.modules.impl.kuudra
 
+import foo.starred.nebulune.compat.dependsOn
+
 import foo.starred.athen.annotations.Load
 import foo.starred.athen.api.scheduling.Scheduler
 import foo.starred.athen.modules.impl.kuudra.StunHelper

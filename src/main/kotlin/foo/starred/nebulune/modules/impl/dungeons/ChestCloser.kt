@@ -1,5 +1,7 @@
 package foo.starred.nebulune.modules.impl.dungeons
 
+import foo.starred.nebulune.compat.dependsOn
+
 import foo.starred.athen.annotations.Load
 import foo.starred.athen.annotations.OnlyIn
 import foo.starred.athen.api.location.SkyBlockIsland
@@ -23,7 +25,7 @@ object ChestCloser : Module(
     "Automatically closes chests.",
     Category.DUNGEONS
 ) {
-    private val mode by config.dropdown("Close mode", listOf("Auto", "Click"))
+    private val mode by config.selector("Close mode", listOf("Auto", "Click"))
 
     private val minDelay by config.slider("Minimum delay", 0, 0, 5, "ticks").dependsOn { mode == 0 }
     private val maxDelay by config.slider("Maximum delay", 1, 0, 5, "ticks").dependsOn { mode == 0 }

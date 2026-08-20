@@ -31,9 +31,9 @@ object AutoSoulcry : Module(
     private val hitbox by config.switch("Check boss hitbox", true)
     private val minDelay by config.slider("Min delay", 1, 0, 5, "ticks")
     private val maxDelay by config.slider("Max delay", 3, 0, 5, "ticks")
-    private val detectType = config.multiCheckbox("Detection type", listOf("Tick based", "Attack based")).custom("detectType")
+    private val detectType = config.multiSelector("Detection type", listOf("Tick based", "Attack based")).unique("detectType")
     private val otherBosses by config.switch("Work on other's bosses")
-    private val _unused0 by config.textParagraph("The option <red>\"Work on other's bosses\"<r> requires you to have <red>Attack based<r> selected in Detection type!")
+    private val _unused0 by config.information("The option <red>\"Work on other's bosses\"<r> requires you to have <red>Attack based<r> selected in Detection type!")
 
     private val ids = setOf("VOIDEDGE_KATANA", "VORPAL_KATANA", "ATOMSPLIT_KATANA")
     private var tick = -1

@@ -1,5 +1,7 @@
 package foo.starred.nebulune.modules.impl.general
 
+import foo.starred.nebulune.compat.dependsOn
+
 import foo.starred.athen.annotations.Load
 import foo.starred.athen.annotations.OnlyIn
 import foo.starred.athen.api.scheduling.Scheduler
@@ -23,7 +25,7 @@ object EtherwarpHelper : Module(
     "Helper features for Etherwarp.",
     Category.GENERAL
 ) {
-    private val lcew = config.switch("Left click warp").custom("lcew")
+    private val lcew = config.switch("Left click warp").unique("lcew")
     private val shift by config.switch("Shift automatically").dependsOn { lcew.value }
 
     private val ints = intArrayOf(2, 3, 4)

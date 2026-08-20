@@ -58,6 +58,7 @@ version = "$modVer+$ver"
 base.archivesName = modId
 
 repositories {
+    mavenLocal()
     fun strictMaven(url: String, vararg groups: String) = maven(url) { content { groups.forEach(::includeGroupAndSubgroups) } }
 
     strictMaven("https://pkgs.dev.azure.com/djtheredstoner/DevAuth/_packaging/public/maven/v1", "me.djtheredstoner")

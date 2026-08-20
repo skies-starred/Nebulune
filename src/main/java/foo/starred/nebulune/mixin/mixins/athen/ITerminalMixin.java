@@ -179,11 +179,11 @@ public abstract class ITerminalMixin implements ITerminalAccessor {
             TerminalSolver.INSTANCE.setLast(System.currentTimeMillis());
             clicked = true;
 
-            if (TerminalSolver.INSTANCE.getSound$enabled()) TerminalSolver.INSTANCE.getClickSound().play();
+            if (TerminalSolver.INSTANCE.getSound$enabled()) { var clickSound = TerminalSolver.INSTANCE.getClickSound(); clickSound.play(clickSound.getVolume(), clickSound.getPitch()); }
             return;
         }
 
-        if (TerminalSolver.INSTANCE.getSound$enabled()) TerminalSolver.INSTANCE.getClickSound().play();
+        if (TerminalSolver.INSTANCE.getSound$enabled()) { var clickSound = TerminalSolver.INSTANCE.getClickSound(); clickSound.play(clickSound.getVolume(), clickSound.getPitch()); }
 
         PlayerUtilsKt.guiClick(
                 TerminalAPI.INSTANCE.getId(),

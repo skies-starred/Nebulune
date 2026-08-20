@@ -2,6 +2,9 @@
 
 package foo.starred.nebulune.modules.impl.general
 
+import foo.starred.nebulune.compat.childOf
+import foo.starred.nebulune.compat.dependsOn
+
 import foo.starred.athen.annotations.Load
 import foo.starred.athen.annotations.OnlyIn
 import foo.starred.athen.api.location.SkyBlockIsland
@@ -56,8 +59,8 @@ object TrevorHelper : Module(
     private val acceptDelay by config.slider("Accept delay", 1, 0, 5, "ticks").dependsOn { autoAccept }
 
     private val endAlert by config.switch("Cooldown end alert")
-    private val `alert$message` by config.textInput("Alert message", "<red>Cooldown ended!").dependsOn { endAlert }
-    private val `alert$sound` by config.sound("Alert sound").dependsOn { endAlert }
+    private val `alert$message` by config.input("Alert message", "<red>Cooldown ended!").dependsOn { endAlert }
+    private val `alert$sound` by config.sound("Alert sound")
 
     private val hud = config.hud("Cooldown timer") {
         if (it) return@hud sizedText("Cooldown: §c12.4s")
@@ -67,7 +70,7 @@ object TrevorHelper : Module(
         sizedText("Cooldown: §c$t")
     }
 
-    private val colorExpandable by config.expandable("Colors")
+    private val colorExpandable by config.group("Colors")
     private val `color$trackable` by config.colorPicker("Trackable color", Color(Catppuccin.Mocha.Text.argb, true)).childOf { colorExpandable }
     private val `color$untrackable` by config.colorPicker("Untrackable color", Color(Catppuccin.Mocha.Green.argb, true)).childOf { colorExpandable }
     private val `color$undetected` by config.colorPicker("Undetected color", Color(Catppuccin.Mocha.Blue.argb, true)).childOf { colorExpandable }

@@ -6,7 +6,7 @@ import foo.starred.athen.Athen
 import foo.starred.athen.annotations.AnnotationLoader
 import foo.starred.athen.api.messaging.impl.MessagingAPI.mod
 import foo.starred.athen.api.scheduling.Scheduler
-import foo.starred.athen.config.ui.ClickGUI
+import foo.starred.athen.config.ui.ConfigUI
 import foo.starred.snowbird.handlers.time.server
 import foo.starred.snowbird.kommand.ICommand
 import net.fabricmc.api.ClientModInitializer
@@ -23,12 +23,12 @@ object Nebulune : ClientModInitializer, ICommand {
 
         command(modId) {
             executes {
-                ClickGUI.open()
+                ConfigUI.open()
                 "Opening Config GUI...".mod()
             }
 
             "config" {
-                ClickGUI.open()
+                ConfigUI.open()
                 "Opening Config GUI...".mod()
             }
         }
