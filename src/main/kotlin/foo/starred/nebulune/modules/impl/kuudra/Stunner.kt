@@ -2,7 +2,6 @@
 
 package foo.starred.nebulune.modules.impl.kuudra
 
-import foo.starred.nebulune.compat.dependsOn
 
 import foo.starred.athen.annotations.Load
 import foo.starred.athen.api.scheduling.Scheduler
@@ -13,7 +12,7 @@ import foo.starred.snowbird.handlers.time.client
 @Load
 object Stunner {
     private val autoClose by StunHelper.config.switch("Auto close GUI")
-    private val `autoClose$delay` by StunHelper.config.slider("Close delay", 1, 0, 5, "ticks").dependsOn { autoClose }
+    private val `autoClose$delay` by StunHelper.config.slider("Close delay", 1, 0, 5, "ticks")
 
     @JvmStatic
     fun fn() {

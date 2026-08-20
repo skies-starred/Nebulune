@@ -1,6 +1,5 @@
 package foo.starred.nebulune.modules.impl.render
 
-import foo.starred.nebulune.compat.dependsOn
 
 import foo.starred.athen.annotations.Load
 import foo.starred.athen.config.Category
@@ -16,7 +15,7 @@ object CameraHelper : Module(
     private val _dist by config.switch("Custom distance")
 
     @JvmStatic
-    val distance by config.slider("Distance", 4f, 3f, 15f, "blocks", true).dependsOn { _dist }
+    val distance by config.slider("Distance", 4f, 3f, 15f, "blocks", true)
 
     @JvmStatic
     val dist: Boolean

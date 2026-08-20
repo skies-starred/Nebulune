@@ -2,7 +2,6 @@
 
 package foo.starred.nebulune.modules.impl.kuudra
 
-import foo.starred.nebulune.compat.dependsOn
 
 import foo.starred.athen.annotations.Load
 import foo.starred.athen.api.kuudra.KuudraAPI
@@ -19,9 +18,9 @@ import java.awt.Color
 @Load
 object KuudraHighlight {
     private val tracer = KuudraInfo.config.switch("Tracer", false).unique("tracer")
-    private val `tracer$color` by KuudraInfo.config.colorPicker("Tracer color", Color(Catppuccin.Mocha.Peach.argb, true)).dependsOn { tracer.value }
+    private val `tracer$color` by KuudraInfo.config.colorPicker("Tracer color", Color(Catppuccin.Mocha.Peach.argb, true))
     private val `tracer$width` by KuudraInfo.config.slider("Tracer width", 2f, 1f, 10f)
-    private val `tracer$depth` by KuudraInfo.config.switch("Tracer depth").dependsOn { tracer.value }
+    private val `tracer$depth` by KuudraInfo.config.switch("Tracer depth")
 
     init {
         on<WorldRenderEvent.Extract> {

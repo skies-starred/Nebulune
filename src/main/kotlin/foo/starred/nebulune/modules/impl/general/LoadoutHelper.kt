@@ -2,7 +2,6 @@
 
 package foo.starred.nebulune.modules.impl.general
 
-import foo.starred.nebulune.compat.dependsOn
 
 import foo.starred.athen.annotations.Load
 import foo.starred.athen.api.messaging.enums.MessagePrefixType
@@ -36,12 +35,12 @@ object LoadoutHelper : ICommand {
     val autoClose by LoadoutKeybinds.config.switch("Auto close after use")
     private val autoEquip = LoadoutKeybinds.config.switch("Auto equip").unique("autoEquip")
     private val _unused by LoadoutKeybinds.config.information("Automatically equips the loadout slot without opening the gui. Use at your own risk.")
-    private val moveEquip by LoadoutKeybinds.config.switch("Equip while moving").dependsOn { autoEquip.value }
-    private val _unused0 by LoadoutKeybinds.config.information("Equip while moving increases your chances of being banned by a lot.").dependsOn { autoEquip.value && moveEquip }
-    private val resetOpen by LoadoutKeybinds.config.switch("Reset on GUI open", true).dependsOn { autoEquip.value }
-    private val equipDelay by LoadoutKeybinds.config.slider("Click delay", 1, 0, 8, "ticks").dependsOn { autoEquip.value }
-    private val closeDelay by LoadoutKeybinds.config.slider("Close delay", 1, 0, 8, "ticks").dependsOn { autoEquip.value }
-    private val delayVariance by LoadoutKeybinds.config.slider("Max delay variety", 1, 0, 5, "ticks").dependsOn { autoEquip.value }
+    private val moveEquip by LoadoutKeybinds.config.switch("Equip while moving")
+    private val _unused0 by LoadoutKeybinds.config.information("Equip while moving increases your chances of being banned by a lot.")
+    private val resetOpen by LoadoutKeybinds.config.switch("Reset on GUI open", true)
+    private val equipDelay by LoadoutKeybinds.config.slider("Click delay", 1, 0, 8, "ticks")
+    private val closeDelay by LoadoutKeybinds.config.slider("Close delay", 1, 0, 8, "ticks")
+    private val delayVariance by LoadoutKeybinds.config.slider("Max delay variety", 1, 0, 5, "ticks")
 
     private val hud = LoadoutKeybinds.config.hud("Display text") {
         if (it) return@hud sizedText("Equipping §7[§c2§7]")

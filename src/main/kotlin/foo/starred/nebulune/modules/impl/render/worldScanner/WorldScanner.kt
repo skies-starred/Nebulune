@@ -1,7 +1,5 @@
 package foo.starred.nebulune.modules.impl.render.worldScanner
 
-import foo.starred.nebulune.compat.childOf
-import foo.starred.nebulune.compat.dependsOn
 
 import foo.starred.athen.annotations.Load
 import foo.starred.athen.annotations.OnlyIn
@@ -50,39 +48,29 @@ object WorldScanner: Module(
     ): StructureEspConfig {
         val key = expandable.key
 
-        val enable by config.switch("Enable", true)
+        val enable by expandable.switch("Enable", true)
             .unique(key + "Enable")
-            .childOf { expandable }
 
-        val highlightStyle by config.selector("Highlight Style", listOf("Outline", "Filled", "Both"), 2)
+        val highlightStyle by expandable.selector("Highlight Style", listOf("Outline", "Filled", "Both"), 2)
             .unique(key + "Highlight Style")
-            .childOf { expandable }
 
-        val color by config.colorPicker("ESP Color", defaultColor)
+        val color by expandable.colorPicker("ESP Color", defaultColor)
             .unique(key + "ESP Color")
-            .childOf { expandable }
 
-        val tracer by config.switch("Tracer", false)
+        val tracer by expandable.switch("Tracer", false)
             .unique(key + "Tracer")
-            .childOf { expandable }
 
-        val displayName by config.switch("Display Name", true)
+        val displayName by expandable.switch("Display Name", true)
             .unique(key + "Display Name")
-            .childOf { expandable }
 
-        val displayScale by config.slider("Name Scale", 1f, 0f, 1f, double = true)
+        val displayScale by expandable.slider("Name Scale", 1f, 0f, 1f, double = true)
             .unique(key + "Name Scale")
-            .dependsOn { displayName }
-            .childOf { expandable }
 
-        val displayBackgroundOpacity by config.slider("Display Background Opacity", 0.5f, 0f, 1f, double = true)
+        val displayBackgroundOpacity by expandable.slider("Display Background Opacity", 0.5f, 0f, 1f, double = true)
             .unique(key + "Display Background Opacity")
-            .dependsOn { displayName }
-            .childOf { expandable }
 
-        val sendCoordsInChat by config.switch("Send Coords In Chat", true)
+        val sendCoordsInChat by expandable.switch("Send Coords In Chat", true)
             .unique(key + "Send Coords In Chat")
-            .childOf { expandable }
 
         return StructureEspConfig(
             expandable,
@@ -102,8 +90,8 @@ object WorldScanner: Module(
         grottoExpandable,
         Color(255, 85, 255)
     )
-    val grottoConfigShowNumberOfBlocks by config.switch("Show Number of Blocks", true).childOf { grottoExpandable }
-    val grottoConfigShowNumberOfBlocksBackgroundOpacity by config.slider("Text Background Opacity", 0.5f, 0f, 1f, double = true).dependsOn { grottoConfigShowNumberOfBlocks }.childOf { grottoExpandable }
+    val grottoConfigShowNumberOfBlocks by grottoExpandable.switch("Show Number of Blocks", true)
+    val grottoConfigShowNumberOfBlocksBackgroundOpacity by grottoExpandable.slider("Text Background Opacity", 0.5f, 0f, 1f, double = true)
 
     private val sapphireExpandable by config.group("Sapphire Crystal")
     val sapphireConfig = createStructureEspConfig(

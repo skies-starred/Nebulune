@@ -1,6 +1,5 @@
 package foo.starred.nebulune.modules.impl.dungeons
 
-import foo.starred.nebulune.compat.dependsOn
 
 import foo.starred.athen.annotations.Load
 import foo.starred.athen.annotations.OnlyIn
@@ -27,11 +26,11 @@ object ChestCloser : Module(
 ) {
     private val mode by config.selector("Close mode", listOf("Auto", "Click"))
 
-    private val minDelay by config.slider("Minimum delay", 0, 0, 5, "ticks").dependsOn { mode == 0 }
-    private val maxDelay by config.slider("Maximum delay", 1, 0, 5, "ticks").dependsOn { mode == 0 }
+    private val minDelay by config.slider("Minimum delay", 0, 0, 5, "ticks")
+    private val maxDelay by config.slider("Maximum delay", 1, 0, 5, "ticks")
 
-    private val mouse by config.switch("Mouse", true).dependsOn { mode == 1 }
-    private val key by config.switch("Key", true).dependsOn { mode == 1 }
+    private val mouse by config.switch("Mouse", true)
+    private val key by config.switch("Key", true)
 
     private val set = setOf("Chest", "Large Chest")
 

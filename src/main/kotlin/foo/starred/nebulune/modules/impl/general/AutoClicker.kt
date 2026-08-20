@@ -2,7 +2,6 @@
 
 package foo.starred.nebulune.modules.impl.general
 
-import foo.starred.nebulune.compat.dependsOn
 
 import com.mojang.serialization.Codec
 import foo.starred.athen.Athen
@@ -32,12 +31,12 @@ object AutoClicker : Module(
     Category.GENERAL
 ), ICommand {
     private val left by config.switch("Left clicker")
-    private val `left$key` by config.keybind("Left key").dependsOn { left }
-    private val `left$cps` by config.slider("Left CPS", 3, 5, 20).dependsOn { left }
+    private val `left$key` by config.keybind("Left key")
+    private val `left$cps` by config.slider("Left CPS", 3, 5, 20)
 
     private val right by config.switch("Right clicker")
-    private val `right$key` by config.keybind("Right key").dependsOn { right }
-    private val `right$cps` by config.slider("Right CPS", 3, 5, 20).dependsOn { right }
+    private val `right$key` by config.keybind("Right key")
+    private val `right$cps` by config.slider("Right CPS", 3, 5, 20)
 
     private val jitter by config.slider("CPS jitter", 2, 1, 3, "clicks")
     private val breaking = config.switch("Allow breaking blocks", true).unique("breaking")

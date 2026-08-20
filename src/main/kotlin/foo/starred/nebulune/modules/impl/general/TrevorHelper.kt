@@ -2,8 +2,6 @@
 
 package foo.starred.nebulune.modules.impl.general
 
-import foo.starred.nebulune.compat.childOf
-import foo.starred.nebulune.compat.dependsOn
 
 import foo.starred.athen.annotations.Load
 import foo.starred.athen.annotations.OnlyIn
@@ -49,17 +47,17 @@ object TrevorHelper : Module(
     Category.GENERAL
 ) {
     private val mobEsp by config.switch("Animal ESP")
-    private val `esp$tracer` by config.switch("Show tracer").dependsOn { mobEsp }
+    private val `esp$tracer` by config.switch("Show tracer")
 
     private val autoCall by config.switch("Auto call")
-    private val callDelay by config.slider("Call delay", 1, 0, 5, "ticks").dependsOn { autoCall }
-    private val callOff by config.slider("Call early", 2.0, 0.0, 5.0, "seconds", true).dependsOn { autoCall }
+    private val callDelay by config.slider("Call delay", 1, 0, 5, "ticks")
+    private val callOff by config.slider("Call early", 2.0, 0.0, 5.0, "seconds", true)
 
     private val autoAccept by config.switch("Auto accept")
-    private val acceptDelay by config.slider("Accept delay", 1, 0, 5, "ticks").dependsOn { autoAccept }
+    private val acceptDelay by config.slider("Accept delay", 1, 0, 5, "ticks")
 
     private val endAlert by config.switch("Cooldown end alert")
-    private val `alert$message` by config.input("Alert message", "<red>Cooldown ended!").dependsOn { endAlert }
+    private val `alert$message` by config.input("Alert message", "<red>Cooldown ended!")
     private val `alert$sound` by config.sound("Alert sound")
 
     private val hud = config.hud("Cooldown timer") {
@@ -71,11 +69,11 @@ object TrevorHelper : Module(
     }
 
     private val colorExpandable by config.group("Colors")
-    private val `color$trackable` by config.colorPicker("Trackable color", Color(Catppuccin.Mocha.Text.argb, true)).childOf { colorExpandable }
-    private val `color$untrackable` by config.colorPicker("Untrackable color", Color(Catppuccin.Mocha.Green.argb, true)).childOf { colorExpandable }
-    private val `color$undetected` by config.colorPicker("Undetected color", Color(Catppuccin.Mocha.Blue.argb, true)).childOf { colorExpandable }
-    private val `color$endangered` by config.colorPicker("Endangered color", Color(Catppuccin.Mocha.Mauve.argb, true)).childOf { colorExpandable }
-    private val `color$elusive` by config.colorPicker("Elusive color", Color(Catppuccin.Mocha.Yellow.argb, true)).childOf { colorExpandable }
+    private val `color$trackable` by colorExpandable.colorPicker("Trackable color", Color(Catppuccin.Mocha.Text.argb, true))
+    private val `color$untrackable` by colorExpandable.colorPicker("Untrackable color", Color(Catppuccin.Mocha.Green.argb, true))
+    private val `color$undetected` by colorExpandable.colorPicker("Undetected color", Color(Catppuccin.Mocha.Blue.argb, true))
+    private val `color$endangered` by colorExpandable.colorPicker("Endangered color", Color(Catppuccin.Mocha.Mauve.argb, true))
+    private val `color$elusive` by colorExpandable.colorPicker("Elusive color", Color(Catppuccin.Mocha.Yellow.argb, true))
 
     private val animals = setOf(Cow::class, Pig::class, Sheep::class, Chicken::class, Rabbit::class, Horse::class)
     private val startRegex = Regex("\\[NPC] Trevor: You can find your (?<type>\\w+) animal near the .*")

@@ -2,7 +2,6 @@
 
 package foo.starred.nebulune.modules.impl.dungeons
 
-import foo.starred.nebulune.compat.dependsOn
 
 import com.mojang.serialization.Codec
 import foo.starred.athen.annotations.Load
@@ -41,10 +40,10 @@ object AutoSuperboom : Module(
     private val maxDelay by config.slider("Maximum delay", 3, 1, 5, "ticks")
 
     private val swapBack by config.switch("Swap back")
-    private val `swapBack$minDelay` by config.slider("Minimum delay", 1, 1, 5, "ticks").dependsOn { swapBack }
-    private val `swapBack$maxDelay` by config.slider("Maximum delay", 3, 1, 5, "ticks").dependsOn { swapBack }
-    private val `swapBack$type` by config.selector("Swap to", listOf("Original slot", "Custom slot")).dependsOn { swapBack }
-    private val `swapBack$custom` by config.slider("Custom slot number", 1, 1, 9).dependsOn { swapBack && `swapBack$type` == 1 }
+    private val `swapBack$minDelay` by config.slider("Minimum delay", 1, 1, 5, "ticks")
+    private val `swapBack$maxDelay` by config.slider("Maximum delay", 3, 1, 5, "ticks")
+    private val `swapBack$type` by config.selector("Swap to", listOf("Original slot", "Custom slot"))
+    private val `swapBack$custom` by config.slider("Custom slot number", 1, 1, 9)
 
     private val json = JsonStore("features/autoSuperboom")
     private val breakable = json.mutableSet("breakable", Codec.STRING, mutableSetOf("minecraft:cracked_stone_bricks", "minecraft:barrier"))
